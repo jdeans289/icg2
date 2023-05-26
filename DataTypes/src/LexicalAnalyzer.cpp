@@ -73,7 +73,7 @@ Token::e LexicalAnalyzer::nextToken() {
         switch ( state ) {
 
             case BEGINNING : {
-                if ( isalpha( nextChar ) ) {
+                if ( isalpha( nextChar ) || nextChar == '_') {
                     lexemeText = nextChar;
                     inStream >> std::noskipws >> nextChar;
                     token = Token::Identifier;
@@ -110,6 +110,16 @@ Token::e LexicalAnalyzer::nextToken() {
                     inStream >> std::noskipws >> nextChar;
                     token = Token::RightBracket;
                     state = DONE;
+                } else if ( nextChar == '<')  {
+                    lexemeText = nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    token = Token::LeftAngle;
+                    state = DONE;
+                } else if ( nextChar == '>')  {
+                    lexemeText = nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    token = Token::RightAngle;
+                    state = DONE;                            
                 } else  {
                     token = Token::Error;
                     state = DONE;
@@ -118,11 +128,11 @@ Token::e LexicalAnalyzer::nextToken() {
 
             case ID_COLLECTION : {
 
-                while (!inStream.eof() && isalnum(nextChar)) {
+                while (!inStream.eof() && (isalnum(nextChar) || nextChar == '_')) {
                     lexemeText += nextChar;
                     inStream >> std::noskipws >> nextChar;
                 }
-                for (int ii=0; ii < NKEYS; ii++) {
+                for (unsigned int ii=0; ii < NKEYS; ii++) {
                     if ( lexemeText.compare( keytable[ii].key ) == 0 ) {
                         token = keytable[ii].token;
                         break;

@@ -527,3 +527,51 @@ TEST_F(PrimitiveDataTypeTest, createInstance_char) {
     EXPECT_EQ('A', *test_var);
 }
 
+// -----------------------------------------------------------------------------------------
+//                                  Checkpoint Tests
+// -----------------------------------------------------------------------------------------
+
+TEST_F(PrimitiveDataTypeTest, checkpoint_int) {
+    // ARRANGE
+
+    PrimitiveDataType<int> int_type;
+    int my_test_int = 8765;
+    std::stringstream ss;
+
+    // ACT
+    int_type.checkpointValue(ss, "my_test_int", &my_test_int);
+
+    // ASSERT
+    std::string result = ss.str();
+    ASSERT_EQ(result, "my_test_int = 8765;\n");
+}
+
+TEST_F(PrimitiveDataTypeTest, checkpoint_double) {
+    // ARRANGE
+
+    PrimitiveDataType<double> double_type;
+    double my_test_double = 5.4321;
+    std::stringstream ss;
+
+    // ACT
+    double_type.checkpointValue(ss, "my_test_double", &my_test_double);
+
+    // ASSERT
+    std::string result = ss.str();
+    ASSERT_EQ(result, "my_test_double = 5.4321;\n");
+}
+
+TEST_F(PrimitiveDataTypeTest, checkpoint_char) {
+    // ARRANGE
+
+    PrimitiveDataType<char> char_type;
+    char my_test_char = 'j';
+    std::stringstream ss;
+
+    // ACT
+    char_type.checkpointValue(ss, "my_test_char", &my_test_char);
+
+    // ASSERT
+    std::string result = ss.str();
+    ASSERT_EQ(result, "my_test_char = 'j';\n");
+}

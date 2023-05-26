@@ -25,7 +25,9 @@ namespace Token {
         LeftBracket  = 16,
         RightBracket = 17,
         Asterisk     = 18,
-        Integer      = 19
+        Integer      = 19,
+        LeftAngle    = 20,
+        RightAngle   = 21
     };
 };
 

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Value.hh"
+#include "DataTypeInator.hh"
 
 namespace MemberClass {
     enum e {
@@ -19,12 +20,13 @@ namespace MemberClass {
 class StructMember {
 
 public:
-
     /**
      Constructor for StructMember.
      @param name The name of the member.
+     @param dataTypeInator Pointer to the DataTypeInator used for resolving types.
+     @param typeSpecName string representing the type
      */
-    StructMember(std::string name);
+    StructMember(std::string name, DataTypeInator* dataTypeInator, std::string typeSpecName);
 
     /**
     Constructor for StructMember.
@@ -48,13 +50,24 @@ public:
      */
     std::string getName() const;
 
+    /** 
+     * This should maybe die? idk -jackie
+     */
+    bool containsPointers() const ;
+
+
+    /**
+      To check for circular reference only.
+     */
+    const DataType * getDataType();
+
     /**
     */
     virtual MemberClass::e getMemberClass() const = 0;
 
     /**
      */
-    virtual bool validate() = 0;
+    virtual bool validate();
 
     /**
      @return does the DataType or any member of the DataType represent a pointer?
@@ -81,10 +94,25 @@ public:
      */
     virtual void printValue(std::ostream &s, void *struct_address) const = 0;
 
+
+    virtual void checkpointValue(std::ostream &s, std::string var_name, void *address) const = 0;
+
+
     /**
     Get a string representation of this StructMember.
      */
     virtual std::string toString() const = 0;
+
+protected:
+
+    // This is meant for bitfield members only
+    // this is bad design and you know it @me
+    StructMember(std::string name);
+
+    std::string typeSpecName;
+    const DataType * subType;
+    DataTypeInator* dataTypeInator;
+    bool isValid;
 
 private:
     std::string name;

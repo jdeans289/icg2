@@ -8,7 +8,7 @@
 #include <stdlib.h> // for free()
 
 // CONSTRUCTOR
-PointerDataType::PointerDataType( DataTypeInator * datatypeInator, std::string typeSpecifierName) : dataTypeInator(datatypeInator), typeSpecName(typeSpecifierName) {}
+PointerDataType::PointerDataType( DataTypeInator * datatypeInator, std::string typeSpecifierName) : typeSpecName(typeSpecifierName), dataTypeInator(datatypeInator) {}
 
 // COPY CONSTRUCTOR
 PointerDataType::PointerDataType ( PointerDataType const & original) {

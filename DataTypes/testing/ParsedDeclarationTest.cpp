@@ -129,3 +129,15 @@ TEST(ParsedDeclaration, test5) {
     EXPECT_EQ( 4, dim_2 );
     EXPECT_EQ(-1, dim_3 );
 }
+
+TEST(ParsedDeclaration, template_basic) {
+
+    ParsedDeclaration* parsedDeclaration = new ParsedDeclaration("MyClass<int> var");
+
+    std::string typeSpecString = parsedDeclaration->getTypeSpecifier();
+    EXPECT_EQ( "int", typeSpecString );
+
+    std::string varName = parsedDeclaration->getVariableName();
+    EXPECT_EQ( "var", varName );
+
+}

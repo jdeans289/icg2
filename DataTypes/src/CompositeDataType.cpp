@@ -212,6 +212,12 @@ void CompositeDataType::printValue(std::ostream &s, void *address) const {
    s << "}";
 }
 
+void CompositeDataType::checkpointValue(std::ostream &s, std::string var_name, void *address) const {
+    for (const auto& member : memberList) {
+        member->checkpointValue(s, var_name, address);
+    }
+}
+
 // MEMBER FUNCTION
 std::string CompositeDataType::toString() const {
    std::stringstream ss;

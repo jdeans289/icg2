@@ -91,6 +91,20 @@ class DataType {
     virtual void printValue(std::ostream &s, void *address) const = 0;
 
     /**
+    Checkpoint the variable at the given address to the given stream.
+    @param s The stream to print to.
+    @param address Address of the variable.
+    */
+    virtual void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
+
+    // /**
+    // Print the value of the variable at the given address to the given stream.
+    // @param s The stream to print to.
+    // @param address Address of the variable.
+    // */
+    // virtual void restoreValue(std::ostream &s, std::string var_name, void *address) const = 0;
+
+    /**
     Generate a declaration of this DataType.
     @param declarator A declarator, which can be a
         1) a variable name or an array declarator (both are direct-declarators) or

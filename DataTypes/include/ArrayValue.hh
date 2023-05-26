@@ -24,7 +24,7 @@ class ArrayValue : public Value {
      Get the number of members in this ArrayValue.
      @return the number of members in this ArrayValue.
      */
-    int  getNumElems();
+    unsigned int  getNumElems();
 
     /**
      Get reference to the component Value at the given index.

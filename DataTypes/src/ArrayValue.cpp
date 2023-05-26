@@ -15,13 +15,13 @@ void ArrayValue::pushElem(Value* value) {
 }
 
 // MEMBER FUNCTION
-int ArrayValue::getNumElems() {
+unsigned int ArrayValue::getNumElems() {
     return ( (int)elem_list.size() );
 }
 
 // MEMBER FUNCTION
 Value*&  ArrayValue::operator[] (const int index) {
-    if (index >= elem_list.size())
+    if (index >= elem_list.size() || index < 0)
         throw std::logic_error("Index out of range.");
 
     return ( elem_list[index] );

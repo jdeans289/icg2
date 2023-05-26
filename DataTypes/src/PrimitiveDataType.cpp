@@ -116,3 +116,8 @@ template <> void PrimitiveDataType<void>::printValue(std::ostream &s, void *addr
     std::cerr << "WARNING: Cannot print the value of the object, of type <void> at address (" << address
               << " of type void." << std::endl;
 }
+
+template <> void PrimitiveDataType<void>::checkpointValue(std::ostream &s, std::string varName, void *address ) const {
+    std::cerr << "WARNING: Cannot checkpoint the value of the object" << varName << ", of type <void> at address (" << address
+              << " of type void." << std::endl;
+}

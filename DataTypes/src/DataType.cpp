@@ -36,3 +36,7 @@ std::string DataType::makeDeclaration(std::string declarator) const {
 std::string DataType::toString() const {
     return makeDeclaration("");
 }
+
+void DataType::checkpointValue(std::ostream &s, std::string var_name, void *address) const {
+    throw std::logic_error("checkpointValue is not yet implemented for this type.");
+}

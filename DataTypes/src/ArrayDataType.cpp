@@ -136,7 +136,7 @@ void ArrayDataType::deleteInstance(void* address) const {
 // MEMBER FUNCTION
 void ArrayDataType::clearValue(void * address) const {
     if (is_valid) {
-        for (int ii=0; ii < elementCount ; ii++) {
+        for (unsigned int ii=0; ii < elementCount ; ii++) {
             void * elementAddress = (char*)address + (ii * subType->getSize());
             subType->clearValue( elementAddress );
         }
@@ -156,7 +156,7 @@ void ArrayDataType::assignValue(void * address, Value*value) const {
                 return;
             }
 
-            for (int i = 0; i < getElementCount(); i++) {
+            for (unsigned int i = 0; i < getElementCount(); i++) {
                 void * elemAddress = (char *) address + (i * subType->getSize());
                 subType->assignValue(elemAddress, (*array_value_p)[i]);
             }
@@ -185,7 +185,7 @@ void ArrayDataType::printValue(std::ostream &s, void * address) const {
 
     if (is_valid) {
         s << "{";
-        for (int ii=0; ii < elementCount ; ii++) {
+        for (unsigned int ii=0; ii < elementCount ; ii++) {
             if (ii) {
             s << ",";
             }

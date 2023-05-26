@@ -107,6 +107,14 @@ public:
     void printValue(std::ostream &s, void *address) const;
 
     /**
+     Print the value at the given address, to the given stream.
+     @param s The stream to print to.
+     @param var_name Name of the variable to checkpoint.
+     @param address Address of the (entire) variable.
+     */
+    void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
+
+    /**
      */
     std::string toString() const;
 

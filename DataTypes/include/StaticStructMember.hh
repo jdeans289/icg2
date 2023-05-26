@@ -35,23 +35,11 @@ public:
     ~StaticStructMember();
 
     /**
-     */
-    bool validate();
-
-    /**
     */
     MemberClass::e getMemberClass() const {
         return MemberClass::STATIC;
     }
 
-    /**
-     */
-    bool containsPointers() const ;
-
-    /**
-      To check for circular reference only.
-     */
-    const DataType*  getDataType();
 
     /**
      */
@@ -69,6 +57,8 @@ public:
      */
     void printValue(std::ostream &s, void *struct_address) const;
 
+    void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
+
     /**
      Product a string representation of this StaticStructMember.
      */
@@ -76,10 +66,6 @@ public:
 
 private:
     void * memberAddress;
-    bool is_valid;
-    std::string typeSpecName;
-    const DataType * subType;
-    DataTypeInator* dataTypeInator;
 
 };
 #endif

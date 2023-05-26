@@ -36,23 +36,10 @@ public:
     ~NormalStructMember();
 
     /**
-     */
-    bool validate();
-
-    /**
     */
     MemberClass::e getMemberClass() const {
         return MemberClass::NORMAL;
     }
-
-    /**
-     */
-    bool containsPointers() const ;
-
-    /**
-      To check for circular reference only.
-     */
-    const DataType * getDataType();
 
     /**
      */
@@ -70,6 +57,9 @@ public:
      */
     void printValue(std::ostream &s, void *struct_address) const ;
 
+    
+    void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
+
     /**
      Product a string representation of this NormalStructMember.
      */
@@ -77,10 +67,5 @@ public:
 
 private:
     int byte_offset;
-    bool is_valid;
-    std::string typeSpecName;
-    const DataType * subType;
-    DataTypeInator* dataTypeInator;
-
 };
 #endif

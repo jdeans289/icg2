@@ -100,6 +100,18 @@ public:
     }
 
     /**
+     Checkpoint the value of the variable at the given address with the given name, to the given stream.
+     @param s The stream to print to.
+     @param var_name Name of the variable
+     @param address Address of the variable.
+     */
+    void checkpointValue(std::ostream &s, std::string var_name, void *address) const {
+        s << var_name << " = ";
+        printValue(s, address);
+        s << ";" << std::endl;
+    }
+
+    /**
      Get a string representation of this PrimitiveDataType's type-specifier.
      */
     std::string getTypeSpecName() const {
@@ -163,4 +175,6 @@ template <> void PrimitiveDataType<void>::deleteInstance(void* address) const;
 template <> void PrimitiveDataType<void>::clearValue(void * address) const;
 template <> void PrimitiveDataType<void>::assignValue(void * address, Value * value) const;
 template <> void PrimitiveDataType<void>::printValue(std::ostream &s, void *address ) const;
+template <> void PrimitiveDataType<void>::checkpointValue(std::ostream &s, std::string var_name, void *address ) const;
+
 #endif
