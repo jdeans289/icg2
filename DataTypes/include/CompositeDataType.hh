@@ -118,6 +118,9 @@ public:
      */
     std::string toString() const;
 
+    // void accept (DataTypeVisitor& visitor) const;
+    void accept (DataTypeVisitor* visitor) const;
+
     /* ==================================================================== */
     /*                       CLASS SPECIFIC INTERFACE                       */
     /* ==================================================================== */

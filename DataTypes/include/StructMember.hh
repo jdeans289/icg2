@@ -6,6 +6,9 @@
 #include "Value.hh"
 #include "DataTypeInator.hh"
 
+// class DataTypeInator;
+class DataType;
+
 namespace MemberClass {
     enum e {
         NORMAL   = 0,
@@ -95,7 +98,7 @@ public:
     virtual void printValue(std::ostream &s, void *struct_address) const = 0;
 
 
-    virtual void checkpointValue(std::ostream &s, std::string var_name, void *address) const = 0;
+    // virtual void checkpointValue(std::ostream &s, std::string var_name, void *address) const = 0;
 
 
     /**

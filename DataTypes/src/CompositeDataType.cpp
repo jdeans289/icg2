@@ -212,11 +212,11 @@ void CompositeDataType::printValue(std::ostream &s, void *address) const {
    s << "}";
 }
 
-void CompositeDataType::checkpointValue(std::ostream &s, std::string var_name, void *address) const {
-    for (const auto& member : memberList) {
-        member->checkpointValue(s, var_name, address);
-    }
-}
+// void CompositeDataType::checkpointValue(std::ostream &s, std::string var_name, void *address) const {
+//     for (const auto& member : memberList) {
+//         member->checkpointValue(s, var_name, address);
+//     }
+// }
 
 // MEMBER FUNCTION
 std::string CompositeDataType::toString() const {
@@ -235,6 +235,11 @@ std::string CompositeDataType::toString() const {
 std::string CompositeDataType::getTypeSpecName() const {
     return name;
 }
+
+// void CompositeDataType::accept (DataTypeVisitor& visitor) const {
+//     visitor.visitCompositeType(this);
+// }
+
 
 // MEMBER FUNCTION
 void CompositeDataType::addRegularMember( std::string memberName,
@@ -284,6 +289,10 @@ int CompositeDataType::getMemberCount() const {
 // MEMBER FUNCTION
 StructMember* CompositeDataType::getStructMember (const int index) const {
     return ( memberList[index] );
+}
+
+void CompositeDataType::accept (DataTypeVisitor* visitor) const {
+    visitor->visitCompositeType(this);
 }
 
 #ifdef NEWSTUFF

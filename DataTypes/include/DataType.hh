@@ -1,12 +1,12 @@
-#ifndef DATA_TYPE_HH
-#define DATA_TYPE_HH
+#ifndef _DATATYPE_HH_
+#define _DATATYPE_HH_
 
 #include <string>
 #include <vector>
 
 #include "Value.hh"
-// class Value;
-// class TypeDictionary;
+#include "DataTypeVisitor.hh"
+
 
 namespace TypeClass {
     enum e {
@@ -95,7 +95,7 @@ class DataType {
     @param s The stream to print to.
     @param address Address of the variable.
     */
-    virtual void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
+    // virtual void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
 
     // /**
     // Print the value of the variable at the given address to the given stream.
@@ -122,7 +122,10 @@ class DataType {
     */
     virtual bool isVoid() const { return false; }
 
+    virtual void accept (DataTypeVisitor* visitor) const;
+
     private:
 };
+
 
 #endif

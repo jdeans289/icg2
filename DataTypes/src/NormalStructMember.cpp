@@ -64,15 +64,15 @@ void NormalStructMember::printValue(std::ostream &s, void *struct_address) const
     }
 }
 
-void NormalStructMember::checkpointValue(std::ostream &s, std::string var_name, void *struct_address) const {
-    if (isValid) {
-        std::string full_member_name = var_name + "." + getName();
-        void * member_address = (char*)struct_address + byte_offset;
-        subType->checkpointValue(s, full_member_name, member_address);
-    } else {
-        std::cerr << "ERROR: Attempt to checkpoint variable " << var_name << " via unvalidated DataType." << std::endl;
-    }
-}
+// void NormalStructMember::checkpointValue(std::ostream &s, std::string var_name, void *struct_address) const {
+//     if (isValid) {
+//         std::string full_member_name = var_name + "." + getName();
+//         void * member_address = (char*)struct_address + byte_offset;
+//         subType->checkpointValue(s, full_member_name, member_address);
+//     } else {
+//         std::cerr << "ERROR: Attempt to checkpoint variable " << var_name << " via unvalidated DataType." << std::endl;
+//     }
+// }
 
 // MEMBER FUNCTION
 std::string NormalStructMember:: toString() const {

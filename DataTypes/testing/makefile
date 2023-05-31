@@ -23,9 +23,11 @@ TESTS = PrimTypeSpecTest \
         LexicalAnalyzerTest \
         ParsedDeclarationTest \
         AllocInfoTest \
-        ClassicChkPtAgentTest \
         DeclarationBuilderTest \
         DataTypeInatorTest \
+        CheckpointVisitorTest \
+
+# ClassicChkPtAgentTest \
 
 # List of XML files produced by the tests.
 unittest_results = $(patsubst %,%.xml,$(TESTS))
@@ -70,3 +72,4 @@ $(TESTS) : %: %.o ${DECL_DIR}/lib/libDecl.a
 
 CompTypeSpecTest : DataTypeTestSupport.o 
 ClassicChkPtAgentTest : DataTypeTestSupport.o 
+CheckpointVisitorTest : DataTypeTestSupport.o 

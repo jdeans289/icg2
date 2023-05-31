@@ -1,5 +1,7 @@
+// #pragma once
+
 #ifndef PRIMITIVE_DATA_TYPE_HH
-#define PRIMITIVE_DATA_TYPE_HH
+#define PRIMITIVE_DATA_TYPE_H
 
 #include "BaseType.hh"
 #include "IntegerValue.hh"
@@ -105,11 +107,11 @@ public:
      @param var_name Name of the variable
      @param address Address of the variable.
      */
-    void checkpointValue(std::ostream &s, std::string var_name, void *address) const {
-        s << var_name << " = ";
-        printValue(s, address);
-        s << ";" << std::endl;
-    }
+    // void checkpointValue(std::ostream &s, std::string var_name, void *address) const {
+    //     s << var_name << " = ";
+    //     printValue(s, address);
+    //     s << ";" << std::endl;
+    // }
 
     /**
      Get a string representation of this PrimitiveDataType's type-specifier.
@@ -123,6 +125,11 @@ public:
      Return true if DataType is void. Otherwise return false.
      */
     bool isVoid() const { return false; }
+
+    void accept (DataTypeVisitor* visitor) const override {
+        visitor->visitPrimitiveDataType(this);
+    }
+
 
     /* ==================================================================== */
     /*                       CLASS SPECIFIC INTERFACE                       */
@@ -175,6 +182,22 @@ template <> void PrimitiveDataType<void>::deleteInstance(void* address) const;
 template <> void PrimitiveDataType<void>::clearValue(void * address) const;
 template <> void PrimitiveDataType<void>::assignValue(void * address, Value * value) const;
 template <> void PrimitiveDataType<void>::printValue(std::ostream &s, void *address ) const;
-template <> void PrimitiveDataType<void>::checkpointValue(std::ostream &s, std::string var_name, void *address ) const;
+// template <> void PrimitiveDataType<void>::checkpointValue(std::ostream &s, std::string var_name, void *address ) const;
+
+typedef PrimitiveDataType<void> VoidDataType;
+typedef PrimitiveDataType<int> IntDataType;
+typedef PrimitiveDataType<unsigned int> UnsignedIntDataType;
+typedef PrimitiveDataType<void> VoidDataType; 
+typedef PrimitiveDataType<char> CharDataType; 
+typedef PrimitiveDataType<short> ShortDataType; 
+typedef PrimitiveDataType<long> LongDataType; 
+typedef PrimitiveDataType<long long> LongLongDataType; 
+typedef PrimitiveDataType<unsigned char> UnsignedCharDataType; 
+typedef PrimitiveDataType<unsigned short> UnsignedShortDataType; 
+typedef PrimitiveDataType<unsigned int> UnsignedIntDataType; 
+typedef PrimitiveDataType<unsigned long> UnsignedLongDataType; 
+typedef PrimitiveDataType<unsigned long long> UnsignedLongLongDataType; 
+typedef PrimitiveDataType<float> FloatDataType; 
+typedef PrimitiveDataType<double> DoubleDataType; 
 
 #endif

@@ -32,10 +32,11 @@ LIBOBJS = \
 	${OBJDIR}/ParsedDeclaration.o \
 	${OBJDIR}/AllocInfo.o \
 	${OBJDIR}/MemMgr.o \
-	${OBJDIR}/ClassicChkPtAgent.o \
 	${OBJDIR}/DeclarationBuilder.o \
 	${OBJDIR}/DataTypeInator.o \
 	${OBJDIR}/ArrayValue.o \
+	${OBJDIR}/CheckpointVisitor.o \
+	${OBJDIR}/ClassicChkPtAgent.o \
 
 
 
