@@ -8,14 +8,11 @@
 NormalStructMember::NormalStructMember(std::string memberName,
                                        int offset,
                                        DataTypeInator* dataTypeInator,
-                                       std::string typeSpecName ) : StructMember(memberName, dataTypeInator, typeSpecName) {
-
-   byte_offset = offset;
-}
+                                       std::string typeSpecName ) : TypedStructMember(memberName, dataTypeInator, typeSpecName), byte_offset(offset) {}
 
 // CONSTRUCTOR
 NormalStructMember::NormalStructMember ( const NormalStructMember & original )
-    :StructMember( original ) {
+    : TypedStructMember( original ) {
 
     byte_offset = original.byte_offset;
 }

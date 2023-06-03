@@ -5,7 +5,7 @@
 #include "NormalStructMember.hh"
 #include "StaticStructMember.hh"
 #include "DataTypeInator.hh"
-#include "ChkPtAgent.hh"
+#include "CheckpointAgent.hh"
 #include "MemMgr.hh"
 #include "ParsedDeclaration.hh"
 // #include "DeclarationBuilder.hh"

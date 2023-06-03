@@ -99,6 +99,8 @@ class PointerDataType : public ModifierType {
     /**
      */
     std::string makeDeclaration(std::string declarator) const;
+    
+    virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
 
 
     private:

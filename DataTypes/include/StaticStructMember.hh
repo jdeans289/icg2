@@ -1,13 +1,13 @@
 #ifndef STATIC_STRUCT_MEMBER_H
 #define STATIC_STRUCT_MEMBER_H
 
-#include "StructMember.hh"
+#include "TypedStructMember.hh"
 #include "DataTypeInator.hh"
 #include <string>
 
 /**
  */
-class StaticStructMember : public StructMember {
+class StaticStructMember : public TypedStructMember {
 
 public:
 
@@ -25,18 +25,20 @@ public:
     StaticStructMember ( const StaticStructMember & original );
 
     /**
-     Clone.
-     */
-    StructMember * clone () const;
-
-    /**
      Destructor.
      */
     ~StaticStructMember();
 
     /**
+     Clone.
+     */
+    StaticStructMember * clone () const override;
+
+
+
+    /**
     */
-    MemberClass::e getMemberClass() const {
+    MemberClass::e getMemberClass() const override {
         return MemberClass::STATIC;
     }
 
@@ -47,22 +49,22 @@ public:
 
     /**
      */
-    void clearValue(void *struct_address) const;
+    void clearValue(void *struct_address) const override;
 
     /**
      */
-    void assignValue(void *struct_address, Value *v) const;
+    void assignValue(void *struct_address, Value *v) const override;
 
     /**
      */
-    void printValue(std::ostream &s, void *struct_address) const;
+    void printValue(std::ostream &s, void *struct_address) const override;
 
-    void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
+    // void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
 
     /**
      Product a string representation of this StaticStructMember.
      */
-    std::string toString() const;
+    std::string toString() const override;
 
 private:
     void * memberAddress;

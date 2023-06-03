@@ -118,11 +118,11 @@ CompositeDataType & CompositeDataType::operator=(const CompositeDataType & rhs) 
 }
 
 // MEMBER FUNCTION
-bool CompositeDataType::containsPointer() const {
+bool CompositeDataType::containsPointers() const {
 
     int memberCount = memberList.size() ;
     for (int ii=0; ii < memberCount ; ii++) {
-        if ( memberList[ii]->containsPointer() ) {
+        if ( memberList[ii]->containsPointers() ) {
             return true;
         }
     }
@@ -236,9 +236,13 @@ std::string CompositeDataType::getTypeSpecName() const {
     return name;
 }
 
-// void CompositeDataType::accept (DataTypeVisitor& visitor) const {
-//     visitor.visitCompositeType(this);
-// }
+void CompositeDataType::accept (DataTypeVisitor * visitor) const {
+    visitor->visitCompositeType(this);
+    // for (auto member : memberList) {
+    //     member->accept(visitor);
+    // }
+    // visitor->leaveCompositeType(this);
+}
 
 
 // MEMBER FUNCTION
@@ -289,10 +293,6 @@ int CompositeDataType::getMemberCount() const {
 // MEMBER FUNCTION
 StructMember* CompositeDataType::getStructMember (const int index) const {
     return ( memberList[index] );
-}
-
-void CompositeDataType::accept (DataTypeVisitor* visitor) const {
-    visitor->visitCompositeType(this);
 }
 
 #ifdef NEWSTUFF

@@ -59,7 +59,7 @@ public:
     /**
      @return does the DataType or any member of the DataType represent a pointer?
      */
-     bool containsPointer() const;
+     bool containsPointers() const;
 
     /**
      */
@@ -117,6 +117,8 @@ public:
     /**
      */
     std::string toString() const;
+
+    virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
 
     // void accept (DataTypeVisitor& visitor) const;
     void accept (DataTypeVisitor* visitor) const;

@@ -1,7 +1,7 @@
 #ifndef CLASSIC_CHKPTAGENT_HH
 #define CLASSIC_CHKPTAGENT_HH
 
-#include "ChkPtAgent.hh"
+#include "CheckpointAgent.hh"
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -13,7 +13,7 @@ class CompositeDataType;
 /**
  Base Class for dumping a checkpoint.
  */
-    class ClassicChkPtAgent : public ChkPtAgent {
+    class ClassicChkPtAgent : public CheckpointAgent {
 
         public:
 

@@ -1,14 +1,14 @@
 #ifndef NORMAL_STRUCT_MEMBER_H
 #define NORMAL_STRUCT_MEMBER_H
 
-#include "StructMember.hh"
+#include "TypedStructMember.hh"
 #include "DataType.hh"
 #include "DataTypeInator.hh"
 #include <string>
 
 /**
  */
-class NormalStructMember : public StructMember {
+class NormalStructMember : public TypedStructMember {
 
 public:
 

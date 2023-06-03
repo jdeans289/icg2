@@ -1,11 +1,12 @@
 #pragma once
 
 #include "DataTypeVisitor.hh"
+#include "CheckpointAgent.hh"
 
 class CheckpointVisitor : public DataTypeVisitor {
 
     public:
-        CheckpointVisitor();
+        CheckpointVisitor(CheckpointAgent * agent);
 
         virtual void visitPrimitiveDataType(const DataType * node);
 
@@ -14,4 +15,6 @@ class CheckpointVisitor : public DataTypeVisitor {
         virtual void visitPointerType(const PointerDataType * node);
         virtual void visitEnumeratedType(const EnumDataType * node);
 
+    private:
+        CheckpointAgent * checkpointAgent;
 };

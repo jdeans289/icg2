@@ -66,14 +66,14 @@ class ArrayDataType : public ModifierType {
 
     /**
      */
-     bool validate();
+     bool validate() override;
 
     /**
      @return The size (in bytes) of an instance of the ArrayDataType.
      */
-    size_t getSize() const ;
+    size_t getSize() const override ;
 
-    TypeClass::e getTypeClass() const {
+    TypeClass::e getTypeClass() const override {
         return TypeClass::ARRAY;
     }
 
@@ -84,33 +84,38 @@ class ArrayDataType : public ModifierType {
 
     /**
      */
-    void* createInstance(unsigned int num) const;
+    void* createInstance(unsigned int num) const override;
 
     /**
      */
-    void deleteInstance(void* address) const;
+    void deleteInstance(void* address) const override;
 
     /**
      */
-    void clearValue(void * address) const;
+    void clearValue(void * address) const override;
 
     /**
      */
-    void assignValue(void * address, Value * value) const;
+    void assignValue(void * address, Value * value) const override;
 
     /**
      @param s The stream to print to.
      @param base_addr Address of the (entire) variable.
      */
-    void printValue(std::ostream &s, void * address ) const;
+    void printValue(std::ostream &s, void * address ) const override;
 
     /**
      */
-    std::string getTypeSpecName() const;
+    std::string getTypeSpecName() const override;
 
     /**
      */
-    std::string makeDeclaration(std::string declarator) const;
+    std::string makeDeclaration(std::string declarator) const override;
+
+    void accept(DataTypeVisitor * visitor) const override;
+
+    virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
+
 
     /* ==================================================================== */
     /*                       CLASS SPECIFIC INTERFACE                       */
@@ -139,8 +144,6 @@ class ArrayDataType : public ModifierType {
     bool is_valid;
     std::string typeSpecName;
 
-    // DataType * ownDataType;
-    // const DataType * subType;
     DataTypeInator* dataTypeInator;
 
 };

@@ -9,7 +9,7 @@ class DataType;
 class CompositeDataType;
 class ArrayDataType;
 class DataTypeInator;
-class ChkPtAgent;
+class CheckpointAgent;
 class MemMgr;
 class LexicalAnalyzer;
 struct VarAccessInfo;

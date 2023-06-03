@@ -37,10 +37,11 @@ std::string DataType::toString() const {
     return makeDeclaration("");
 }
 
-// void DataType::checkpointValue(std::ostream &s, std::string var_name, void *address) const {
-//     throw std::logic_error("checkpointValue is not yet implemented for this type.");
-// }
 
 void DataType::accept (DataTypeVisitor* visitor) const {
     throw std::logic_error("accept is not yet implemented for this type.");
+}
+
+bool DataType::lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const {
+    throw std::logic_error("lookupVariableNameByOffset is not yet implemented for this type.");
 }

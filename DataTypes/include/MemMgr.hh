@@ -8,13 +8,13 @@
 #include "DataTypeInator.hh"
 #include "AllocInfo.hh"
 #include "DataType.hh"
-#include "ChkPtAgent.hh"
+#include "CheckpointAgent.hh"
 #include "ClassicChkPtAgent.hh"
 
 // class AllocInfo;
 // class DataType;
 // class DataTypeInator;
-// class ChkPtAgent;
+// class CheckpointAgent;
 // class ClassicChkPtAgent;
 
 class MemMgr {
@@ -101,7 +101,7 @@ class MemMgr {
     private:
     unsigned int debugLevel;
 
-    ChkPtAgent* currentCheckPointAgent;
+    CheckpointAgent* currentCheckPointAgent;
     ClassicChkPtAgent* defaultCheckPointAgent;
 
     bool reducedCheckpoint;

@@ -42,3 +42,12 @@ TEST_F(CheckpointVisitorTest, composite) {
     CheckpointVisitor visitor;
     data_type->accept(&visitor);
 }
+
+
+TEST_F(CheckpointVisitorTest, array) {
+    // PrimitiveDataType<int> int_data_type;
+    const DataType * data_type = dataTypeInator.resolve("int[5]");
+
+    CheckpointVisitor visitor;
+    data_type->accept(&visitor);
+}

@@ -16,6 +16,7 @@ LIBOBJS = \
 	${OBJDIR}/PointerValue.o \
 	${OBJDIR}/StringValue.o \
 	${OBJDIR}/StructMember.o \
+	${OBJDIR}/TypedStructMember.o \
 	${OBJDIR}/NormalStructMember.o \
 	${OBJDIR}/StaticStructMember.o \
 	${OBJDIR}/BitfieldStructMember.o \
@@ -37,6 +38,7 @@ LIBOBJS = \
 	${OBJDIR}/ArrayValue.o \
 	${OBJDIR}/CheckpointVisitor.o \
 	${OBJDIR}/ClassicChkPtAgent.o \
+
 
 
 

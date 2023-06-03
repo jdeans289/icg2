@@ -7,18 +7,18 @@
 
 // CONSTRUCTOR
 StaticStructMember::StaticStructMember(std::string memberName,void * memberAddress,DataTypeInator* dataTypeInator,std::string typeSpecName) 
-                                    : StructMember(memberName, dataTypeInator, typeSpecName) {
+                                    : TypedStructMember(memberName, dataTypeInator, typeSpecName) {
    this->memberAddress = memberAddress;
 }
 
 // CONSTRUCTOR
 StaticStructMember::StaticStructMember ( const StaticStructMember & original )
-    :StructMember( original ) {
+    : TypedStructMember( original ) {
 
     memberAddress = original.memberAddress;
 }
 
-StructMember * StaticStructMember::clone () const {
+StaticStructMember * StaticStructMember::clone () const {
     return new StaticStructMember( *this );
 }
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <cassert>
 
 #include "ArrayDataType.hh"
 #include "ArrayValue.hh"
@@ -223,6 +224,44 @@ std::string ArrayDataType::makeDeclaration(std::string declarator) const {
 unsigned int ArrayDataType::getElementCount() const {
     return elementCount;
 }
+
+void ArrayDataType::accept (DataTypeVisitor * visitor) const {
+    visitor->visitArrayType(this);
+}
+
+bool ArrayDataType::lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const {
+    // Look for the name of the variable associated with this offset.
+
+    if (offset == 0) {
+        // Address found!
+        
+        // TODO: compare expected type? Does that make sense to do here?
+
+        return true;
+    }
+
+    // If the offset is greater than the size of this array, there's an error.
+    if (offset > getSize()) {
+        std::cerr << "Search offset " << offset << " is greater than the size (" << getSize() << ") of this type (" << toString() << std::endl;
+        return false;
+    }
+
+    // Figure out which element we should go into
+    unsigned int elem_index = offset / subType->getSize();
+
+    assert (elem_index < getElementCount());
+
+    // New offset is the remainder of offset / subtypeSize
+    unsigned int newOffset = offset % subType->getSize();
+
+    // Push the index onto the stack
+    nameStack.pushIndex(elem_index);
+
+    // Continue the search in the element
+    return subType->lookupVariableNameByOffset(nameStack, newOffset, expectedType);
+
+}
+
 
 #ifdef NEWSTUFF
 // MEMBER FUNCTION

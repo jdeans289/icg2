@@ -23,13 +23,9 @@ namespace MemberClass {
 class StructMember {
 
 public:
-    /**
-     Constructor for StructMember.
-     @param name The name of the member.
-     @param dataTypeInator Pointer to the DataTypeInator used for resolving types.
-     @param typeSpecName string representing the type
-     */
-    StructMember(std::string name, DataTypeInator* dataTypeInator, std::string typeSpecName);
+
+    StructMember (std::string name);
+
 
     /**
     Constructor for StructMember.
@@ -53,16 +49,11 @@ public:
      */
     std::string getName() const;
 
-    /** 
-     * This should maybe die? idk -jackie
-     */
-    bool containsPointers() const ;
 
-
-    /**
-      To check for circular reference only.
-     */
-    const DataType * getDataType();
+    // /**
+    //   To check for circular reference only.
+    //  */
+    // virtual const DataType * getDataType() const = 0;
 
     /**
     */
@@ -70,13 +61,12 @@ public:
 
     /**
      */
-    virtual bool validate();
+    virtual bool validate() = 0;
 
     /**
      @return does the DataType or any member of the DataType represent a pointer?
-     Do we actually want this? -jackie
      */
-    virtual bool containsPointer() const { return false; }
+    virtual bool containsPointers() const { return false; }
 
     /**
      */
@@ -106,16 +96,6 @@ public:
      */
     virtual std::string toString() const = 0;
 
-protected:
-
-    // This is meant for bitfield members only
-    // this is bad design and you know it @me
-    StructMember(std::string name);
-
-    std::string typeSpecName;
-    const DataType * subType;
-    DataTypeInator* dataTypeInator;
-    bool isValid;
 
 private:
     std::string name;

@@ -6,7 +6,7 @@
 
 #include "Value.hh"
 #include "DataTypeVisitor.hh"
-
+#include "VariableNameStack.hh"
 
 namespace TypeClass {
     enum e {
@@ -50,7 +50,7 @@ class DataType {
     @return The number of arrayed Type-specifier elements of the DataType.
     FIXME: THIS LOOKS HINKY and IS ARRAY SPECIFIC
     */
-    virtual unsigned int getTotalElementCount() const { return 1; }
+    // virtual unsigned int getTotalElementCount() const { return 1; }
 
     /**
     @return does the DataType or any member of the DataType represent a pointer?
@@ -90,6 +90,10 @@ class DataType {
     */
     virtual void printValue(std::ostream &s, void *address) const = 0;
 
+
+    virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
+
+
     /**
     Checkpoint the variable at the given address to the given stream.
     @param s The stream to print to.
@@ -122,7 +126,11 @@ class DataType {
     */
     virtual bool isVoid() const { return false; }
 
+    /* 
+    Implement a Visitor Pattern
+    */
     virtual void accept (DataTypeVisitor* visitor) const;
+
 
     private:
 };

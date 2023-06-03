@@ -130,6 +130,18 @@ public:
         visitor->visitPrimitiveDataType(this);
     }
 
+    bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const {
+        // This is a leaf. If offset isn't 0, there's no where else to go so bad luck
+        if (offset != 0) {
+            std::cerr << "Something went wrong - at leaf in search in " << __FILE__ <<  ":" <<  __FUNCTION__ << " but offset is not 0." << std::endl;
+            return false;
+        }
+
+        // TODO: We need to compare expected type
+
+        return true;
+    }
+
 
     /* ==================================================================== */
     /*                       CLASS SPECIFIC INTERFACE                       */

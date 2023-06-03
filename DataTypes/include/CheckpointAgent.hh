@@ -11,13 +11,13 @@ class MemMgr;
 /**
  Base Class for dumping a checkpoint.
  */
-    class ChkPtAgent {
+    class CheckpointAgent {
 
         public:
 
         /**
          */
-        virtual ~ChkPtAgent() {};
+        virtual ~CheckpointAgent() {};
 
         /**
          Push base name onto the left-side name stack.
