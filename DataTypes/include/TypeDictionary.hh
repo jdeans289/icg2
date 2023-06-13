@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 #include <stdexcept>
-#include "BaseType.hh"
+#include "Type/BaseType.hh"
 
 
 /**

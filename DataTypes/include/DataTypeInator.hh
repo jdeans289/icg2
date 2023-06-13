@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "DataType.hh"
+#include "Type/DataType.hh"
 #include "TypeDictionary.hh"
 
 class DataTypeInator {

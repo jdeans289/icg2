@@ -2,22 +2,22 @@
 
 #include "ClassicChkPtAgent.hh"
 
-#include "DataType.hh"
+#include "Type/DataType.hh"
 
-#include "AllocInfo.hh"
+#include "MemoryManagement/AllocInfo.hh"
 
-#include "PrimitiveDataType.hh"
-#include "ArrayDataType.hh"
-#include "PointerDataType.hh"
-#include "CompositeDataType.hh"
-#include "EnumDataType.hh"
+#include "Type/PrimitiveDataType.hh"
+#include "Type/ArrayDataType.hh"
+#include "Type/PointerDataType.hh"
+#include "Type/CompositeDataType.hh"
+#include "Type/EnumDataType.hh"
 
-#include "StructMember.hh"
-#include "NormalStructMember.hh"
-#include "StaticStructMember.hh"
-#include "BitfieldStructMember.hh"
+#include "Type/StructMember.hh"
+#include "Type/NormalStructMember.hh"
+#include "Type/StaticStructMember.hh"
+#include "Type/BitfieldStructMember.hh"
 
-#include "MemMgr.hh"
+#include "MemoryManagement/MemMgr.hh"
 
 // STATIC FUNCTION
 static void writeStringLiteral( std::ostream& os, const char* s) {
@@ -207,7 +207,9 @@ bool ClassicChkPtAgent::writeCompositeAssignments( std::ostream& out_s, MemMgr* 
                 char* memberAddress;
                 const DataType* memberDataType;
                 if ( memberClass == MemberClass::NORMAL ) {
-                   NormalStructMember* normalStructMember = (NormalStructMember*)structMember;
+                //    NormalStructMember* normalStructMember = (NormalStructMember*)structMember;
+                   NormalStructMember* normalStructMember = dynamic_cast<NormalStructMember*>(structMember);
+
                    memberAddress = (char*)address + normalStructMember->getOffset();
                    memberDataType = normalStructMember->getDataType();
                 } else if ( memberClass == MemberClass::STATIC ) {

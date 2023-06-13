@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 #include "DataTypeInator.hh"
-#include "PrimitiveDataType.hh"
-#include "PointerDataType.hh"
-#include "ArrayDataType.hh"
+#include "Type/PrimitiveDataType.hh"
+#include "Type/PointerDataType.hh"
+#include "Type/ArrayDataType.hh"
 
 // Framework
 class DataTypeInatorTest : public ::testing::Test {

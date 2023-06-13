@@ -3,16 +3,16 @@
 
 #include <gtest/gtest.h>
 
-#include "DeclarationBuilder.hh"
+#include "Utils/MutableDeclaration.hh"
 
-TEST(DeclarationBuilder, basic) {
+TEST(MutableDeclaration, basic) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     // No dimensions
     
-    DeclarationBuilder builder (type);
+    MutableDeclaration builder (type);
 
     // ACT
     std::string result = builder.getDeclarator(name);
@@ -22,14 +22,14 @@ TEST(DeclarationBuilder, basic) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, basic_abstract) {
+TEST(MutableDeclaration, basic_abstract) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     // No dimensions
     
-    DeclarationBuilder builder (type);
+    MutableDeclaration builder (type);
 
     // ACT
     std::string result = builder.getAbstractDeclarator();
@@ -39,14 +39,14 @@ TEST(DeclarationBuilder, basic_abstract) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, dim1) {
+TEST(MutableDeclaration, dim1) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     std::vector<int> dims = {5};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getDeclarator(name);
@@ -56,14 +56,14 @@ TEST(DeclarationBuilder, dim1) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, dim1_abstract) {
+TEST(MutableDeclaration, dim1_abstract) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     std::vector<int> dims = {5};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getAbstractDeclarator();
@@ -73,14 +73,14 @@ TEST(DeclarationBuilder, dim1_abstract) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, multidim) {
+TEST(MutableDeclaration, multidim) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     std::vector<int> dims = {5, 8, 100, 1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getDeclarator(name);
@@ -90,14 +90,14 @@ TEST(DeclarationBuilder, multidim) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, multidim_abstract) {
+TEST(MutableDeclaration, multidim_abstract) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     std::vector<int> dims = {5, 8, 100, 1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getAbstractDeclarator();
@@ -107,14 +107,14 @@ TEST(DeclarationBuilder, multidim_abstract) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, pointer) {
+TEST(MutableDeclaration, pointer) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     std::vector<int> dims = {-1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getDeclarator(name);
@@ -124,14 +124,14 @@ TEST(DeclarationBuilder, pointer) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, pointer_abstract) {
+TEST(MutableDeclaration, pointer_abstract) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     std::vector<int> dims = {-1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getAbstractDeclarator();
@@ -141,14 +141,14 @@ TEST(DeclarationBuilder, pointer_abstract) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, multidim_pointer) {
+TEST(MutableDeclaration, multidim_pointer) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     std::vector<int> dims = {-1, -1, -1, -1, -1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getDeclarator(name);
@@ -158,14 +158,14 @@ TEST(DeclarationBuilder, multidim_pointer) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, multidim_pointer_abstract) {
+TEST(MutableDeclaration, multidim_pointer_abstract) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "a";
     std::vector<int> dims = {-1, -1, -1, -1, -1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getAbstractDeclarator();
@@ -175,14 +175,14 @@ TEST(DeclarationBuilder, multidim_pointer_abstract) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, array_of_pointers) {
+TEST(MutableDeclaration, array_of_pointers) {
     // ARRANGE
 
     std::string type = "float";
     std::string name = "baz";
     std::vector<int> dims = {3, -1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getDeclarator(name);
@@ -192,14 +192,14 @@ TEST(DeclarationBuilder, array_of_pointers) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, array_of_pointers_abstract) {
+TEST(MutableDeclaration, array_of_pointers_abstract) {
     // ARRANGE
 
     std::string type = "float";
     std::string name = "baz";
     std::vector<int> dims = {3, -1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getAbstractDeclarator();
@@ -209,14 +209,14 @@ TEST(DeclarationBuilder, array_of_pointers_abstract) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, pointer_to_arrays) {
+TEST(MutableDeclaration, pointer_to_arrays) {
     // ARRANGE
 
     std::string type = "float";
     std::string name = "baz";
     std::vector<int> dims = {-1, 3};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getDeclarator(name);
@@ -226,14 +226,14 @@ TEST(DeclarationBuilder, pointer_to_arrays) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, pointer_to_arrays_abstract) {
+TEST(MutableDeclaration, pointer_to_arrays_abstract) {
     // ARRANGE
 
     std::string type = "float";
     std::string name = "baz";
     std::vector<int> dims = {-1, 3};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getAbstractDeclarator();
@@ -246,14 +246,14 @@ TEST(DeclarationBuilder, pointer_to_arrays_abstract) {
 
 // int**[3][4]
 
-TEST(DeclarationBuilder, complex1) {
+TEST(MutableDeclaration, complex1) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "baz";
     std::vector<int> dims = {3, 4, -1, -1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getDeclarator(name);
@@ -263,14 +263,14 @@ TEST(DeclarationBuilder, complex1) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, complex1_abstract) {
+TEST(MutableDeclaration, complex1_abstract) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "baz";
     std::vector<int> dims = {3, 4, -1, -1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getAbstractDeclarator();
@@ -284,14 +284,14 @@ TEST(DeclarationBuilder, complex1_abstract) {
 // "int*(*foo)[3][4]"
 
 
-TEST(DeclarationBuilder, complex2) {
+TEST(MutableDeclaration, complex2) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "foo";
     std::vector<int> dims = {-1, 3, 4, -1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getDeclarator(name);
@@ -302,14 +302,14 @@ TEST(DeclarationBuilder, complex2) {
 }
 
 
-TEST(DeclarationBuilder, complex2_abstract) {
+TEST(MutableDeclaration, complex2_abstract) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "foo";
     std::vector<int> dims = {-1, 3, 4, -1};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getAbstractDeclarator();
@@ -319,14 +319,14 @@ TEST(DeclarationBuilder, complex2_abstract) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(DeclarationBuilder, invalid_dims) {
+TEST(MutableDeclaration, invalid_dims) {
     // ARRANGE
 
     std::string type = "int";
     std::string name = "foo";
     std::vector<int> dims = {-1, 3, 4, -100};
     
-    DeclarationBuilder builder (type, dims);
+    MutableDeclaration builder (type, dims);
 
     // ACT
     std::string result = builder.getDeclarator(name);

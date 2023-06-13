@@ -2,10 +2,10 @@
 #include <stddef.h>
 #include <iostream>
 #include "DataTypeInator.hh"
-#include "ArrayDataType.hh"
-#include "ArrayValue.hh"
-#include "FloatingPointValue.hh"
-#include "IntegerValue.hh"
+#include "Type/ArrayDataType.hh"
+#include "Value/ArrayValue.hh"
+#include "Value/FloatingPointValue.hh"
+#include "Value/IntegerValue.hh"
 
 // Framework
 class ArrayDataTypeTest : public ::testing::Test {

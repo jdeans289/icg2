@@ -1,6 +1,6 @@
 #include "io_src.hh"
-#include "MemMgr.hh"
-#include "AllocInfo.hh"
+#include "MemoryManagement/MemMgr.hh"
+#include "MemoryManagement/AllocInfo.hh"
 
 int main () {
 

@@ -1,10 +1,8 @@
-// #include "DataType.hh"
+// #include "Type/DataType.hh"
 #include "TypeDictionary.hh"
-#include "PrimitiveDataType.hh"
-#include "ParsedDeclaration.hh"
-#include "DeclarationBuilder.hh"
-#include "ArrayDataType.hh"
-#include "PointerDataType.hh"
+#include "Type/PrimitiveDataType.hh"
+#include "Type/ArrayDataType.hh"
+#include "Type/PointerDataType.hh"
 
 
 #include <sstream>

@@ -21,11 +21,11 @@ TESTS = PrimTypeSpecTest \
         ArrayTypeSpecTest \
         PointerTypeSpecTest \
         LexicalAnalyzerTest \
-        ParsedDeclarationTest \
+        MutableDeclarationTest \
         AllocInfoTest \
-        DeclarationBuilderTest \
         DataTypeInatorTest \
         CheckpointVisitorTest \
+        LookupAddressVisitorTest \
 
 # ClassicChkPtAgentTest \
 
@@ -73,3 +73,4 @@ $(TESTS) : %: %.o ${DECL_DIR}/lib/libDecl.a
 CompTypeSpecTest : DataTypeTestSupport.o 
 ClassicChkPtAgentTest : DataTypeTestSupport.o 
 CheckpointVisitorTest : DataTypeTestSupport.o 
+LookupAddressVisitorTest : DataTypeTestSupport.o 

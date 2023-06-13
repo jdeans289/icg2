@@ -8,10 +8,10 @@ std::string io_src = std::string(R"(
 #include <stdlib.h>
 #include "DataTypeInator.hh"
 #include "EnumDictionary.hh"
-#include "CompositeDataType.hh"
-#include "CompositeValue.hh"
-#include "PrimitiveDataType.hh"
-#include "EnumDataType.hh"
+#include "Type/CompositeDataType.hh"
+#include "Value/CompositeValue.hh"
+#include "Type/PrimitiveDataType.hh"
+#include "Type/EnumDataType.hh"
 
 #include "{{filename}}"
 

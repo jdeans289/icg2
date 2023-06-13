@@ -7,37 +7,39 @@ CPP = c++
 CFLAGS = -g -Wall
 INCLUDE_DIRS = -Iinclude
 OBJDIR = obj
+OBJ_SUBDIRS = $(addprefix ${OBJDIR}/,Value Type Algorithm MemoryManagement Utils )
 LIBDIR = lib
 LIBNAME = libDecl.a
 LIBOBJS = \
-	${OBJDIR}/CompositeValue.o \
-	${OBJDIR}/IntegerValue.o \
-	${OBJDIR}/FloatingPointValue.o \
-	${OBJDIR}/PointerValue.o \
-	${OBJDIR}/StringValue.o \
-	${OBJDIR}/StructMember.o \
-	${OBJDIR}/TypedStructMember.o \
-	${OBJDIR}/NormalStructMember.o \
-	${OBJDIR}/StaticStructMember.o \
-	${OBJDIR}/BitfieldStructMember.o \
+	${OBJDIR}/Value/CompositeValue.o \
+	${OBJDIR}/Value/IntegerValue.o \
+	${OBJDIR}/Value/FloatingPointValue.o \
+	${OBJDIR}/Value/PointerValue.o \
+	${OBJDIR}/Value/StringValue.o \
+	${OBJDIR}/Value/ArrayValue.o \
+	${OBJDIR}/Type/StructMember.o \
+	${OBJDIR}/Type/TypedStructMember.o \
+	${OBJDIR}/Type/NormalStructMember.o \
+	${OBJDIR}/Type/StaticStructMember.o \
+	${OBJDIR}/Type/BitfieldStructMember.o \
+	${OBJDIR}/Type/CompositeDataType.o \
+	${OBJDIR}/Type/EnumDataType.o \
+	${OBJDIR}/Type/ArrayDataType.o \
+	${OBJDIR}/Type/PointerDataType.o \
+	${OBJDIR}/Type/PrimitiveDataType.o \
+	${OBJDIR}/Type/DataType.o \
+	${OBJDIR}/MemoryManagement/AllocInfo.o \
+	${OBJDIR}/MemoryManagement/MemMgr.o \
+	${OBJDIR}/Utils/LexicalAnalyzer.o \
+	${OBJDIR}/Utils/MutableDeclaration.o \
+	${OBJDIR}/Algorithm/CheckpointVisitor.o \
+	${OBJDIR}/Algorithm/LookupAddressVisitor.o \
 	${OBJDIR}/Enumerator.o \
 	${OBJDIR}/TypeDictionary.o \
 	${OBJDIR}/EnumDictionary.o \
-	${OBJDIR}/DataType.o \
-	${OBJDIR}/CompositeDataType.o \
-	${OBJDIR}/EnumDataType.o \
-	${OBJDIR}/ArrayDataType.o \
-	${OBJDIR}/PointerDataType.o \
-	${OBJDIR}/PrimitiveDataType.o \
-	${OBJDIR}/LexicalAnalyzer.o \
-	${OBJDIR}/ParsedDeclaration.o \
-	${OBJDIR}/AllocInfo.o \
-	${OBJDIR}/MemMgr.o \
-	${OBJDIR}/DeclarationBuilder.o \
 	${OBJDIR}/DataTypeInator.o \
-	${OBJDIR}/ArrayValue.o \
-	${OBJDIR}/CheckpointVisitor.o \
 	${OBJDIR}/ClassicChkPtAgent.o \
+
 
 
 
@@ -56,14 +58,14 @@ ${LIBDIR}/${LIBNAME}: ${LIBOBJS} | ${LIBDIR}
 	ar crs $@ ${LIBOBJS}
 
 ${OBJDIR}:
-	mkdir -p ${OBJDIR}
+	mkdir -p ${OBJDIR} ${OBJ_SUBDIRS}
 
 ${LIBDIR}:
 	mkdir -p ${LIBDIR}
 
 clean:
 	${RM} *~
-	${RM} ${OBJDIR}
+	${RM} ${OBJDIR} ${OBJ_SUBDIRS}
 
 spotless: clean
 	${RM} ${LIBDIR}/${LIBNAME}

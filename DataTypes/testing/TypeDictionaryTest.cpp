@@ -2,9 +2,9 @@
 #include <stddef.h>
 #include "TypeDictionary.hh"
 #include "DataTypeInator.hh"
-#include "CompositeDataType.hh"
-#include "CompositeValue.hh"
-#include "PrimitiveDataType.hh"
+#include "Type/CompositeDataType.hh"
+#include "Value/CompositeValue.hh"
+#include "Type/PrimitiveDataType.hh"
 #include "DataTypeTestSupport.hh"
 
 // Framework

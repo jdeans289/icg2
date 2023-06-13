@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 #include <iostream>
+
 #include "TypeDictionary.hh"
-#include "PointerDataType.hh"
-#include "PointerValue.hh"
+#include "Type/PointerDataType.hh"
+#include "Value/PointerValue.hh"
 
 // Framework
 class PointerDataTypeTest : public ::testing::Test {

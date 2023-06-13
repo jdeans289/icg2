@@ -1,11 +1,15 @@
 
 #include <gtest/gtest.h>
 #include <stddef.h>
+
 #include "DataTypeInator.hh"
-#include "CompositeDataType.hh"
-#include "CompositeValue.hh"
-#include "ArrayValue.hh"
-#include "PrimitiveDataType.hh"
+
+#include "Type/CompositeDataType.hh"
+#include "Type/PrimitiveDataType.hh"
+
+#include "Value/CompositeValue.hh"
+#include "Value/ArrayValue.hh"
+
 #include "DataTypeTestSupport.hh"
 
 // Framework

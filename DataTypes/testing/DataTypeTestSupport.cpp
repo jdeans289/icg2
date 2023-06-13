@@ -1,8 +1,10 @@
 #include "DataTypeTestSupport.hh"
-#include "CompositeDataType.hh"
-#include "CompositeValue.hh"
-#include "PrimitiveDataType.hh"
-#include "EnumDataType.hh"
+
+#include "Type/CompositeDataType.hh"
+#include "Type/PrimitiveDataType.hh"
+#include "Type/EnumDataType.hh"
+
+#include "Value/CompositeValue.hh"
 
 int ClassFive::count = 0;
 

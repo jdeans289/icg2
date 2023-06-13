@@ -2,8 +2,8 @@
 #include <stddef.h>
 #include <iostream>
 #include "TypeDictionary.hh"
-#include "EnumDataType.hh"
-#include "IntegerValue.hh"
+#include "Type/EnumDataType.hh"
+#include "Value/IntegerValue.hh"
 
 enum DayOfWeek {
     Sunday    = 1,

@@ -1,15 +1,14 @@
 #include "DataTypeInator.hh"
-#include "ArrayDataType.hh"
-#include "PointerDataType.hh"
-#include "ParsedDeclaration.hh"
-#include "DeclarationBuilder.hh"
+#include "Type/ArrayDataType.hh"
+#include "Type/PointerDataType.hh"
+#include "Utils/MutableDeclaration.hh"
 
 DataTypeInator::DataTypeInator () : DataTypeInator(new TypeDictionary){}
 DataTypeInator::DataTypeInator (TypeDictionary * dict) : typeDictionary(dict) {}
 
 const DataType * DataTypeInator::resolve(std::string name) {
 
-    ParsedDeclaration decl(name);
+    MutableDeclaration decl(name);
 
     if (decl.getNumberOfDimensions() == 0) {
         // This is technically a base case
@@ -18,15 +17,11 @@ const DataType * DataTypeInator::resolve(std::string name) {
     } else {
         // Pop off the last dimension, make an array/pointer, let the nested recursive structure do the rest
 
-        std::vector<int> dims = decl.getDims();
-
         // Pop first elem
-        int this_dim = dims.front();
-        dims.erase(dims.begin());
+        int this_dim = decl.popDimension();
 
         // Make a new declaration string for the subtype
-        DeclarationBuilder builder(decl.getTypeSpecifier(), dims);
-        std::string next_level_decl = builder.getDeclarator(decl.getVariableName());
+        std::string next_level_decl = decl.getDeclarator(decl.getVariableName());
 
         DataType * result = NULL;
 

@@ -2,15 +2,15 @@
 #include <stddef.h>
 #include <iostream>
 
-#include "MemMgr.hh"
-#include "AllocInfo.hh"
-#include "DataType.hh"
+#include "MemoryManagement/MemMgr.hh"
+#include "MemoryManagement/AllocInfo.hh"
+#include "Type/DataType.hh"
 #include "ClassicChkPtAgent.hh"
 #include "DataTypeInator.hh"
 #include "EnumDictionary.hh"
-#include "CompositeDataType.hh"
-#include "ArrayDataType.hh"
-#include "PointerDataType.hh"
+#include "Type/CompositeDataType.hh"
+#include "Type/ArrayDataType.hh"
+#include "Type/PointerDataType.hh"
 
 #include "DataTypeTestSupport.hh"
 

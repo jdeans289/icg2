@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <iostream>
 #include "TypeDictionary.hh"
-#include "PrimitiveDataType.hh"
+#include "Type/PrimitiveDataType.hh"
 
 class PrimitiveDataTypeTest : public ::testing::Test {
     protected:
@@ -525,6 +525,55 @@ TEST_F(PrimitiveDataTypeTest, createInstance_char) {
     delete value;
     delete primTypeSpec;
     EXPECT_EQ('A', *test_var);
+}
+
+// -----------------------------------------------------------------------------------------
+//                                  GetValue Tests
+// -----------------------------------------------------------------------------------------
+
+TEST_F(PrimitiveDataTypeTest, getValue_int) {
+    // ARRANGE
+
+    PrimitiveDataType<int> int_type;
+    int my_test_int = 8765;
+
+    // ACT
+    Value * val = int_type.getValue(&my_test_int);
+
+    // ASSERT
+    IntegerValue * int_val = dynamic_cast<IntegerValue *> (val);
+    int result = (int) int_val->getIntegerValue();
+    ASSERT_EQ(result, my_test_int);
+}
+
+TEST_F(PrimitiveDataTypeTest, getValue_double) {
+    // ARRANGE
+
+    PrimitiveDataType<double> double_type;
+    double my_test_double = 5.4321;
+    std::stringstream ss;
+
+    // ACT
+    Value * val = double_type.getValue(&my_test_double);
+
+    // ASSERT
+    FloatingPointValue * float_val = dynamic_cast<FloatingPointValue *> (val);
+    double result = (double) float_val->getFloatingPointValue();
+    ASSERT_EQ(result, my_test_double);
+}
+
+TEST_F(PrimitiveDataTypeTest, getValue_void) {
+    // ARRANGE
+
+    PrimitiveDataType<void> void_type;
+    double my_test_double = 5.4321;
+    std::stringstream ss;
+
+    // ACT
+    Value * val = void_type.getValue(&my_test_double);
+
+    // ASSERT
+    ASSERT_TRUE(val == NULL);
 }
 
 // -----------------------------------------------------------------------------------------
