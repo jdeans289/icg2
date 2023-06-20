@@ -95,24 +95,6 @@ class DataType {
     */
     virtual Value * getValue(void *address) const;
 
-
-    // virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
-
-
-    /**
-    Checkpoint the variable at the given address to the given stream.
-    @param s The stream to print to.
-    @param address Address of the variable.
-    */
-    // virtual void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
-
-    // /**
-    // Print the value of the variable at the given address to the given stream.
-    // @param s The stream to print to.
-    // @param address Address of the variable.
-    // */
-    // virtual void restoreValue(std::ostream &s, std::string var_name, void *address) const = 0;
-
     /**
     Generate a declaration of this DataType.
     @param declarator A declarator, which can be a

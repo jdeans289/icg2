@@ -55,7 +55,7 @@ TEST_F(LookupAddressVisitorTest, array) {
     LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address);
 
     // ACT
-    bool success = data_type->accept(&visitor);
+    bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
@@ -77,7 +77,7 @@ TEST_F(LookupAddressVisitorTest, composite1) {
     LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
-    bool success = data_type->accept(&visitor);
+    bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
@@ -99,7 +99,7 @@ TEST_F(LookupAddressVisitorTest, composite_array) {
     LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
-    bool success = data_type->accept(&visitor);
+    bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
@@ -122,7 +122,7 @@ TEST_F(LookupAddressVisitorTest, composite_array2) {
     LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
-    bool success = data_type->accept(&visitor);
+    bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
@@ -148,7 +148,7 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous) {
     LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
-    bool success = data_type->accept(&visitor);
+    bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
@@ -171,7 +171,7 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous2) {
     LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
-    bool success = data_type->accept(&visitor);
+    bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
@@ -194,7 +194,7 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous3) {
     LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
-    bool success = data_type->accept(&visitor);
+    bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
@@ -217,7 +217,7 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous4) {
     LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
-    bool success = data_type->accept(&visitor);
+    bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
@@ -240,7 +240,7 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous5) {
     LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
-    bool success = data_type->accept(&visitor);
+    bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);

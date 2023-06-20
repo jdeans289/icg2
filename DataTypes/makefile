@@ -31,7 +31,9 @@ LIBOBJS = \
 	${OBJDIR}/MemoryManagement/AllocInfo.o \
 	${OBJDIR}/MemoryManagement/MemMgr.o \
 	${OBJDIR}/Utils/LexicalAnalyzer.o \
+	${OBJDIR}/Utils/DeclarationParser.o \
 	${OBJDIR}/Utils/MutableDeclaration.o \
+	${OBJDIR}/Algorithm/DataTypeVisitor.o \
 	${OBJDIR}/Algorithm/CheckpointVisitor.o \
 	${OBJDIR}/Algorithm/LookupAddressVisitor.o \
 	${OBJDIR}/Enumerator.o \
@@ -39,6 +41,8 @@ LIBOBJS = \
 	${OBJDIR}/EnumDictionary.o \
 	${OBJDIR}/DataTypeInator.o \
 	${OBJDIR}/ClassicChkPtAgent.o \
+	${OBJDIR}/J_CheckpointAgent.o \
+
 
 
 

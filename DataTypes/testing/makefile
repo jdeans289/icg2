@@ -26,6 +26,7 @@ TESTS = PrimTypeSpecTest \
         DataTypeInatorTest \
         CheckpointVisitorTest \
         LookupAddressVisitorTest \
+        J_CheckpointAgentTest \
 
 # ClassicChkPtAgentTest \
 
@@ -74,3 +75,5 @@ CompTypeSpecTest : DataTypeTestSupport.o
 ClassicChkPtAgentTest : DataTypeTestSupport.o 
 CheckpointVisitorTest : DataTypeTestSupport.o 
 LookupAddressVisitorTest : DataTypeTestSupport.o 
+J_CheckpointAgentTest : DataTypeTestSupport.o 
+

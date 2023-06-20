@@ -34,37 +34,9 @@ class MutableDeclaration {
     
     bool is_valid_dimension (int dim);
 
-    bool parseTypeSpecifier();
-    bool parseDeclaration();
-    bool parseDeclarator();
-    bool parseDirectDeclarator();
-
-    bool match(Token::e expected_token);
-
-    Token::e nextToken;
-    LexicalAnalyzer lexer;
-
     std::string typeSpec;
     std::string varName;
     std::vector<int> dims;
 };
 
-    // public:
-
-    // DeclarationBuilder( std::string base_type, std::vector<int> dimensions);
-    // DeclarationBuilder( std::string base_type);
-
-    // std::string getDeclarator(std::string varName);
-    // std::string getAbstractDeclarator();
-
-    // int popDimension();
-    // void pushDimension(int dim);
-
-    // private:
-
-    // bool validateDimensions();
-    // static bool is_valid_dimension (int dim);
-
-    // std::string typeSpec;
-    // std::vector<int> dims;
 #endif

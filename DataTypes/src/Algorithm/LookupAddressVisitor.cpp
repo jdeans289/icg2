@@ -24,14 +24,13 @@ LookupAddressVisitor::LookupAddressVisitor(std::string starting_name, void * sta
     }
 }
 
-
 // Look for the matching address
 
 bool LookupAddressVisitor::visitPrimitiveDataType(const DataType * node) {
-    std::cout << "Visiting PrimitiveDataType named " << node->toString() << std::endl;
+    // std::cout << "Visiting PrimitiveDataType named " << node->toString() << std::endl;
 
     if (search_offset != 0) {
-        std::cout << "Got to a leaf, but the offset is not 0. Something went wrong. Current name stack: " << name_stack.toString() << "\tCurrent offset: " << search_offset << std::endl;
+        std::cerr << "Got to a leaf, but the offset is not 0. Something went wrong. Current name stack: " << name_stack.toString() << "\tCurrent offset: " << search_offset << std::endl;
         return false;
     }
 
@@ -39,7 +38,7 @@ bool LookupAddressVisitor::visitPrimitiveDataType(const DataType * node) {
 }
 
 bool LookupAddressVisitor::visitCompositeType(const CompositeDataType * node) {
-    std::cout << "Visiting CompositeDataType named " << node->getTypeSpecName() << std::endl;
+    // std::cout << "Visiting CompositeDataType named " << node->getTypeSpecName() << std::endl;
 
     if (search_offset == 0) {
         // Address found!
@@ -60,7 +59,7 @@ bool LookupAddressVisitor::visitCompositeType(const CompositeDataType * node) {
     // Look for the correct member
     for (int i = 0; i < node->getMemberCount(); i++) {
         StructMember * member = node->getStructMember(i);
-        std::cout << "Going into Member named " << member->getName() << std::endl;
+        // std::cout << "Going into Member named " << member->getName() << std::endl;
         
         if (member->getMemberClass() == MemberClass::NORMAL) {
             const NormalStructMember * normal_member = dynamic_cast<NormalStructMember *> (member);
@@ -100,7 +99,7 @@ bool LookupAddressVisitor::visitCompositeType(const CompositeDataType * node) {
 }
 
 bool LookupAddressVisitor::visitArrayType(const ArrayDataType * node) {
-    std::cout << "Visiting ArrayDataType with subtype " << node->getTypeSpecName() << std::endl;
+    // std::cout << "Visiting ArrayDataType with subtype " << node->getTypeSpecName() << std::endl;
 
     if (search_offset == 0) {
         // Address found!
@@ -143,10 +142,10 @@ bool LookupAddressVisitor::visitArrayType(const ArrayDataType * node) {
 
 bool LookupAddressVisitor::visitPointerType(const PointerDataType * node) {
     // A pointer is a leaf type
-    std::cout << "Visiting PointerDataType named " << node->toString() << std::endl;
+    // std::cout << "Visiting PointerDataType named " << node->toString() << std::endl;
 
     if (search_offset != 0) {
-        std::cout << "Got to a leaf, but the offset is not 0. Something went wrong. Current name stack: " << name_stack.toString() << "\tCurrent offset: " << search_offset << std::endl;
+        std::cerr << "Got to a leaf, but the offset is not 0. Something went wrong. Current name stack: " << name_stack.toString() << "\tCurrent offset: " << search_offset << std::endl;
         return false;
     }
 
@@ -156,10 +155,10 @@ bool LookupAddressVisitor::visitPointerType(const PointerDataType * node) {
 
 bool LookupAddressVisitor::visitEnumeratedType(const EnumDataType * node) {
     // An enum is a leaf type
-    std::cout << "Visiting EnumDataType named " << node->toString() << std::endl;
+    // std::cout << "Visiting EnumDataType named " << node->toString() << std::endl;
 
     if (search_offset != 0) {
-        std::cout << "Got to a leaf, but the offset is not 0. Something went wrong. Current name stack: " << name_stack.toString() << "\tCurrent offset: " << search_offset << std::endl;
+        std::cerr << "Got to a leaf, but the offset is not 0. Something went wrong. Current name stack: " << name_stack.toString() << "\tCurrent offset: " << search_offset << std::endl;
         return false;
     }
 
@@ -178,7 +177,8 @@ bool LookupAddressVisitor::typeCheck(const DataType * node) {
             // std::cout << "Found the search offset at leaf at wrong type. Name:" << name_stack.toString() << std::endl;
             // std::cout << "Expected type: " << search_type->toString() << "\tFound type: " << node->toString() << std::endl;
 
-            return false;
+        // This is not necessarily an error, don't print anything
+        return false;
     }        
 
     // Yay! We found it!

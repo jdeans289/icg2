@@ -19,11 +19,11 @@ class VariableNameStack {
             nameStack.pop_back();
         }
 
-        std::vector<std::string> getStack() {
+        std::vector<std::string> getStack() const {
             return nameStack;
         }
 
-        std::string toString() {
+        std::string toString() const {
             if (nameStack.empty()) {
                 return "";
             }

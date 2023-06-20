@@ -23,17 +23,24 @@ class CheckpointVisitor : public DataTypeVisitor {
         virtual bool visitEnumeratedType(const EnumDataType * node) override;
 
         // Checkpoint Specific Interface
-        struct Leaf {
-            Leaf(VariableNameStack n, Value * v) : nameStack(n), value(v) {}
 
+        // Structure for returning results
+        struct Leaf {
+            Leaf(VariableNameStack n, Value * v) : Leaf(n, v, false, NULL) {}
+            Leaf(VariableNameStack n, Value * v, bool is_ptr, const DataType * ptr_sub) : name_stack(n), value(v), is_pointer(is_ptr), pointer_subtype(ptr_sub) {}
+
+
+            // For debugging:
             std::string toString() {
                 std::stringstream ss;
-                ss << "Name: " << nameStack.toString() << "\tValue: " << value->toString();
+                ss << "Name: " << name_stack.toString() << "\tValue: " << value->toString();
                 return ss.str();
             }
 
-            VariableNameStack nameStack;
+            VariableNameStack name_stack;
             Value * value;
+            bool is_pointer;
+            const DataType * pointer_subtype;
         };
 
         std::vector <Leaf> getResults();

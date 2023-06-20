@@ -28,7 +28,6 @@ class LookupAddressVisitor : public DataTypeVisitor {
         // Visitor State
         
         // We don't actually care about the absolute address, only the offset within the type
-        // Mutable address to read only value
         long search_offset;
 
         // Const all around

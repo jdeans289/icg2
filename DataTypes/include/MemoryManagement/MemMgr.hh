@@ -100,6 +100,11 @@ class MemMgr {
 //    size_t io_src_sizeof_user_type(const char* user_type_name);
 
     private:
+    
+    void* do_declare_var(const std::string& abstract_declarator, 
+                                const std::string& variable_name,
+                                void * supplied_allocation);
+
     unsigned int debugLevel;
 
     CheckpointAgent* currentCheckPointAgent;

@@ -122,7 +122,7 @@ void PointerDataType::printValue(std::ostream &s, void * address) const {
 }
 
 Value * PointerDataType::getValue(void *address) const {
-    return new PointerValue(address);
+    return new PointerValue(*(void**)address);
 }
 
 
@@ -140,6 +140,10 @@ std::string PointerDataType::makeDeclaration(std::string declarator) const {
     decl.pushDimension(-1);
 
     return decl.getDeclarator(declarator);
+}
+
+bool PointerDataType::accept (DataTypeVisitor * visitor) const {
+    return visitor->visitPointerType(this);
 }
 
 // bool PointerDataType::lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const {

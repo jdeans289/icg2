@@ -85,7 +85,7 @@ bool ClassicChkPtAgent:: writeDeclaration( std::ostream& out_s, std::string name
     if (dataType != NULL) {
         out_s << dataType->makeDeclaration(name);
         out_s << ";\n";
-    } else {
+    } else { 
         errorCondition = true;
     }
     return errorCondition;

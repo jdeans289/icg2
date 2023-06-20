@@ -17,7 +17,7 @@ CheckpointVisitor::CheckpointVisitor(std::string starting_name, void * starting_
 // Harvest all the values from the tree
 
 bool CheckpointVisitor::visitPrimitiveDataType(const DataType * node) {
-    std::cout << "Visiting PrimitiveDataType named " << node->toString() << std::endl;
+    // std::cout << "Visiting PrimitiveDataType named " << node->toString() << std::endl;
 
     // Add to the leaf stack
     leaves.emplace_back(current_name_stack, node->getValue(address_stack.top()));
@@ -26,10 +26,10 @@ bool CheckpointVisitor::visitPrimitiveDataType(const DataType * node) {
 }
 
 bool CheckpointVisitor::visitCompositeType(const CompositeDataType * node) {
-    std::cout << "Visiting CompositeDataType named " << node->getTypeSpecName() << std::endl;
+    // std::cout << "Visiting CompositeDataType named " << node->getTypeSpecName() << std::endl;
     for (int i = 0; i < node->getMemberCount(); i++) {
         StructMember * member = node->getStructMember(i);
-        std::cout << "Going into Member named " << member->getName() << std::endl;
+        // std::cout << "Going into Member named " << member->getName() << std::endl;
         
         // We need to figure out how to correctly handle the bitfields - that's a weird edge case
         TypedStructMember * typed_member = dynamic_cast<TypedStructMember *> (member);
@@ -58,11 +58,11 @@ bool CheckpointVisitor::visitCompositeType(const CompositeDataType * node) {
 }
 
 bool CheckpointVisitor::visitArrayType(const ArrayDataType * node) {
-    std::cout << "Visiting ArrayDataType with subtype " << node->getTypeSpecName() << std::endl;
+    // std::cout << "Visiting ArrayDataType with subtype " << node->getTypeSpecName() << std::endl;
 
     const DataType * subtype = node->getSubType();
     for (int i = 0; i < node->getElementCount(); i++) {
-        std::cout << "Going to element " << i << std::endl;
+        // std::cout << "Going to element " << i << std::endl;
         void * elemAddress = (char *) address_stack.top() + (i * subtype->getSize());
 
         // Push element onto stack
@@ -81,17 +81,17 @@ bool CheckpointVisitor::visitArrayType(const ArrayDataType * node) {
 
 bool CheckpointVisitor::visitPointerType(const PointerDataType * node) {
     // A pointer is a leaf type
-    std::cout << "Visiting PointerDataType named " << node->toString() << std::endl;
-
+    // std::cout << "Visiting PointerDataType named " << node->toString() << std::endl;
+    
     // Add this name to the leaf stack
-    leaves.emplace_back(current_name_stack, node->getValue(address_stack.top()));
+    leaves.emplace_back(current_name_stack, node->getValue(address_stack.top()), true, node->getSubType());
 
     return true;
 }
 
 bool CheckpointVisitor::visitEnumeratedType(const EnumDataType * node) {
     // An enum is a leaf type
-    std::cout << "Visiting EnumDataType named " << node->toString() << std::endl;
+    // std::cout << "Visiting EnumDataType named " << node->toString() << std::endl;
 
     // Add this name to the leaf stack
     leaves.emplace_back(current_name_stack, node->getValue(address_stack.top()));

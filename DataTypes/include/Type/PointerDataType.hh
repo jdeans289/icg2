@@ -105,6 +105,7 @@ class PointerDataType : public ModifierType {
     std::string makeDeclaration(std::string declarator) const;
     
     // virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
+    bool accept (DataTypeVisitor* visitor) const override;
 
 
     private:
@@ -113,8 +114,6 @@ class PointerDataType : public ModifierType {
 
     bool             is_valid;
     std::string      typeSpecName;
-    // const DataType * subType;
 
-    // TypeDictionary * typeDictionary;
     DataTypeInator * dataTypeInator;
 };

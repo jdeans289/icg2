@@ -116,6 +116,23 @@ TEST_F( PointerDataTypeTest , printValue ) {
     EXPECT_EQ(0, result);
 }
 
+TEST_F( PointerDataTypeTest , getValue ) {
+
+    // ARRANGE
+    double * d_ptr = (double*)0x12345678;
+
+    // Create a PointerDataType.
+    PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
+
+    // ACT
+    Value * value = ptrTypeSpec->getValue(&d_ptr);
+
+    // ASSERT
+    PointerValue * ptrValue = dynamic_cast<PointerValue *> (value);
+    ASSERT_TRUE(ptrValue != NULL);
+    ASSERT_EQ((double*)0x12345678, ptrValue->getPointer());
+}
+
 TEST_F( PointerDataTypeTest , validate_1 ) {
 
     // Create a PointerDataType.

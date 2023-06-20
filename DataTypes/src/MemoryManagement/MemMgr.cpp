@@ -31,15 +31,12 @@ MemMgr::MemMgr (DataTypeInator * dictionary) : dataTypeInator(dictionary) {
    currentCheckPointAgent = defaultCheckPointAgent;
 }
 
-// MEMBER FUNCTION
-void* MemMgr::declare_var( const std::string& typeSpecifier,
-                           const std::string& variableName,
-                           unsigned int       dimensionsCount,
-                           int*               dimensions,
-                           void*              suppliedAllocation ) {
+void* MemMgr::do_declare_var(const std::string& abstract_declarator, 
+                             const std::string& variable_name,
+                             void * supplied_allocation) {
 
-    if ( var_exists( variableName )) {
-        std::cerr << "ERROR: Variable " << variableName << " already declared." << std::endl;
+    if ( var_exists( variable_name )) {
+        std::cerr << "ERROR: Variable " << variable_name << " already declared." << std::endl;
         return ((void*)NULL);
     }
 
@@ -47,14 +44,14 @@ void* MemMgr::declare_var( const std::string& typeSpecifier,
     void* actualAllocation;
     try {
         // FIXME: MUTEX LOCK to protect AllocInfo static variables
-        std::vector<int> dims(dimensions, dimensions + dimensionsCount);
-        MutableDeclaration decl_builder (typeSpecifier, dims);
-        newAllocInfo = new AllocInfo(variableName, decl_builder.getAbstractDeclarator(), dataTypeInator, suppliedAllocation);
+        newAllocInfo = new AllocInfo(variable_name, abstract_declarator, dataTypeInator, supplied_allocation);
 
         // Set the address and insert in the maps
         actualAllocation = newAllocInfo->getStart();
+
         allocInfoByAddressMap[actualAllocation] = newAllocInfo;
-        allocInfoByNameMap[variableName] = newAllocInfo;
+        allocInfoByNameMap[variable_name] = newAllocInfo;
+
     } catch ( std::logic_error& e ) {
         // FIXME: MUTEX UNLOCK
         std::cerr << e.what();
@@ -72,15 +69,26 @@ void* MemMgr::declare_var( const std::string& typeSpecifier,
 }
 
 // MEMBER FUNCTION
+void* MemMgr::declare_var( const std::string& typeSpecifier,
+                           const std::string& variableName,
+                           unsigned int       dimensionsCount,
+                           int*               dimensions,
+                           void*              suppliedAllocation ) {
+
+    std::vector<int> dims(dimensions, dimensions + dimensionsCount);
+    MutableDeclaration decl (typeSpecifier, dims);
+    return do_declare_var(decl.getAbstractDeclarator(), variableName, suppliedAllocation);
+}
+
+// MEMBER FUNCTION
 void* MemMgr::declare_var( const std::string& declaration,
                            void*              suppliedAllocation ) {
 
-    MutableDeclaration* typeName = new MutableDeclaration( declaration);
-    std::string typeSpecifier = typeName->getDeclaratator();
-    std::string variableName = typeName->getVariableName();
+    MutableDeclaration typeName(declaration);
+    std::string abstractDeclarator = typeName.getAbstractDeclarator();
+    std::string variableName = typeName.getVariableName();
 
-    void* actualAllocation = declare_var( typeSpecifier, variableName, dimensionsCount, dimensions, suppliedAllocation );
-    return actualAllocation;
+    return do_declare_var( abstractDeclarator, variableName, suppliedAllocation );
 }
 
 // MEMBER FUNCTION
@@ -89,16 +97,26 @@ void* MemMgr::declare_var( const std::string& typeSpecName,
                            int                n,
                            void*              suppliedAllocation) {
 
-    void* actualAllocation = declare_var(typeSpecName, variableName, 1, &n, suppliedAllocation );
-    return actualAllocation;
+    MutableDeclaration decl =  MutableDeclaration( typeSpecName);
+    decl.pushDimension(n);
+
+    std::string abstractDeclarator = decl.getAbstractDeclarator();
+
+    return do_declare_var( abstractDeclarator, variableName, suppliedAllocation );   
 }
 
 // MEMBER FUNCTION
 void* MemMgr::declare_var( const std::string& typeSpecName,
                            int                n,
                            void*              suppliedAllocation ) {
-    void* actualAllocation = declare_var(typeSpecName, "", 1, &n, suppliedAllocation);
-    return actualAllocation;
+
+    MutableDeclaration decl =  MutableDeclaration( typeSpecName);
+    decl.pushDimension(n);
+
+    std::string abstractDeclarator = decl.getAbstractDeclarator();
+    std::string variableName = decl.getVariableName();
+
+    return do_declare_var( abstractDeclarator, variableName, suppliedAllocation );   
 }
 
 // // MEMBER FUNCTION
