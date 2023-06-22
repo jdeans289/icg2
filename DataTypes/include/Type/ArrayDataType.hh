@@ -22,7 +22,7 @@ class ArrayDataType : public ModifierType {
      @param typeSpecifierName Name of the type on with this type is based.
      @param n_elems Number of elements.
      */
-    ArrayDataType( DataTypeInator* inator,
+    ArrayDataType( const DataTypeInator* inator,
                    std::string typeSpecifierName,
                    unsigned int n_elems )  ;
 
@@ -116,7 +116,7 @@ class ArrayDataType : public ModifierType {
 
     bool accept(DataTypeVisitor * visitor) const override;
 
-    // virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
+    // virtual bool lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const;
 
 
     /* ==================================================================== */
@@ -138,7 +138,7 @@ class ArrayDataType : public ModifierType {
 
 
     private:
-    bool initArrayDataType( DataTypeInator* dataTypeInator, std::string typeSpecName, unsigned int n_elems );
+    bool initArrayDataType( const DataTypeInator* dataTypeInator, std::string typeSpecName, unsigned int n_elems );
     ArrayDataType(){}
 
     size_t typeSize;
@@ -146,7 +146,7 @@ class ArrayDataType : public ModifierType {
     bool is_valid;
     std::string typeSpecName;
 
-    DataTypeInator* dataTypeInator;
+    const DataTypeInator* dataTypeInator;
 
 };
 

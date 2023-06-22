@@ -1,6 +1,6 @@
 #include <cassert>
 
-#include "Algorithm/LookupAddressVisitor.hh"
+#include "Algorithm/LookupNameByAddressVisitor.hh"
 
 #include "Type/DataType.hh"
 #include "Type/CompositeDataType.hh"
@@ -9,10 +9,10 @@
 #include "Type/EnumDataType.hh"
 #include "Type/NormalStructMember.hh"
 
-LookupAddressVisitor::LookupAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address) 
-        : LookupAddressVisitor(starting_name, starting_address, lookup_address, NULL) {}
+LookupNameByAddressVisitor::LookupNameByAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address) 
+        : LookupNameByAddressVisitor(starting_name, starting_address, lookup_address, NULL) {}
 
-LookupAddressVisitor::LookupAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address, const DataType * const search_type)
+LookupNameByAddressVisitor::LookupNameByAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address, const DataType * const search_type)
         : search_type(search_type) {
 
     name_stack.pushName(starting_name);
@@ -26,7 +26,7 @@ LookupAddressVisitor::LookupAddressVisitor(std::string starting_name, void * sta
 
 // Look for the matching address
 
-bool LookupAddressVisitor::visitPrimitiveDataType(const DataType * node) {
+bool LookupNameByAddressVisitor::visitPrimitiveDataType(const DataType * node) {
     // std::cout << "Visiting PrimitiveDataType named " << node->toString() << std::endl;
 
     if (search_offset != 0) {
@@ -37,7 +37,7 @@ bool LookupAddressVisitor::visitPrimitiveDataType(const DataType * node) {
     return typeCheck(node);
 }
 
-bool LookupAddressVisitor::visitCompositeType(const CompositeDataType * node) {
+bool LookupNameByAddressVisitor::visitCompositeType(const CompositeDataType * node) {
     // std::cout << "Visiting CompositeDataType named " << node->getTypeSpecName() << std::endl;
 
     if (search_offset == 0) {
@@ -98,7 +98,7 @@ bool LookupAddressVisitor::visitCompositeType(const CompositeDataType * node) {
     return false;
 }
 
-bool LookupAddressVisitor::visitArrayType(const ArrayDataType * node) {
+bool LookupNameByAddressVisitor::visitArrayType(const ArrayDataType * node) {
     // std::cout << "Visiting ArrayDataType with subtype " << node->getTypeSpecName() << std::endl;
 
     if (search_offset == 0) {
@@ -140,7 +140,7 @@ bool LookupAddressVisitor::visitArrayType(const ArrayDataType * node) {
     return subType->accept(this);
 }
 
-bool LookupAddressVisitor::visitPointerType(const PointerDataType * node) {
+bool LookupNameByAddressVisitor::visitPointerType(const PointerDataType * node) {
     // A pointer is a leaf type
     // std::cout << "Visiting PointerDataType named " << node->toString() << std::endl;
 
@@ -153,7 +153,7 @@ bool LookupAddressVisitor::visitPointerType(const PointerDataType * node) {
     return typeCheck(node);
 }
 
-bool LookupAddressVisitor::visitEnumeratedType(const EnumDataType * node) {
+bool LookupNameByAddressVisitor::visitEnumeratedType(const EnumDataType * node) {
     // An enum is a leaf type
     // std::cout << "Visiting EnumDataType named " << node->toString() << std::endl;
 
@@ -166,11 +166,11 @@ bool LookupAddressVisitor::visitEnumeratedType(const EnumDataType * node) {
     return typeCheck(node);
 }
 
-VariableNameStack LookupAddressVisitor::getResult() {
-    return name_stack;
+std::string LookupNameByAddressVisitor::getResult() {
+    return name_stack.toString();
 }
 
-bool LookupAddressVisitor::typeCheck(const DataType * node) {
+bool LookupNameByAddressVisitor::typeCheck(const DataType * node) {
     // Check equality by comparing toString
     // This is not great but seems ok
     if (search_type != NULL && node->toString() != search_type->toString()) {

@@ -123,7 +123,7 @@ public:
      */
     std::string toString() const;
 
-    // virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
+    // virtual bool lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const;
 
     bool accept (DataTypeVisitor* visitor) const override;
 

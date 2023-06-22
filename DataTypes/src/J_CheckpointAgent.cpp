@@ -1,11 +1,18 @@
 #include "J_CheckpointAgent.hh"
 
+#include "Utils/ParsedAssignment.hh"
+#include "Utils/ParsedDeclaration.hh"
 #include "Type/DataType.hh"
 #include "Value/PointerValue.hh"
 #include "Algorithm/CheckpointVisitor.hh"
-#include "Algorithm/LookupAddressVisitor.hh"
+#include "Algorithm/LookupAddressByNameVisitor.hh"
+#include "Algorithm/LookupNameByAddressVisitor.hh"
+
 
 const std::string J_CheckpointAgent::error_str = "<UNDEFINED>";
+
+J_CheckpointAgent::J_CheckpointAgent(const DataTypeInator * inator) : dataTypeInator(inator) {}
+
 
 /* ==================================================================== */
 /*                          DUMP CHECKPOINT                             */
@@ -46,7 +53,7 @@ int J_CheckpointAgent::dump ( std::ostream& checkpoint_out, std::vector<AllocInf
     checkpoint_out.flush();
 
     for (AllocInfo * allocInfo : allocations_to_checkpoint) {
-        writeVariable(checkpoint_out, allocInfo, allocations_to_checkpoint);
+        writeAssignment(checkpoint_out, allocInfo, allocations_to_checkpoint);
     }
 
     return 0;
@@ -61,7 +68,7 @@ bool J_CheckpointAgent::writeDeclaration( std::ostream& checkpoint_out, const Al
     return true;
 }
 
-bool J_CheckpointAgent::writeVariable( std::ostream& checkpoint_out, const AllocInfo * alloc_to_write, const std::vector<AllocInfo *>& additional_search_allocs) {
+bool J_CheckpointAgent::writeAssignment( std::ostream& checkpoint_out, const AllocInfo * alloc_to_write, const std::vector<AllocInfo *>& additional_search_allocs) {
     std::string name = getCheckpointableName(alloc_to_write);
 
     CheckpointVisitor visitor (name, alloc_to_write->getStart());
@@ -100,7 +107,7 @@ bool J_CheckpointAgent::writeVariable( std::ostream& checkpoint_out, const Alloc
 std::string J_CheckpointAgent::resolvePointer(void * ptr_to_resolve, const DataType * expected_type, const std::vector<AllocInfo *>& allocs_to_search) {
     for (auto allocInfo : allocs_to_search) {
         if (allocInfo->contains(ptr_to_resolve)) {
-            LookupAddressVisitor visitor (getCheckpointableName(allocInfo), allocInfo->getStart(), ptr_to_resolve, expected_type);
+            LookupNameByAddressVisitor visitor (getCheckpointableName(allocInfo), allocInfo->getStart(), ptr_to_resolve, expected_type);
             bool status = visitor.go(allocInfo->getDataType());
 
             // If something went wrong, just continue.
@@ -108,7 +115,7 @@ std::string J_CheckpointAgent::resolvePointer(void * ptr_to_resolve, const DataT
             // assuming that the AllocInfos never overlap, which ~should~ be true
             if (!status) continue;
 
-            return visitor.getResult().toString();
+            return visitor.getResult();
         }
     }
 
@@ -130,6 +137,128 @@ std::string J_CheckpointAgent::getCheckpointableName(const AllocInfo * allocInfo
 /*                          RESTORE CHECKPOINT                          */
 /* ==================================================================== */
 
-int J_CheckpointAgent::restore( std::istream& checkpoint_in, std::vector<AllocInfo *> allocations_to_restore) {
-    return 0;
+std::vector<AllocInfo *> J_CheckpointAgent::restore( std::istream& checkpoint_in, std::vector<AllocInfo *> allocations_to_restore) {
+    
+    std::string checkpoint_line;
+    while (std::getline(checkpoint_in, checkpoint_line)) {
+        if (checkpoint_line.size() == 0) continue;
+        
+        // Ignore anything that begins with "//"
+        if (checkpoint_line.substr(0,2) == "//") continue;
+        if (checkpoint_line.substr(0,9) == "clear_all") continue;  // TODO: DONT DO THIS
+
+        // If a line has an "=" it's an assignment. If it doesn't, it's a declaration.
+        if (checkpoint_line.find("=") == std::string::npos) {
+            // Parse this line as a declaration
+            try {
+                allocations_to_restore.push_back(restoreDeclaration(checkpoint_line));
+            } catch (std::exception& e) {
+                std::cerr << "J_CheckpointAgent: An error occurred while processing declaration \"" << checkpoint_line << "\"\n\tMessage: " << e.what() << std::endl;
+            }
+
+        } else {
+            // Parse this line as an assignment
+            try {
+                restoreAssignment(checkpoint_line, allocations_to_restore);
+            } catch (std::exception& e) {
+                // TODO: BETTER ERROR AND WARNING SYSTEM
+                std::cerr << "J_CheckpointAgent: An error occurred while processing assignment \"" << checkpoint_line << "\"\n\tMessage: " << e.what() << std::endl;
+            }
+        }
+    }
+
+    return allocations_to_restore;
+}
+
+AllocInfo * J_CheckpointAgent::findAllocByName(std::string name, std::vector<AllocInfo *> search_allocs) {
+    for (auto alloc_ptr : search_allocs) {
+        if (getCheckpointableName(alloc_ptr) == name)
+            return alloc_ptr;
+    }
+
+    return NULL;
+}
+
+void *  J_CheckpointAgent::lookupPointer(std::string varname, const std::vector<AllocInfo *>& allocs_to_search) {
+    MutableVariableName var_elems (varname);
+
+    std::string root_name = var_elems.pop_front();
+    AllocInfo * alloc_to_assign = findAllocByName(root_name, allocs_to_search);
+    if (alloc_to_assign == NULL) {
+        return NULL;
+    }
+    // Find the address that we're assigning to
+    LookupAddressByNameVisitor visitor(alloc_to_assign->getStart(), var_elems);
+    int status = visitor.go(alloc_to_assign->getDataType());
+    if (!status) {
+        return NULL;
+    }
+
+    auto result = visitor.getResult();
+    return result.address;
+}
+
+AllocInfo * J_CheckpointAgent::restoreDeclaration(std::string declaration) {
+    // Strip off the ;
+    // Maybe the ParsedDeclaration needs to be updated to handle this.....
+
+    size_t semicolon_pos = declaration.find(";");
+    declaration = declaration.substr(0, semicolon_pos);
+    ParsedDeclaration typeName(declaration);
+    std::string abstractDeclarator = typeName.getTypeSpecifier();
+    std::string variableName = typeName.getVariableName();
+
+
+    AllocInfo * new_alloc = new AllocInfo(variableName, dataTypeInator->resolve(abstractDeclarator));
+    return new_alloc;
+}
+
+bool J_CheckpointAgent::restoreAssignment(std::string assignment_string, const std::vector<AllocInfo *>& additional_search_allocs) {
+    ParsedAssignment assignment(assignment_string);
+
+    // Parsing this assignment gets us the variable name and creates the Value object
+    std::string full_varname = assignment.getVariableName();
+    Value * this_value = assignment.getValue();
+    // TODO: this_value should probably be a unique_ptr
+
+    MutableVariableName var_elems (full_varname);
+
+    std::string root_name = var_elems.pop_front();
+    AllocInfo * alloc_to_assign = findAllocByName(root_name, additional_search_allocs);
+    if (alloc_to_assign == NULL) {
+        throw std::logic_error("Could not find allocation named " + root_name);
+    }
+
+    // Find the address and the datatype that we're assigning to
+    LookupAddressByNameVisitor visitor(alloc_to_assign->getStart(), var_elems);
+    int status = visitor.go(alloc_to_assign->getDataType());
+    if (!status) {
+        throw std::logic_error("Could not find variable named " + full_varname);
+    }
+
+    auto result = visitor.getResult();
+    const DataType * this_type = result.type;
+    void * this_addr = result.address;
+
+    // Special case - pointer :(
+    if (this_type->getTypeClass() == TypeClass::POINTER ) {
+        // this will return a string that says &varname
+        // There's a better design than this
+        // But we gotta handle special cases one way or another
+        // Chop off the first character
+        std::string ptr_varname = this_value->toString().substr(1);
+        void * raw_addr = lookupPointer(ptr_varname, additional_search_allocs);
+        if (raw_addr == NULL) {
+            throw std::logic_error("Could not find variable named " + full_varname);
+        }
+
+        delete this_value;
+        this_value = new PointerValue(raw_addr);       
+    }
+
+    // Assign!!!!
+    this_type->assignValue(this_addr, this_value);
+
+    delete this_value;
+    return true;
 }

@@ -2,14 +2,17 @@
 
 #include "Algorithm/DataTypeVisitor.hh"
 #include "Value/Value.hh"
-#include "Utils/VariableNameStack.hh"
+#include "Utils/MutableVariableName.hh"
 
+// More accurate name would be
+//    LookupNameByAddressAndTypeVisitor
+// but that's so long
 
-class LookupAddressVisitor : public DataTypeVisitor {
+class LookupNameByAddressVisitor : public DataTypeVisitor {
 
     public:
-        LookupAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address, const DataType * const search_type);
-        LookupAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address);
+        LookupNameByAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address, const DataType * const search_type);
+        LookupNameByAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address);
 
         // Visitor Interface 
 
@@ -21,7 +24,7 @@ class LookupAddressVisitor : public DataTypeVisitor {
         virtual bool visitEnumeratedType(const EnumDataType * node) override;
 
         // LookupAddress Interface
-        VariableNameStack getResult();
+        std::string getResult();
 
 
     private:
@@ -33,7 +36,8 @@ class LookupAddressVisitor : public DataTypeVisitor {
         // Const all around
         const DataType * const search_type;
 
-        VariableNameStack name_stack;
+        // Result variable
+        MutableVariableName name_stack;
 
         // Helper
         bool typeCheck(const DataType * node);

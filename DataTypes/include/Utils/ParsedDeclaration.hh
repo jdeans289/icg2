@@ -8,11 +8,11 @@
 
 
 
-class DeclarationParser {
+class ParsedDeclaration {
 
     public:
 
-    DeclarationParser( std::string s );
+    ParsedDeclaration( std::string s );
 
     std::string getTypeSpecifier() const;
     std::string getVariableName() const;

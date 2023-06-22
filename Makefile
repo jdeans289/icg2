@@ -4,7 +4,7 @@ CXXFLAGS = -g -Wall
 
 CLANG_LIBS= -lclang
 
-DATATYPES_HOME=/users/jndeans/clang-experiments/DataTypes
+DATATYPES_HOME=/users/jndeans/icg_rebuild/DataTypes
 DATATYPES_LIB_DIR = $(DATATYPES_HOME)/lib
 DATATYPES_INCLUDES = $(DATATYPES_HOME)/include
 DATATYPES_LIB = Decl

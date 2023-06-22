@@ -8,7 +8,7 @@
 #include "Type/ArrayDataType.hh"
 #include "Utils/MutableDeclaration.hh"
 
-#include "ClassicChkPtAgent.hh"
+#include "J_CheckpointAgent.hh"
 #include "DataTypeInator.hh"
 
 
@@ -18,17 +18,8 @@ MemMgr::MemMgr() : MemMgr(new DataTypeInator()) {}
 
 MemMgr::MemMgr (DataTypeInator * dictionary) : dataTypeInator(dictionary) {
    debugLevel = 0;
-   reducedCheckpoint = true;
-   hexfloatCheckpoint = false;
-   compactArraysCheckpoint = true;
-   
-   defaultCheckPointAgent = new ClassicChkPtAgent( std::cout );
-   defaultCheckPointAgent->setDebugLevel( debugLevel);
-   defaultCheckPointAgent->setReducedCheckpoint( reducedCheckpoint);
-   defaultCheckPointAgent->setHexfloatCheckpoint( hexfloatCheckpoint);
-   defaultCheckPointAgent->setMakeCompactArrays( compactArraysCheckpoint );
-   
-   currentCheckPointAgent = defaultCheckPointAgent;
+
+   checkpointAgent = new J_CheckpointAgent(dataTypeInator);
 }
 
 void* MemMgr::do_declare_var(const std::string& abstract_declarator, 
@@ -44,7 +35,13 @@ void* MemMgr::do_declare_var(const std::string& abstract_declarator,
     void* actualAllocation;
     try {
         // FIXME: MUTEX LOCK to protect AllocInfo static variables
-        newAllocInfo = new AllocInfo(variable_name, abstract_declarator, dataTypeInator, supplied_allocation);
+        const DataType * type = dataTypeInator->resolve(abstract_declarator);
+        if (type == NULL) {
+            std::cerr << "ERROR: Unable to resolve type string \"" << abstract_declarator << "\" for variable \"" << variable_name << "\", cannot declare." << std::endl;
+            return ((void*)NULL);
+        }
+
+        newAllocInfo = new AllocInfo(variable_name, type, supplied_allocation);
 
         // Set the address and insert in the maps
         actualAllocation = newAllocInfo->getStart();
@@ -303,50 +300,60 @@ static bool allocInfoCompare( AllocInfo* lhs, AllocInfo* rhs ) {
 
 // PRIVATE MEMBER FUNCTION
 void MemMgr::write_checkpoint(std::ostream& outStream, std::vector<AllocInfo*>& allocInfoList) {
+    checkpointAgent->dump(outStream, allocInfoList);
+}
 
-    std::sort( allocInfoList.begin(), allocInfoList.end(), allocInfoCompare ) ;
+void MemMgr::restore_checkpoint(const std::string& filename) {
+    std::ifstream in_s( filename.c_str(), std::ios::in);
+    if (in_s.is_open()) {
+        restore_checkpoint( in_s) ;
+    } else {
+        std::cerr << "ERROR: Couldn't open \""<< filename <<"\"." << std::endl;
+        std::cerr.flush();
+    }
+}
 
-    // 2) Generate declaration statements for each the local allocations.
-    outStream << "// Variable Declarations." << std::endl;
-    outStream.flush();
-
-    int itemCount = allocInfoList.size();
-
-    for (int ii = 0 ; ii < itemCount ; ii ++) {
-        AllocInfo * allocInfo = allocInfoList[ii];
-        StorageClass::e storageClass = allocInfo->getStorageClass();
-        if ( storageClass == StorageClass::LOCAL) {
-                std::string name = allocInfo->getName();
-            if ( !name.empty() ) {
-                currentCheckPointAgent->writeDeclaration( outStream, name, allocInfo->getDataType() );
-            } else {
-                currentCheckPointAgent->writeDeclaration( outStream, allocInfo->getSerialName(), allocInfo->getDataType() );
-            }
+void MemMgr::restore_checkpoint( std::istream& in_s) {
+    // TODO: We should be holding a lock here
+    
+    // Only pass external allocations into the agent
+    std::vector<AllocInfo *> extern_alloc_list;
+    for ( auto pos = allocInfoByAddressMap.begin() ; pos != allocInfoByAddressMap.end() ; pos++ ) {
+        AllocInfo * allocInfo = pos->second;
+        if (allocInfo->getStorageClass() == StorageClass::EXTERN) {
+            extern_alloc_list.push_back(allocInfo);
         }
     }
 
-    // 3) Write a "clear_all_vars" command.
-    outStream << std::endl << std::endl << "// Clear all allocations to 0." << std::endl;
-    outStream << "clear_all_vars();" << std::endl;
+// TODO *****IMPORTANT JACKIE YOU HAVE TO THINK ABOUT THIS AT SOME POINT
+// WHAT HAPPENS TO THE OLD LOCAL ALLOCS?????
 
-    // 4) Dump the contents of each of the local and extern allocations.
-    outStream << std::endl << std::endl << "// Variable Assignments." << std::endl;
-    outStream.flush();
 
-    for (int ii = 0 ; ii < itemCount ; ii ++) {
-        AllocInfo * allocInfo = allocInfoList[ii];
+    // Load the checkpoint into AllocInfos
+    auto restored_alloc_list = checkpointAgent->restore(in_s, extern_alloc_list);
 
-        std::string name = allocInfo->getName();
-        if ( !name.empty() ) {
-            currentCheckPointAgent->pushName( name );
-            currentCheckPointAgent->writeVariable( outStream, this, allocInfo->getStart(), allocInfo->getDataType() );
-        } else {
-            currentCheckPointAgent->pushName( allocInfo->getSerialName() );
-            currentCheckPointAgent->writeVariable( outStream, this, allocInfo->getStart(), allocInfo->getDataType() );
-        }
-        currentCheckPointAgent->popNameElement();
-        outStream << std::endl;
+    // Rebuild the maps
+    allocInfoByAddressMap.clear();
+    allocInfoByNameMap.clear();
+
+    for (AllocInfo * alloc : restored_alloc_list) {
+        void * addr = alloc->getStart();
+        std::string varname = alloc->getName();
+
+        allocInfoByAddressMap[addr] = alloc;
+        allocInfoByNameMap[varname] = alloc;
     }
+
+    // We did it!
+}
+
+CheckpointAgentBase * MemMgr::get_CheckPointAgent() {
+    return checkpointAgent;
+}
+
+void MemMgr::set_CheckPointAgent( CheckpointAgentBase* agent) {
+    delete checkpointAgent;
+    checkpointAgent = agent;
 }
 
 // MEMBER FUNCTION

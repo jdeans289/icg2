@@ -31,17 +31,20 @@ LIBOBJS = \
 	${OBJDIR}/MemoryManagement/AllocInfo.o \
 	${OBJDIR}/MemoryManagement/MemMgr.o \
 	${OBJDIR}/Utils/LexicalAnalyzer.o \
-	${OBJDIR}/Utils/DeclarationParser.o \
+	${OBJDIR}/Utils/ParsedDeclaration.o \
 	${OBJDIR}/Utils/MutableDeclaration.o \
+	${OBJDIR}/Utils/ParsedAssignment.o \
 	${OBJDIR}/Algorithm/DataTypeVisitor.o \
 	${OBJDIR}/Algorithm/CheckpointVisitor.o \
-	${OBJDIR}/Algorithm/LookupAddressVisitor.o \
+	${OBJDIR}/Algorithm/LookupNameByAddressVisitor.o \
+	${OBJDIR}/Algorithm/LookupAddressByNameVisitor.o \
 	${OBJDIR}/Enumerator.o \
 	${OBJDIR}/TypeDictionary.o \
 	${OBJDIR}/EnumDictionary.o \
 	${OBJDIR}/DataTypeInator.o \
 	${OBJDIR}/ClassicChkPtAgent.o \
 	${OBJDIR}/J_CheckpointAgent.o \
+
 
 
 

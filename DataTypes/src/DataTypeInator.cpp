@@ -6,7 +6,7 @@
 DataTypeInator::DataTypeInator () : DataTypeInator(new TypeDictionary){}
 DataTypeInator::DataTypeInator (TypeDictionary * dict) : typeDictionary(dict) {}
 
-const DataType * DataTypeInator::resolve(std::string name) {
+const DataType * DataTypeInator::resolve(std::string name) const {
 
     MutableDeclaration decl(name);
 

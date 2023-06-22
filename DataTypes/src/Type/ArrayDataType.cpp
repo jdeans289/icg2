@@ -8,7 +8,7 @@
 #include "Utils/MutableDeclaration.hh"
 
 // CONSTRUCTOR
-ArrayDataType:: ArrayDataType( DataTypeInator* dataTypeInator, std::string typeSpecName, unsigned int n_elems ) : 
+ArrayDataType:: ArrayDataType( const DataTypeInator* dataTypeInator, std::string typeSpecName, unsigned int n_elems ) : 
                                                     typeSize(0), elementCount(n_elems), is_valid(false), typeSpecName(typeSpecName), 
                                                     dataTypeInator(dataTypeInator) {
     subType = NULL;
@@ -224,7 +224,7 @@ bool ArrayDataType::accept (DataTypeVisitor * visitor) const {
     return visitor->visitArrayType(this);
 }
 
-// bool ArrayDataType::lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const {
+// bool ArrayDataType::lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const {
 //     // Look for the name of the variable associated with this offset.
 
 //     if (offset == 0) {

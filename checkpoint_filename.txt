@@ -1,0 +1,17 @@
+// Variable Declarations.
+MyClass a ;
+
+
+// Clear all allocations to 0.
+clear_all_vars();
+
+
+// Variable Assignments.
+a.my_int = 0 ;
+a.my_nested_class.foo_int = 0 ;
+a.my_nested_class.my_arr[0] = 5 ;
+a.my_nested_class.my_arr[1] = 6 ;
+a.my_nested_class.my_arr[2] = 7 ;
+a.my_nested_class.my_arr[3] = 8 ;
+a.my_nested_class.my_arr[4] = 9 ;
+ptr = &a ;

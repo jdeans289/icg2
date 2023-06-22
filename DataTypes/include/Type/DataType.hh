@@ -5,7 +5,7 @@
 
 #include "Value/Value.hh"
 #include "Algorithm/DataTypeVisitor.hh"
-#include "Utils/VariableNameStack.hh"
+#include "Utils/MutableVariableName.hh"
 
 namespace TypeClass {
     enum e {

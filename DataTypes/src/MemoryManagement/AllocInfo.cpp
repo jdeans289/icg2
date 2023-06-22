@@ -9,7 +9,6 @@
 
 #include "Utils/MutableDeclaration.hh"
 
-#include "DataTypeInator.hh"
 #include "CheckpointAgent.hh"
 
 #include <sstream>
@@ -21,8 +20,7 @@ unsigned int AllocInfo::nextSerialNumber = 0;
 
 // PRIVATE MEMBER FUNCTION
 void AllocInfo::initialize( const std::string& varName,
-                            const std::string& typeSpecName,
-                            DataTypeInator*    dataTypeInator,
+                            const DataType*    type,
                             void*              suppliedAllocation)  {
 
     // Because they can be resized, all allocations are really arrays,
@@ -30,9 +28,7 @@ void AllocInfo::initialize( const std::string& varName,
     // uhhhhhh no -jackie
     
     name = varName;
-    typeSpecifierName = typeSpecName;
-
-    dataType = dataTypeInator->resolve(typeSpecifierName);
+    dataType = type;
 
     if ( suppliedAllocation != 0 ) {
         start = suppliedAllocation;
@@ -47,53 +43,15 @@ void AllocInfo::initialize( const std::string& varName,
     end = (char*)start + dataType->getSize();
 }
 
-// CONSTRUCTOR
-// AllocInfo::AllocInfo( const std::string& varName,
-//                       const std::string& typeSpecName,
-//                       std::vector<int> dims,
-//                       DataTypeInator*    dataTypeInator,
-//                       void*              suppliedAllocation)  {
-
-//     // I don't like this - we should get all of the dimensions out of here --jackie
-
-//     initialize(varName, typeSpecName, dataTypeInator, suppliedAllocation);
-// }
 
 // CONSTRUCTOR
 AllocInfo::AllocInfo( const std::string& varName,
-                      const std::string& typeSpecName,
-                      DataTypeInator*    dataTypeInator,
+                      const DataType*    type,
                       void*              suppliedAllocation)  {
 
-    // MutableDeclaration parsedDeclaration( declaration );
-
-    // // Strip out the variable name, but put the rest back together
-    // std::string variableName = parsedDeclaration.getVariableName();
-    // std::string typeSpecifier = parsedDeclaration.getTypeSpecifier();
-    // std::vector<int> dimensions = parsedDeclaration.getDims();
-
-    // DeclarationBuilder builder(typeSpecifier, dimensions);
-
-    initialize(varName, typeSpecName, dataTypeInator, suppliedAllocation);
+    initialize(varName, type, suppliedAllocation);
 }
 
-
-// CONSTRUCTOR
-// AllocInfo::AllocInfo( const std::string& declaration,
-//                       DataTypeInator*    dataTypeInator,
-//                       void*              suppliedAllocation)  {
-
-//     MutableDeclaration parsedDeclaration( declaration );
-
-//     // Strip out the variable name, but put the rest back together
-//     std::string variableName = parsedDeclaration.getVariableName();
-//     std::string typeSpecifier = parsedDeclaration.getTypeSpecifier();
-//     std::vector<int> dimensions = parsedDeclaration.getDims();
-
-//     DeclarationBuilder builder(typeSpecifier, dimensions);
-
-//     initialize(variableName, builder.getAbstractDeclarator(), dataTypeInator, suppliedAllocation);
-// }
 
 // DESTRUCTOR
 AllocInfo::~AllocInfo() {
@@ -133,7 +91,7 @@ int AllocInfo::getSize() const {
 
 // PUBLIC MEMBER FUNCTION
 std::string AllocInfo::getTypeSpecifierName() const {
-    return typeSpecifierName;
+    return dataType->getTypeSpecName();
 }
 
 // PUBLIC MEMBER FUNCTION

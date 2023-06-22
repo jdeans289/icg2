@@ -9,39 +9,13 @@ int main () {
     populate_type_dictionary(&dataTypeInator);
     MemMgr mm (&dataTypeInator);
 
-    // std::cout << dictionary.toString() << std::endl;
-
+    MyClass * my_class_instance;
+    my_class_instance = (MyClass *) mm.declare_var("MyClass a");
+    mm.declare_var("MyClass * ptr", &my_class_instance);
     
-
-    // if (my_class_instance == NULL) {
-    //     std::cout << "Failed to allocate." << std::endl;
-    //     return 1;
-    // }
-
-    MyClass * my_class_instance = new MyClass;
-
-    my_class_instance->my_int = 5;
-
+    mm.restore_checkpoint("checkpoint_filename.txt");
     for (int i = 0; i < 5; i++) {
         my_class_instance->my_nested_class.my_arr[i] = i+5;
+        std::cout << "my_class_instance->my_nested_class.arr[" << i << "] = " << my_class_instance->my_nested_class.my_arr[i] << std::endl;
     }
-
-    (MyClass *) mm.declare_var("MyClass a", my_class_instance);
-
-
-    AllocInfo * my_class_alloc_info = mm.getAllocInfoNamed("a");
-    std::cout << my_class_alloc_info->toString() << std::endl;
-
-    // const DataType * int_datatype = dictionary.getDataType("int");
-    // int * my_int_instance = (int *) mm.declare_var("int a");
-    // *my_int_instance = 5;
-
-
-    // AllocInfo * int_alloc_info = mm.getAllocInfoNamed("a");
-    // std::cout << int_alloc_info->toString() << std::endl;
-
-
-    
-    
-    
 }

@@ -10,7 +10,7 @@ class DataTypeInator {
 
         DataTypeInator (TypeDictionary * dict);
 
-        const DataType * resolve(std::string name);
+        const DataType * resolve(std::string name) const;
         void addToDictionary(std::string name, BaseType * typeSpec);
 
         bool validateDictionary();

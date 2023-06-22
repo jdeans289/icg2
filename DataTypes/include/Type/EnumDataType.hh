@@ -110,7 +110,7 @@ public:
      */
     std::string getTypeSpecName() const;
 
-    // virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
+    // virtual bool lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const;
 
 
     /* ==================================================================== */

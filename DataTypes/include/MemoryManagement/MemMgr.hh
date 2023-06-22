@@ -9,8 +9,8 @@
 #include "MemoryManagement/AllocInfo.hh"
 #include "Type/DataType.hh"
 
-#include "CheckpointAgent.hh"
-#include "ClassicChkPtAgent.hh"
+#include "NewCheckpointAgentBase.hh"
+// #include "J_CheckpointAgent.hh"
 
 // class AllocInfo;
 // class DataType;
@@ -64,11 +64,10 @@ class MemMgr {
     void write_checkpoint( const std::string& filename, std::vector<const char*>& variableNameList);
     void write_checkpoint(std::ostream& outStream, std::vector<AllocInfo*>& dependencies);
 
-//    int read_checkpoint( std::istream* in_s);
-//    int read_checkpoint( const char* filename);
-//    int read_checkpoint_from_string( const char* s );
 
-//    int init_from_checkpoint( std::istream* in_s);
+    void restore_checkpoint(const std::string& filename);
+    void restore_checkpoint( std::istream& in_s);
+
 //    int init_from_checkpoint( const char* filename);
 
 //    void reset_memory();
@@ -92,8 +91,8 @@ class MemMgr {
     AllocInfo* getAllocInfoNamed( const std::string& name );
     const DataType* getDataType(std::string typeName);
 //    int add_shared_library_symbols( const char * file_name );
-//    CheckPointAgent * get_CheckPointAgent();
-//    void set_CheckPointAgent( CheckPointAgent* agent);
+    CheckpointAgentBase * get_CheckPointAgent();
+    void set_CheckPointAgent( CheckpointAgentBase* agent);
 //    void reset_CheckPointAgent();
 //    void write_class( std::ostream& out_s, char *address, ATTRIBUTES * A);
 //    void write_arrayed_class( std::ostream& out_s, char* address, ATTRIBUTES* A, int curr_dim, int offset);
@@ -107,12 +106,13 @@ class MemMgr {
 
     unsigned int debugLevel;
 
-    CheckpointAgent* currentCheckPointAgent;
-    ClassicChkPtAgent* defaultCheckPointAgent;
+    // CheckpointAgent* currentCheckPointAgent;
+    // ClassicChkPtAgent* defaultCheckPointAgent;
+    CheckpointAgentBase * checkpointAgent;
 
-    bool reducedCheckpoint;
-    bool hexfloatCheckpoint;
-    bool compactArraysCheckpoint;
+    // bool reducedCheckpoint;
+    // bool hexfloatCheckpoint;
+    // bool compactArraysCheckpoint;
 
     DataTypeInator* dataTypeInator;
 

@@ -1,4 +1,4 @@
-#include "Utils/DeclarationParser.hh"
+#include "Utils/ParsedDeclaration.hh"
 
 /*
  type-name: type-specifier
@@ -19,7 +19,7 @@
                   ;
 */
 
-DeclarationParser::DeclarationParser(std::string declaration_str) {
+ParsedDeclaration::ParsedDeclaration(std::string declaration_str) {
     lexer.load(declaration_str);
     parseDeclaration();
 }
@@ -30,7 +30,7 @@ DeclarationParser::DeclarationParser(std::string declaration_str) {
 //          | type-specifier declarator
 //          ;
 // ===============================================
-bool DeclarationParser::parseDeclaration() {
+bool ParsedDeclaration::parseDeclaration() {
 
     // std::cout << __FUNCTION__ << std::endl;
     bool errorCondition = parseTypeSpecifier();
@@ -57,7 +57,7 @@ bool DeclarationParser::parseDeclaration() {
 //
 // NOTE: a pointer is one or more asterisks.
 // ==============================================================
-bool DeclarationParser::parseDeclarator() {
+bool ParsedDeclaration::parseDeclarator() {
    
 //    std::cout << __FUNCTION__ << std::endl;
    bool errorCondition = false;
@@ -87,7 +87,7 @@ bool DeclarationParser::parseDeclarator() {
 //                  | direct-declarator [ integer ]
 //                  ;
 // ==============================================================
-bool DeclarationParser::parseDirectDeclarator() {
+bool ParsedDeclaration::parseDirectDeclarator() {
 
 //    std::cout << __FUNCTION__ << std::endl;
    bool errorCondition = false;
@@ -131,7 +131,7 @@ bool DeclarationParser::parseDirectDeclarator() {
    return errorCondition;
 }
 
-bool DeclarationParser::parseTypeSpecifier() {
+bool ParsedDeclaration::parseTypeSpecifier() {
 
     // std::cout << __FUNCTION__ << std::endl;
     bool errorCondition = false;
@@ -248,15 +248,15 @@ bool DeclarationParser::parseTypeSpecifier() {
     return errorCondition;
 }
 
-std::string DeclarationParser::getTypeSpecifier() const {
+std::string ParsedDeclaration::getTypeSpecifier() const {
     return typeSpec;
 }
 
-std::string DeclarationParser::getVariableName() const {
+std::string ParsedDeclaration::getVariableName() const {
     return varName;
 }
 
 
-std::vector<int> DeclarationParser::getDims() const {
+std::vector<int> ParsedDeclaration::getDims() const {
     return dims;
 }

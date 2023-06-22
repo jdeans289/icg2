@@ -23,7 +23,7 @@ TEST_F(AllocInfoTest, instantiation1) {
 
     bool construction_result = true;
     try {
-        AllocInfo * allocInfo = new AllocInfo("Apple", "double", dataTypeInator);
+        AllocInfo * allocInfo = new AllocInfo("Apple", dataTypeInator->resolve("double"));
         std::cout << allocInfo->toString();
     } catch ( const std::logic_error& e ) {
         std::cerr << e.what();
@@ -36,7 +36,7 @@ TEST_F(AllocInfoTest, instantiation2) {
 
     bool construction_result = true;
     try {
-        AllocInfo * allocInfo = new AllocInfo("Apple", "double[4]", dataTypeInator);
+        AllocInfo * allocInfo = new AllocInfo("Apple", dataTypeInator->resolve("double[4]"));
         std::cout << allocInfo->toString();
     } catch ( const std::logic_error& e ) {
         std::cerr << e.what();
@@ -50,7 +50,7 @@ TEST_F(AllocInfoTest, instantiation3) {
 
     bool construction_result = true;
     try {
-        AllocInfo * allocInfo = new AllocInfo("", "double*[7]", dataTypeInator);
+        AllocInfo * allocInfo = new AllocInfo("", dataTypeInator->resolve("double*[7]"));
         std::cout << allocInfo->toString();
     } catch ( const std::logic_error& e ) {
         std::cerr << e.what();
@@ -116,7 +116,7 @@ TEST_F(AllocInfoTest, clear) {
     bool construction_result = true;
     AllocInfo * allocInfo;
     try {
-        allocInfo = new AllocInfo( "Banana", "double[3][2]", dataTypeInator, A);
+        allocInfo = new AllocInfo( "Banana",  dataTypeInator->resolve("double[3][2]"), A);
     } catch ( const std::logic_error& e ) {
         std::cerr << e.what();
         construction_result = false;

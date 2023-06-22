@@ -16,7 +16,7 @@ struct VarAccessInfo;
 
 
 // FIXME: the follow define should be in a more appropriate place.
-#define TRICK_MAX_INDEX 8
+// #define TRICK_MAX_INDEX 8
 
 namespace StorageClass {
     enum e {
@@ -33,8 +33,7 @@ class AllocInfo {
 
     public:
     AllocInfo( const std::string& varName,
-            const std::string& typeSpecName,
-            DataTypeInator*    dataTypeInator,
+            const DataType * type,
             void*              suppliedAllocation = 0)  ;
 
     /**
@@ -115,51 +114,20 @@ class AllocInfo {
      */
     bool getVarAccessInfo( LexicalAnalyzer* lexer, VarAccessInfo& varAccessInfo );
 
-    // /**
-    //  Add this and the dependencies of this to the vector if they are not already there.
-    //  Tested in: FIXME
-    //  */
-    // void appendDependencies( MemMgr* memMgr,
-    //                          std::vector<AllocInfo*>& dependencies ) ;
 
-    // /**
-    //  Tested in: FIXME
-    //  */
-    // void appendDependenciesfromComposite( const CompositeDataType * compDataType,
-    //                                       void *address,
-    //                                       MemMgr* memMgr,
-    //                                       std::vector<AllocInfo*>& dependencies) ;
-
-    // /**
-    //  Tested in: FIXME
-    //  */
-    // void appendDependenciesfromArray( const ArrayDataType* arrayDataType,
-    //                                   void* address,
-    //                                   MemMgr* memMgr,
-    //                                   std::vector<AllocInfo*>& dependencies) ;
-    /**
-     Tested in: FIXME
-     */
     std::string toString() const;
 
 
     private:
 
     void initialize( const std::string& varName,
-                     const std::string& typeSpecName,
-                     DataTypeInator*    dataTypeInator,
+                     const DataType * type,
                      void*              suppliedAllocation )  ;
 
     std::string     name;                        /**< ** Object name */
     void*           start;                       /**< ** Address where this allocation starts */
     void*           end;                         /**< ** Address where this allocation ends */
 
-    /* The following three data members describe the type and are used to create the data type below. */
-    std::string     typeSpecifierName;           /**< ** Type-specifier */
-    // unsigned int    dimensionsCount;             /**< ** The number of dimensions */
-    // int             dimensions[TRICK_MAX_INDEX]; /**< ** Size of each dimension */
-
-    // ArrayDataType*  ownDataType;                 /**< **  */
     const DataType* dataType;                    /**< **  */
 
     StorageClass::e storageClass;                /**< ** Storage class */

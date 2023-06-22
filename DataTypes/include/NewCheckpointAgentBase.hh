@@ -26,6 +26,7 @@ class CheckpointAgentBase {
     /**
      Restore Checkpoint.
         */
-    virtual int restore( std::istream& checkpoint_in, std::vector<AllocInfo *> allocations_to_restore) = 0;
+    virtual std::vector<AllocInfo *> restore( std::istream& checkpoint_in, std::vector<AllocInfo *> allocations_to_restore) = 0;
+    
 };
 #endif

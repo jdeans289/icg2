@@ -45,7 +45,7 @@ bool CheckpointVisitor::visitCompositeType(const CompositeDataType * node) {
             member_subtype->accept(this);
 
             // Remove member name from stack
-            current_name_stack.pop();
+            current_name_stack.pop_back();
             address_stack.pop();
 
         } else {
@@ -72,7 +72,7 @@ bool CheckpointVisitor::visitArrayType(const ArrayDataType * node) {
         subtype->accept(this);
 
         // Remove element from stack
-        current_name_stack.pop();
+        current_name_stack.pop_back();
         address_stack.pop();
     }
 

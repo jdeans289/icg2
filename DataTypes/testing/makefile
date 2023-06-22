@@ -25,8 +25,11 @@ TESTS = PrimTypeSpecTest \
         AllocInfoTest \
         DataTypeInatorTest \
         CheckpointVisitorTest \
-        LookupAddressVisitorTest \
+        LookupAddressByNameVisitorTest \
+        LookupNameByAddressVisitorTest \
         J_CheckpointAgentTest \
+        MutableVariableNameTest \
+        ParsedAssignmentTest \
 
 # ClassicChkPtAgentTest \
 
@@ -74,6 +77,7 @@ $(TESTS) : %: %.o ${DECL_DIR}/lib/libDecl.a
 CompTypeSpecTest : DataTypeTestSupport.o 
 ClassicChkPtAgentTest : DataTypeTestSupport.o 
 CheckpointVisitorTest : DataTypeTestSupport.o 
-LookupAddressVisitorTest : DataTypeTestSupport.o 
+LookupNameByAddressVisitorTest : DataTypeTestSupport.o 
+LookupAddressByNameVisitorTest : DataTypeTestSupport.o 
 J_CheckpointAgentTest : DataTypeTestSupport.o 
 

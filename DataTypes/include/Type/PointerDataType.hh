@@ -19,7 +19,7 @@ class PointerDataType : public ModifierType {
      @param DataTypeInator The Type resolver machine
      @param typeSpecifierName Name of the type on with this type is based.
      */
-    PointerDataType( DataTypeInator * dataTypeInator,
+    PointerDataType( const DataTypeInator * dataTypeInator,
                      std::string typeSpecifierName ) ;
 
     /* ==================================================================== */
@@ -104,16 +104,14 @@ class PointerDataType : public ModifierType {
      */
     std::string makeDeclaration(std::string declarator) const;
     
-    // virtual bool lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const;
     bool accept (DataTypeVisitor* visitor) const override;
 
 
     private:
-    // bool initPointerDataType( DataTypeInator * dataTypeInator, std::string typeSpecName);
     PointerDataType(){}
 
     bool             is_valid;
     std::string      typeSpecName;
 
-    DataTypeInator * dataTypeInator;
+    const DataTypeInator * dataTypeInator;
 };

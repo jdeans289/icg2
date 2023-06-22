@@ -1,14 +1,14 @@
 #include <cstdlib>
 
 #include "Utils/MutableDeclaration.hh"
-#include "Utils/DeclarationParser.hh"
+#include "Utils/ParsedDeclaration.hh"
 
 
 // CONSTRUCTOR
 MutableDeclaration::MutableDeclaration( std::string s ) : MutableDeclaration(s, std::vector<int>()) {}
 
 MutableDeclaration::MutableDeclaration( std::string base_type, std::vector<int> dimensions) : dims(dimensions) {
-    DeclarationParser parser(base_type);
+    ParsedDeclaration parser(base_type);
     this->typeSpec = parser.getTypeSpecifier();
     this->varName = parser.getVariableName();
 

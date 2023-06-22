@@ -12,7 +12,7 @@
 
 
 // CONSTRUCTOR
-PointerDataType::PointerDataType( DataTypeInator * datatypeInator, std::string typeSpecifierName) : typeSpecName(typeSpecifierName), dataTypeInator(datatypeInator) {}
+PointerDataType::PointerDataType( const DataTypeInator * datatypeInator, std::string typeSpecifierName) : typeSpecName(typeSpecifierName), dataTypeInator(datatypeInator) {}
 
 // COPY CONSTRUCTOR
 PointerDataType::PointerDataType ( PointerDataType const & original) {
@@ -146,7 +146,7 @@ bool PointerDataType::accept (DataTypeVisitor * visitor) const {
     return visitor->visitPointerType(this);
 }
 
-// bool PointerDataType::lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const {
+// bool PointerDataType::lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const {
 //     // This is a leaf. If offset isn't 0, there's no where else to go so bad luck
 //     if (offset != 0) {
 //         std::cerr << "Something went wrong - at leaf in search in " << __FILE__ <<  ":" <<  __FUNCTION__ << " but offset is not 0." << std::endl;

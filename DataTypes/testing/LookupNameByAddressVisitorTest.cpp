@@ -6,65 +6,65 @@
 
 #include "gtest/gtest.h"
 
-#include "Algorithm/LookupAddressVisitor.hh"
+#include "Algorithm/LookupNameByAddressVisitor.hh"
 
 
-class LookupAddressVisitorTest : public ::testing::Test {
+class LookupNameByAddressVisitorTest : public ::testing::Test {
     protected:
     DataTypeInator dataTypeInator;
     EnumDictionary enumDictionary;
     MemMgr memMgr;
 
-    LookupAddressVisitorTest() {
+    LookupNameByAddressVisitorTest() {
 
     }
 
-    ~LookupAddressVisitorTest() {
+    ~LookupNameByAddressVisitorTest() {
 
     }
     void SetUp() {}
     void TearDown() {}
 };
 
-TEST_F(LookupAddressVisitorTest, basic) {
+TEST_F(LookupNameByAddressVisitorTest, basic) {
     // ARRANGE
     PrimitiveDataType<int> int_data_type;
     int var_to_search = 100;
 
     int * search_address = &var_to_search;
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address);
 
     // ACT
     bool success = int_data_type.accept(&visitor);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search";
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(LookupAddressVisitorTest, array) {
+TEST_F(LookupNameByAddressVisitorTest, array) {
     // ARRANGE
     const DataType * data_type = dataTypeInator.resolve("int[5]");
     int var_to_search[5] = {1, 2, 3, 4, 5};
 
     int * search_address = &var_to_search[3];
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address);
 
     // ACT
     bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search[3]";
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(LookupAddressVisitorTest, composite1) {
+TEST_F(LookupNameByAddressVisitorTest, composite1) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     const DataType * data_type = dataTypeInator.resolve("ClassOne");
@@ -74,19 +74,19 @@ TEST_F(LookupAddressVisitorTest, composite1) {
 
     const DataType * search_type = dataTypeInator.resolve("double");
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
     bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search.b";
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(LookupAddressVisitorTest, composite_array) {
+TEST_F(LookupNameByAddressVisitorTest, composite_array) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     const DataType * data_type = dataTypeInator.resolve("ClassOne[4][3]");
@@ -96,19 +96,19 @@ TEST_F(LookupAddressVisitorTest, composite_array) {
 
     const DataType * search_type = dataTypeInator.resolve("double");
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
     bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search[2][2].b";
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(LookupAddressVisitorTest, composite_array2) {
+TEST_F(LookupNameByAddressVisitorTest, composite_array2) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -119,14 +119,14 @@ TEST_F(LookupAddressVisitorTest, composite_array2) {
 
     const DataType * search_type = dataTypeInator.resolve("double");
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
     bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search[2][2].c1.b";
     ASSERT_EQ(expected, actual);
 }
@@ -134,7 +134,7 @@ TEST_F(LookupAddressVisitorTest, composite_array2) {
 // Explanation for the next two tests
 // 
 
-TEST_F(LookupAddressVisitorTest, search_type_ambiguous) {
+TEST_F(LookupNameByAddressVisitorTest, search_type_ambiguous) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -145,19 +145,19 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous) {
 
     const DataType * search_type = dataTypeInator.resolve("ClassOne");
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
     bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search[2][2].c1";
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(LookupAddressVisitorTest, search_type_ambiguous2) {
+TEST_F(LookupNameByAddressVisitorTest, search_type_ambiguous2) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -168,19 +168,19 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous2) {
 
     const DataType * search_type = dataTypeInator.resolve("int");
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
     bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search[2][2].c1.a";
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(LookupAddressVisitorTest, search_type_ambiguous3) {
+TEST_F(LookupNameByAddressVisitorTest, search_type_ambiguous3) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -191,19 +191,19 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous3) {
 
     const DataType * search_type = dataTypeInator.resolve("int");
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
     bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search[0][0].x";
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(LookupAddressVisitorTest, search_type_ambiguous4) {
+TEST_F(LookupNameByAddressVisitorTest, search_type_ambiguous4) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -214,19 +214,19 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous4) {
 
     const DataType * search_type = dataTypeInator.resolve("ClassTwo");
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
     bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search[0][0]";
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(LookupAddressVisitorTest, search_type_ambiguous5) {
+TEST_F(LookupNameByAddressVisitorTest, search_type_ambiguous5) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -237,14 +237,14 @@ TEST_F(LookupAddressVisitorTest, search_type_ambiguous5) {
 
     const DataType * search_type = dataTypeInator.resolve("ClassTwo[3]");
 
-    LookupAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, search_type);
 
     // ACT
     bool success = visitor.go(data_type);
     
     // ASSERT
     ASSERT_TRUE(success);
-    std::string actual = visitor.getResult().toString();
+    std::string actual = visitor.getResult();
     std::string expected = "var_to_search[0]";
     ASSERT_EQ(expected, actual);
 }

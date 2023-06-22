@@ -3,8 +3,11 @@
 #include "Algorithm/DataTypeVisitor.hh"
 // #include "CheckpointAgent.hh"
 #include "Value/Value.hh"
-#include "Utils/VariableNameStack.hh"
-#include "stack"
+#include "Utils/MutableVariableName.hh"
+
+#include <vector>
+#include <stack>
+
 
 
 class CheckpointVisitor : public DataTypeVisitor {
@@ -26,8 +29,8 @@ class CheckpointVisitor : public DataTypeVisitor {
 
         // Structure for returning results
         struct Leaf {
-            Leaf(VariableNameStack n, Value * v) : Leaf(n, v, false, NULL) {}
-            Leaf(VariableNameStack n, Value * v, bool is_ptr, const DataType * ptr_sub) : name_stack(n), value(v), is_pointer(is_ptr), pointer_subtype(ptr_sub) {}
+            Leaf(MutableVariableName n, Value * v) : Leaf(n, v, false, NULL) {}
+            Leaf(MutableVariableName n, Value * v, bool is_ptr, const DataType * ptr_sub) : name_stack(n), value(v), is_pointer(is_ptr), pointer_subtype(ptr_sub) {}
 
 
             // For debugging:
@@ -37,7 +40,7 @@ class CheckpointVisitor : public DataTypeVisitor {
                 return ss.str();
             }
 
-            VariableNameStack name_stack;
+            MutableVariableName name_stack;
             Value * value;
             bool is_pointer;
             const DataType * pointer_subtype;
@@ -47,7 +50,7 @@ class CheckpointVisitor : public DataTypeVisitor {
 
     private:
         // Visitor State
-        VariableNameStack current_name_stack;
+        MutableVariableName current_name_stack;
         std::stack<void *> address_stack;
 
         std::vector<Leaf> leaves;

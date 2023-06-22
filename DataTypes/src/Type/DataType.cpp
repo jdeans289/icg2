@@ -47,6 +47,6 @@ Value * DataType::getValue(void *address) const {
 }
 
 
-// bool DataType::lookupVariableNameByOffset(VariableNameStack& nameStack, unsigned int offset, const DataType * expectedType) const {
+// bool DataType::lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const {
 //     throw std::logic_error("lookupVariableNameByOffset is not yet implemented for this type.");
 // }
