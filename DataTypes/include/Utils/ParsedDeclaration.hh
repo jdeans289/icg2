@@ -24,6 +24,7 @@ class ParsedDeclaration {
     bool parseDeclaration();
     bool parseDeclarator();
     bool parseDirectDeclarator();
+    bool parseQualifiedIdentifier();
 
     bool match(Token::e expected_token);
 

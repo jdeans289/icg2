@@ -23,6 +23,7 @@ class LookupAddressByNameVisitor : public DataTypeVisitor {
         virtual bool visitArrayType(const ArrayDataType * node) override;
         virtual bool visitPointerType(const PointerDataType * node) override;
         virtual bool visitEnumeratedType(const EnumDataType * node) override;
+        virtual bool visitStringType (const StringDataType * node) override;
 
         struct Result {
             const DataType * type;
@@ -32,6 +33,9 @@ class LookupAddressByNameVisitor : public DataTypeVisitor {
         Result getResult();
 
     private:
+        // Helper
+        bool visitLeaf(const DataType * node);
+
         // Visitor Intermediate State
         void * current_search_address;
         MutableVariableName name_elems;

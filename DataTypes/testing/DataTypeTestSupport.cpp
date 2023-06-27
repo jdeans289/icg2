@@ -117,6 +117,25 @@ bool addClassFiveToTypeDictionary(DataTypeInator* dataTypeInator) {
     return result;
 }
 
+bool addClassSixToTypeDictionary(DataTypeInator* dataTypeInator) {
+
+    bool result = false;
+    try {
+        CompositeDataType * classSixTypeSpec =
+            new CompositeDataType(dataTypeInator, "ClassSix", sizeof(ClassSix), &construct<ClassSix>, &destruct<ClassSix>);
+            classSixTypeSpec->addRegularMember( "char_ptr", offsetof(ClassSix, char_ptr), "char *");
+            classSixTypeSpec->addRegularMember( "str", offsetof(ClassSix, str), "std::string");
+
+        dataTypeInator->addToDictionary("ClassSix", classSixTypeSpec);
+
+        result = classSixTypeSpec->validate();
+    } catch( const std::logic_error& e ) {
+        std::cerr << e.what();
+        result = false;
+    }
+    return result;
+}
+
 bool addDayOfWeekEnumToTypeDictionary(DataTypeInator* dataTypeInator,  EnumDictionary* enumDictionary) {
 
     bool result = false;

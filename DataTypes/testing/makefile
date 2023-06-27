@@ -30,6 +30,8 @@ TESTS = PrimTypeSpecTest \
         J_CheckpointAgentTest \
         MutableVariableNameTest \
         ParsedAssignmentTest \
+        ParsedDeclarationTest \
+        StringDataTypeTest \
 
 # ClassicChkPtAgentTest \
 

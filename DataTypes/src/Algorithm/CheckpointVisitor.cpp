@@ -2,6 +2,7 @@
 
 #include "Type/DataType.hh"
 #include "Type/CompositeDataType.hh"
+#include "Type/StringDataType.hh"
 #include "Type/ArrayDataType.hh"
 #include "Type/PointerDataType.hh"
 #include "Type/EnumDataType.hh"
@@ -17,6 +18,15 @@ CheckpointVisitor::CheckpointVisitor(std::string starting_name, void * starting_
 // Harvest all the values from the tree
 
 bool CheckpointVisitor::visitPrimitiveDataType(const DataType * node) {
+    // std::cout << "Visiting PrimitiveDataType named " << node->toString() << std::endl;
+
+    // Add to the leaf stack
+    leaves.emplace_back(current_name_stack, node->getValue(address_stack.top()));
+
+    return true;
+}
+
+bool CheckpointVisitor::visitStringType(const StringDataType * node) {
     // std::cout << "Visiting PrimitiveDataType named " << node->toString() << std::endl;
 
     // Add to the leaf stack

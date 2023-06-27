@@ -14,6 +14,8 @@ class StringValue : public Value {
      @param value The value of this StringValue.
      */
     StringValue(const char* value);
+    StringValue(std::string value);
+
 
     /**
      Print this StringValue to a stream.
@@ -24,8 +26,11 @@ class StringValue : public Value {
      Get a string representation of this StringValue.
      */
     std::string toString();
+    std::string getRawString();
+    std::string getEscapedString();
 
     private:
+
     std::string value;
 };
 

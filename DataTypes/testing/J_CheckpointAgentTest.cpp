@@ -144,6 +144,37 @@ var_to_checkpoint.c1.b = 1.5 ;
     EXPECT_EQ(expected, ss.str());
 }
 
+TEST_F (J_CheckpointAgentTest, dump_string) {    
+    // ARRANGE
+    // std::string str_to_checkpoint = "Ra Ra Rasputin";
+    AllocInfo my_str_alloc ("str_to_checkpoint", dataTypeInator.resolve("std::string"));
+    std::string * str = (std::string *) my_str_alloc.getStart();
+    *str = "Ra Ra Rasputin";
+
+    std::vector<AllocInfo *> alloc_list = {&my_str_alloc};
+    J_CheckpointAgent checkpoint_agent(&dataTypeInator);
+    std::stringstream ss;
+
+    // ACT
+    checkpoint_agent.dump(ss, alloc_list);
+
+    // ASSSERT
+    std::string expected(R"(// Variable Declarations.
+std::string str_to_checkpoint ;
+
+
+// Clear all allocations to 0.
+clear_all_vars();
+
+
+// Variable Assignments.
+str_to_checkpoint = "Ra Ra Rasputin" ;
+)");
+
+    EXPECT_EQ(expected, ss.str());
+
+}
+
 TEST_F (J_CheckpointAgentTest, whole_format_pointers_galore) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
@@ -459,4 +490,33 @@ b_ptr = &var_to_checkpoint.c1.b ;
     ASSERT_EQ(&my_class.c1, c1_ptr);
     ASSERT_EQ(&my_class.c1.a, a_ptr);
     ASSERT_EQ(&my_class.c1.b, b_ptr);
+}
+
+TEST_F (J_CheckpointAgentTest, restore_string) {    
+    // ARRANGE
+
+    std::string checkpoint_str(R"(// Variable Declarations.
+
+// Clear all allocations to 0.
+clear_all_vars();
+
+
+// Variable Assignments.
+str_to_checkpoint = "Ra Ra Rasputin" ;
+)");
+
+    std::string str_to_checkpoint;
+
+    AllocInfo my_str_alloc ("str_to_checkpoint", dataTypeInator.resolve("std::string"), &str_to_checkpoint);
+
+    std::vector<AllocInfo *> alloc_list = {&my_str_alloc};
+    J_CheckpointAgent checkpoint_agent(&dataTypeInator);
+    std::stringstream ss(checkpoint_str);
+
+    // ACT
+    checkpoint_agent.restore(ss, alloc_list);
+
+    // ASSSERT
+    ASSERT_EQ(std::string("Ra Ra Rasputin"), str_to_checkpoint);
+
 }

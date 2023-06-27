@@ -19,7 +19,7 @@
                   ;
 */
 
-ParsedDeclaration::ParsedDeclaration(std::string declaration_str) {
+ParsedDeclaration::ParsedDeclaration(std::string declaration_str) : typeSpec("") {
     lexer.load(declaration_str);
     parseDeclaration();
 }
@@ -88,8 +88,6 @@ bool ParsedDeclaration::parseDeclarator() {
 //                  ;
 // ==============================================================
 bool ParsedDeclaration::parseDirectDeclarator() {
-
-//    std::cout << __FUNCTION__ << std::endl;
    bool errorCondition = false;
 
    Token::e token = lexer.getToken();
@@ -106,9 +104,9 @@ bool ParsedDeclaration::parseDirectDeclarator() {
        }
    } else if (token == Token::LeftBracket) {
        token = lexer.matchToken( Token::LeftBracket );
-       if (token == Token::Integer) {
+       if (token == Token::IntegerLiteral) {
            dims.push_back( std::atoi( (lexer.getText()).c_str() ));
-           token = lexer.matchToken(Token::Integer);
+           token = lexer.matchToken(Token::IntegerLiteral);
        }
        if ((token = lexer.matchToken( Token::RightBracket )) == Token::Error) {
            errorCondition = true;
@@ -120,9 +118,9 @@ bool ParsedDeclaration::parseDirectDeclarator() {
 
    while (token == Token::LeftBracket) {
        token = lexer.matchToken( Token::LeftBracket );
-       if (token == Token::Integer) {
+       if (token == Token::IntegerLiteral) {
            dims.push_back(std::atoi( (lexer.getText()).c_str() ));
-           token = lexer.matchToken(Token::Integer);
+           token = lexer.matchToken(Token::IntegerLiteral);
        }
        if ((token = lexer.matchToken( Token::RightBracket )) == Token::Error) {
            errorCondition = true;
@@ -130,6 +128,22 @@ bool ParsedDeclaration::parseDirectDeclarator() {
    }
    return errorCondition;
 }
+
+
+// ==============================================================
+// type-specifier   : sign-qualifier integral-type-keyword
+//                  | float-type-keyword
+//                  | qualified-identifier
+//                  ;
+// ==============================================================
+
+// ==============================================================
+// sign-qualifier   : <NOTHING>
+//                  | signed
+//                  | unsigned
+// ==============================================================
+// am I actually allowed to have <NOTHING> in a bnf grammar?
+// probably not
 
 bool ParsedDeclaration::parseTypeSpecifier() {
 
@@ -238,14 +252,55 @@ bool ParsedDeclaration::parseTypeSpecifier() {
             typeSpec = "double";
         } break;
         case Token::Identifier : {
-            typeSpec = lexer.getText();
-            token = lexer.matchToken(Token::Identifier);
+            errorCondition |= parseQualifiedIdentifier();
         } break;
         default : {
             errorCondition = true;
         }
     }
     return errorCondition;
+}
+
+
+// ==============================================================
+// qualified-identifier   : identifier
+//                        | identifier::qualified-identifier
+// ==============================================================
+bool ParsedDeclaration::parseQualifiedIdentifier() {
+    // TODO: do we actually want to shove the whole typeSpecifier into a string? 
+    // We should probably do something better
+
+    // We should see an identifier first
+    Token::e token = lexer.getToken();
+    if (token != Token::Identifier) {
+        // This is an error condition
+        return true;
+    }
+    typeSpec += lexer.getText();
+    
+    // Next two tokens must be ::
+    // Or something completely different
+    token = lexer.matchToken(Token::Identifier);
+    if (token != Token::Colon) {
+        // Reached the end of the identifier, move on
+        return false;
+    }
+
+    // Otherwise, we have a colon.
+    typeSpec += lexer.getText();
+    token = lexer.matchToken(Token::Colon);
+
+    // If this one isn't also a colon, something went bad    
+    if (token != Token::Colon) {
+        // Error condition has occcurred
+        return true;
+    }
+
+    // Advance the lexer and do it all over again
+    typeSpec += lexer.getText();
+    lexer.matchToken(Token::Colon);
+
+    return parseQualifiedIdentifier();
 }
 
 std::string ParsedDeclaration::getTypeSpecifier() const {
@@ -255,7 +310,6 @@ std::string ParsedDeclaration::getTypeSpecifier() const {
 std::string ParsedDeclaration::getVariableName() const {
     return varName;
 }
-
 
 std::vector<int> ParsedDeclaration::getDims() const {
     return dims;

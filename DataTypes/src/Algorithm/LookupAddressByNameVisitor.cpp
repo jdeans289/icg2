@@ -7,6 +7,8 @@
 #include "Type/ArrayDataType.hh"
 #include "Type/PointerDataType.hh"
 #include "Type/EnumDataType.hh"
+#include "Type/StringDataType.hh"
+
 #include "Type/NormalStructMember.hh"
 
 LookupAddressByNameVisitor::LookupAddressByNameVisitor(void * starting_address, std::string full_name) 
@@ -16,22 +18,6 @@ LookupAddressByNameVisitor::LookupAddressByNameVisitor(void * starting_address, 
         : current_search_address(starting_address), name_elems(name_elems) {}
 
 // Look for the matching address
-
-bool LookupAddressByNameVisitor::visitPrimitiveDataType(const DataType * node) {
-    // We're at a leaf, so if there's anything left in the name queue something has gone wrong
-    if (!name_elems.empty()) {
-        std::cerr << "At a leaf type, but there are still name elements left to find." << std::endl;
-        return false;
-    }
-
-    // Yay we found our result!
-
-    // Put the current address and type into the result
-    result.type = node;
-    result.address = current_search_address;
-    
-    return true;
-}
 
 bool LookupAddressByNameVisitor::visitCompositeType(const CompositeDataType * node) {
     if (name_elems.empty()) {
@@ -119,21 +105,22 @@ bool LookupAddressByNameVisitor::visitPointerType(const PointerDataType * node) 
     // TODO: OR IS IT????????
     // what even is a pointer anyway
 
-    if (!name_elems.empty()) {
-        std::cerr << "At a leaf type, but there are still name elements left to find." << std::endl;
-        return false;
-    }
+    return visitLeaf(node);
+}
 
-    // Yay we found our result!
-
-    // Put the current address and type into the result
-    result.type = node;
-    result.address = current_search_address;
-    
-    return true;
+bool LookupAddressByNameVisitor::visitPrimitiveDataType(const DataType * node) {
+    return visitLeaf(node);
 }
 
 bool LookupAddressByNameVisitor::visitEnumeratedType(const EnumDataType * node) {
+    return visitLeaf(node);
+}
+
+bool LookupAddressByNameVisitor::visitStringType(const StringDataType * node) {
+    return visitLeaf(node);
+}
+
+bool LookupAddressByNameVisitor::visitLeaf(const DataType * node) {
     // We're at a leaf, so if there's anything left in the name queue something has gone wrong
     if (!name_elems.empty()) {
         std::cerr << "At a leaf type, but there are still name elements left to find." << std::endl;

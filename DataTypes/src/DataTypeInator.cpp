@@ -3,8 +3,12 @@
 #include "Type/PointerDataType.hh"
 #include "Utils/MutableDeclaration.hh"
 
-DataTypeInator::DataTypeInator () : DataTypeInator(new TypeDictionary){}
-DataTypeInator::DataTypeInator (TypeDictionary * dict) : typeDictionary(dict) {}
+DataTypeInator::DataTypeInator () : typeDictionary(new TypeDictionary) {
+    typeDictionary->addBuiltinTypes();
+}
+
+DataTypeInator::DataTypeInator (TypeDictionary * dict) : typeDictionary(dict) {
+}
 
 const DataType * DataTypeInator::resolve(std::string name) const {
 

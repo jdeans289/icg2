@@ -14,8 +14,6 @@ TEST (ParsedAssignmentTest, parse_int) {
     std::string expected_name = "my_var";
     EXPECT_EQ(expected_name, assignment.getVariableName());
 
-    EXPECT_EQ(ParsedAssignment::INT, assignment.getValueType());
-
     Value * value = assignment.getValue();
     ASSERT_TRUE(value != NULL);
 
@@ -55,7 +53,7 @@ TEST (ParsedAssignmentTest, parse_string) {
 
     StringValue * str_value = dynamic_cast<StringValue *> (value);
     ASSERT_TRUE(str_value != NULL);
-    EXPECT_EQ("this is my string literal value", str_value->toString());
+    EXPECT_EQ("\"this is my string literal value\"", str_value->toString());
 }
 
 TEST (ParsedAssignmentTest, parse_pointer_val) {
@@ -72,7 +70,24 @@ TEST (ParsedAssignmentTest, parse_pointer_val) {
 
     StringValue * str_value = dynamic_cast<StringValue *> (value);
     ASSERT_TRUE(str_value != NULL);
-    EXPECT_EQ("&my_other_val", str_value->toString());
+    EXPECT_EQ("&my_other_val", str_value->getRawString());
+}
+
+TEST (ParsedAssignmentTest, parse_complex_ptr_val) {
+    // ARRANGE
+    // ACT
+    ParsedAssignment assignment("my_var = &my_other_val.a.b[3].c;");
+
+    // ASSERT
+    std::string expected_name = "my_var";
+    EXPECT_EQ(expected_name, assignment.getVariableName());
+
+    Value * value = assignment.getValue();
+    ASSERT_TRUE(value != NULL);
+
+    StringValue * str_value = dynamic_cast<StringValue *> (value);
+    ASSERT_TRUE(str_value != NULL);
+    EXPECT_EQ("&my_other_val.a.b[3].c", str_value->getRawString());
 }
 
 TEST (ParsedAssignmentTest, parse_error) {

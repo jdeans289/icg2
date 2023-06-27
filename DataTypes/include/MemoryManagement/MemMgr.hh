@@ -56,16 +56,21 @@ class MemMgr {
 //    void write_var( std::ostream& out_s, const char* var_name );
 //    void write_var( std::ostream& out_s, void* address );
 
+    // Various entry points
     void write_checkpoint( std::ostream& out_s);
     void write_checkpoint( const std::string& filename);
     void write_checkpoint( std::ostream& out_s, const std::string& variableName );
     void write_checkpoint( const std::string& filename, const std::string& variableName);
     void write_checkpoint( std::ostream& out_s, std::vector<const char*>& variableNameList);
     void write_checkpoint( const std::string& filename, std::vector<const char*>& variableNameList);
+
+    // The actual checkpoint
     void write_checkpoint(std::ostream& outStream, std::vector<AllocInfo*>& dependencies);
 
 
+    // Various entry points
     void restore_checkpoint(const std::string& filename);
+    // The actual checkpoint
     void restore_checkpoint( std::istream& in_s);
 
 //    int init_from_checkpoint( const char* filename);

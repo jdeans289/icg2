@@ -41,6 +41,12 @@ class ClassFive {
     static int count;
 };
 
+class ClassSix {
+    public:
+    const char * char_ptr;
+    std::string str;
+};
+
 // An Allocator
 template <typename T>
 void* construct (int num) {
@@ -63,6 +69,9 @@ bool addClassTwoToTypeDictionary(DataTypeInator* dataTypeInator);
 bool addClassThreeToTypeDictionary(DataTypeInator* dataTypeInator);
 bool addClassFourToTypeDictionary(DataTypeInator* dataTypeInator);
 bool addClassFiveToTypeDictionary(DataTypeInator* dataTypeInator);
+bool addClassFiveToTypeDictionary(DataTypeInator* dataTypeInator);
+bool addClassSixToTypeDictionary(DataTypeInator* dataTypeInator);
+
 
 enum DayOfWeek {
     Sunday    = 1,

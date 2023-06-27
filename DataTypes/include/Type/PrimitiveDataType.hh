@@ -135,18 +135,6 @@ public:
         return visitor->visitPrimitiveDataType(this);
     }
 
-    // bool lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const {
-    //     // This is a leaf. If offset isn't 0, there's no where else to go so bad luck
-    //     if (offset != 0) {
-    //         std::cerr << "Something went wrong - at leaf in search in " << __FILE__ <<  ":" <<  __FUNCTION__ << " but offset is not 0." << std::endl;
-    //         return false;
-    //     }
-
-    //     // TODO: We need to compare expected type
-
-    //     return true;
-    // }
-
 
     /* ==================================================================== */
     /*                       CLASS SPECIFIC INTERFACE                       */
@@ -200,7 +188,6 @@ template <> void PrimitiveDataType<void>::clearValue(void * address) const;
 template <> void PrimitiveDataType<void>::assignValue(void * address, Value * value) const;
 template <> void PrimitiveDataType<void>::printValue(std::ostream &s, void *address ) const;
 template <> Value * PrimitiveDataType<void>::getValue(void *address) const;
-// template <> void PrimitiveDataType<void>::checkpointValue(std::ostream &s, std::string var_name, void *address ) const;
 
 
 

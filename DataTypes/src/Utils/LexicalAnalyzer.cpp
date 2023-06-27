@@ -15,16 +15,19 @@ struct {
     {"signed",   Token::Signed},
     {"unsigned", Token::Unsigned},
     {"float",    Token::Float},
-    {"double",   Token::Double}
+    {"double",   Token::Double},
+    {"const",    Token::Const}
 };
 
 typedef enum {
-    BEGINNING        = 0,
-    ID_COLLECTION    = 1,
-    INT_COLLECTION   = 2,
-    DONE             = 3
+    BEGINNING               ,
+    ID_COLLECTION           ,
+    NUM_LITERAL_COLLECTION  ,
+    STR_LITERAL_COLLECTION  ,
+    DONE             
 } LexState;
 
+// why
 #define NKEYS ( sizeof keytable / sizeof keytable[0] )
 
 
@@ -81,8 +84,8 @@ Token::e LexicalAnalyzer::nextToken() {
                 } else if ( isdigit( nextChar )) {
                     lexemeText = nextChar;
                     inStream >> std::noskipws >> nextChar;
-                    token = Token::Integer;
-                    state = INT_COLLECTION;
+                    token = Token::IntegerLiteral;
+                    state = NUM_LITERAL_COLLECTION;
                 } else if ( isspace( nextChar )) {
                     inStream >> std::noskipws >> nextChar;
                 } else if ( nextChar == '*')  {
@@ -120,6 +123,41 @@ Token::e LexicalAnalyzer::nextToken() {
                     inStream >> std::noskipws >> nextChar;
                     token = Token::RightAngle;
                     state = DONE;                            
+                } else if ( nextChar == ':')  {
+                    lexemeText = nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    token = Token::Colon;
+                    state = DONE;                            
+                } else if ( nextChar == ';')  {
+                    lexemeText = nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    token = Token::Semicolon;
+                    state = DONE;                            
+                } else if ( nextChar == '=')  {
+                    lexemeText = nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    token = Token::EqSign;
+                    state = DONE;                            
+                } else if ( nextChar == '\"') {
+                    lexemeText = nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    token = Token::StringLiteral;
+                    state = STR_LITERAL_COLLECTION;
+                } else if ( nextChar == '&') {
+                    lexemeText = nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    token = Token::Ampersand;
+                    state = DONE;
+                } else if ( nextChar == ',') {
+                    lexemeText = nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    token = Token::Comma;
+                    state = DONE;
+                } else if ( nextChar == '.') {
+                    lexemeText = nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    token = Token::Period;
+                    state = DONE;
                 } else  {
                     token = Token::Error;
                     state = DONE;
@@ -141,11 +179,33 @@ Token::e LexicalAnalyzer::nextToken() {
                 state = DONE;
             } break;
 
-            case INT_COLLECTION : {
+            case NUM_LITERAL_COLLECTION : {
+                // TODO: Support other formats, such as exponential (1e10)
                 while (!inStream.eof() && isdigit(nextChar)) {
                     lexemeText += nextChar;
                     inStream >> std::noskipws >> nextChar;
                 }
+                if (nextChar == '.') {
+                    // If a . is present, switch to float literal parsing and keep going
+                    token = Token::FloatLiteral;
+                    lexemeText += nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    while (!inStream.eof() && isdigit(nextChar)) {
+                        lexemeText += nextChar;
+                        inStream >> std::noskipws >> nextChar;
+                    }
+                }
+                state = DONE;
+            } break;
+
+            case STR_LITERAL_COLLECTION : {
+                while (!inStream.eof() && nextChar != '\"') {
+                    lexemeText += nextChar;
+                    inStream >> std::noskipws >> nextChar;
+                    // TODO: HANDLE ESCAPE CHARACTERS
+                }
+                lexemeText += nextChar;
+                inStream >> std::noskipws >> nextChar;
                 state = DONE;
             } break;
 

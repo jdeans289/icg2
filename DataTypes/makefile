@@ -27,6 +27,7 @@ LIBOBJS = \
 	${OBJDIR}/Type/ArrayDataType.o \
 	${OBJDIR}/Type/PointerDataType.o \
 	${OBJDIR}/Type/PrimitiveDataType.o \
+	${OBJDIR}/Type/StringDataType.o \
 	${OBJDIR}/Type/DataType.o \
 	${OBJDIR}/MemoryManagement/AllocInfo.o \
 	${OBJDIR}/MemoryManagement/MemMgr.o \

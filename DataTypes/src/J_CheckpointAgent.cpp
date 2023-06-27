@@ -4,6 +4,7 @@
 #include "Utils/ParsedDeclaration.hh"
 #include "Type/DataType.hh"
 #include "Value/PointerValue.hh"
+#include "Value/StringValue.hh"
 #include "Algorithm/CheckpointVisitor.hh"
 #include "Algorithm/LookupAddressByNameVisitor.hh"
 #include "Algorithm/LookupNameByAddressVisitor.hh"
@@ -242,11 +243,14 @@ bool J_CheckpointAgent::restoreAssignment(std::string assignment_string, const s
 
     // Special case - pointer :(
     if (this_type->getTypeClass() == TypeClass::POINTER ) {
-        // this will return a string that says &varname
+        // this will return a string that says "&varname"
         // There's a better design than this
         // But we gotta handle special cases one way or another
-        // Chop off the first character
-        std::string ptr_varname = this_value->toString().substr(1);
+
+        // This is unsafe O_o
+        StringValue * ptr_name_value = (StringValue *) this_value;
+
+        std::string ptr_varname = ptr_name_value->getRawString().substr(1);
         void * raw_addr = lookupPointer(ptr_varname, additional_search_allocs);
         if (raw_addr == NULL) {
             throw std::logic_error("Could not find variable named " + full_varname);

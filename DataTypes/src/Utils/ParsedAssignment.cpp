@@ -1,19 +1,21 @@
 #include "Utils/ParsedAssignment.hh"
 
+#include "Utils/LexicalAnalyzer.hh"
+
 #include "Value/IntegerValue.hh"
 #include "Value/FloatingPointValue.hh"
 #include "Value/StringValue.hh"
 
 
-const ParsedAssignment::RegexTable ParsedAssignment::regex_table = {
-     {  std::regex("-?[0-9]+"), INT  },
-     {  std::regex("0[x|X][a-f0-9]+"), INT  },  
-     {  std::regex("-?[0-9]*\.[0-9]+"), FLOAT  },  
-     {  std::regex("\".*\""), STRING  },
-     {  std::regex("&.+"), POINTER  }
-};
+// const ParsedAssignment::RegexTable ParsedAssignment::regex_table = {
+//      {  std::regex("-?[0-9]+"), INT  },
+//      {  std::regex("0[x|X][a-f0-9]+"), INT  },  
+//      {  std::regex("-?[0-9]*\.[0-9]+"), FLOAT  },  
+//      {  std::regex("\".*\""), STRING  },
+//      {  std::regex("&.+"), POINTER  }
+// };
 
-ParsedAssignment::ParsedAssignment (std::string assignment_string) : val (NULL), val_type (INVALID) {
+ParsedAssignment::ParsedAssignment (std::string assignment_string) : val (NULL) {
     try {
         parse(assignment_string);
     } catch (std::exception& e) {
@@ -46,62 +48,50 @@ static inline void trim(std::string &s) {
 }
 
 void ParsedAssignment::parse(std::string assignment_string) {
+
     // format should be
     // <varname> = <value> ;
 
-    size_t eq_pos = assignment_string.find("=");
-    size_t semicolon_pos = assignment_string.find(";");
-    if (eq_pos == std::string::npos) {
-        throw std::logic_error ("Assignment does not contain an '=' character, cannot be parsed.");
+    LexicalAnalyzer lexer;
+    lexer.load(assignment_string);
+
+    // Everything until the EqSign is part of the varname
+    while (lexer.getToken() != Token::EqSign) {
+        var_name += lexer.getText();
+        lexer.nextToken();
     }
-    if (semicolon_pos == std::string::npos) {
-        throw std::logic_error ("Assignment does not contain an ';' character, cannot be parsed.");
-    }
 
-    var_name = assignment_string.substr(0, eq_pos);
-    trim(var_name);
+    Token::e value_type = lexer.nextToken();
+    std::string tokenText = lexer.getText();
 
-    // Make some representation for the value
-    size_t value_length = semicolon_pos - (eq_pos + 1);
-    val_str = assignment_string.substr(eq_pos + 1, value_length);
-    trim(val_str);
-
-    val_type = matchType(val_str);
-    
-    switch (val_type) {
-        case INT: {
-            val = new IntegerValue (stoi(val_str));
+    switch(value_type) {
+        case Token::IntegerLiteral: {
+            val = new IntegerValue (stoi(tokenText));
         }
         break;
-        case FLOAT: {
-            val = new FloatingPointValue (stod(val_str));
+        case Token::FloatLiteral: {
+            val = new FloatingPointValue (stod(tokenText));
         }
         break;
-        case POINTER: {
+        case Token::Ampersand : {
             // Put this in a string i guess
-            val = new StringValue(val_str.c_str());
+            Token::e nextToken;
+            while ((nextToken = lexer.nextToken()) != Token::Semicolon) {
+                tokenText += lexer.getText();
+            }
+            val = new StringValue(tokenText);
         }
         break;
-        case STRING: {
+        case Token::StringLiteral: {
             // Cut off the quotation marks 
-            val = new StringValue(val_str.substr(1, val_str.size()-2).c_str());
+            val = new StringValue(tokenText.substr(1, tokenText.size()-2));
         }
         break;
-        case INVALID: {
-            std::string message = "Cannot parse the string \"" + val_str + "\" as any kind of value.";
+        default: {
+            std::string message = "Cannot parse the string \"" + tokenText + "\" as any kind of value.";
             throw std::logic_error (message);
         }
     }
-}
-
-ParsedAssignment::ValueType ParsedAssignment::matchType (std::string value) {
-    for (auto item : regex_table) {
-        auto regex = item.first;
-        if (std::regex_match(value, regex)) {
-            return item.second;
-        }
-    }
-    return INVALID;
 }
 
 std::string ParsedAssignment::getVariableName() {
@@ -114,8 +104,4 @@ std::string ParsedAssignment::getValueRawString() {
 
 Value * ParsedAssignment::getValue() {
     return val;
-}
-
-ParsedAssignment::ValueType ParsedAssignment::getValueType() {
-    return val_type;
 }

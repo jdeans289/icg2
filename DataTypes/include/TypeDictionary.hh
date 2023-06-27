@@ -39,8 +39,17 @@ class TypeDictionary {
      */
     ~TypeDictionary();
 
+    // helper
+    // This probably doesn't belong here
+    void addBuiltinTypes();
+    
     private:
     bool is_valid;
+
+
+
     std::map<std::string, BaseType*> typeDictionary;
-    typedef std::map<std::string, BaseType*>::iterator TypeDictionaryIterator;
+
+    // TODO: IMPLEMENT THIS
+    std::map<std::string, TypeDictionary *> namespaceDictionary;
 };

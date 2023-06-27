@@ -22,6 +22,7 @@ class LookupNameByAddressVisitor : public DataTypeVisitor {
         virtual bool visitArrayType(const ArrayDataType * node) override;
         virtual bool visitPointerType(const PointerDataType * node) override;
         virtual bool visitEnumeratedType(const EnumDataType * node) override;
+        virtual bool visitStringType (const StringDataType * node) override;
 
         // LookupAddress Interface
         std::string getResult();
@@ -41,4 +42,5 @@ class LookupNameByAddressVisitor : public DataTypeVisitor {
 
         // Helper
         bool typeCheck(const DataType * node);
+        bool visitLeaf(const DataType * node);
 };

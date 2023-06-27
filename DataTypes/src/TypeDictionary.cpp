@@ -1,6 +1,7 @@
 // #include "Type/DataType.hh"
 #include "TypeDictionary.hh"
 #include "Type/PrimitiveDataType.hh"
+#include "Type/StringDataType.hh"
 #include "Type/ArrayDataType.hh"
 #include "Type/PointerDataType.hh"
 
@@ -12,6 +13,9 @@
 // MEMBER FUNCTION
 TypeDictionary::TypeDictionary() {
 
+}
+
+void TypeDictionary::addBuiltinTypes() {
     // Add builtin types.
     addTypeDefinition("void", new PrimitiveDataType<void>() );
     addTypeDefinition("char", new PrimitiveDataType<char>() );
@@ -29,16 +33,18 @@ TypeDictionary::TypeDictionary() {
     addTypeDefinition("double", new PrimitiveDataType<double>() );
     // FIXME: add the other goofy types (e.g., uint8 ) that were added via the old lexical analyzer.
 
+    // TODO: THIS DOES NOT BELONG HERE
+    // NEED TO MAKE A MORE RIGOROUS WAY OF HANDLING NAMESPACES
+    addTypeDefinition("std::string", new StringDataType("std::string"));
 }
 
 
-// MEMBER FUNCTION
 
-// I think this violates the SRP
-// should move most of this into a separate class, and just keep this class purely managing the TypeDictionary
+
+// MEMBER FUNCTION
 const BaseType* TypeDictionary::lookup(std::string name ) {
 
-    TypeDictionaryIterator it = typeDictionary.find(name);
+    auto it = typeDictionary.find(name);
 
     if (it == typeDictionary.end()) {
         return NULL;
@@ -65,7 +71,7 @@ void TypeDictionary::addTypeDefinition(std::string name, BaseType * typeSpec)  {
 bool TypeDictionary::validate() {
 
     is_valid = true;
-    for ( TypeDictionaryIterator it  = typeDictionary.begin();
+    for ( auto it  = typeDictionary.begin();
           it != typeDictionary.end();
           it++ ) {
 
@@ -82,7 +88,7 @@ bool TypeDictionary::validate() {
 std::string TypeDictionary::toString() {
     std::ostringstream oss;
 
-    for ( TypeDictionaryIterator it = typeDictionary.begin();
+    for ( auto it = typeDictionary.begin();
           it != typeDictionary.end();
           it++ ) {
 
@@ -96,7 +102,7 @@ std::string TypeDictionary::toString() {
 TypeDictionary::~TypeDictionary() {
 
     // Delete all DataTypes in the map.
-    for ( TypeDictionaryIterator it = typeDictionary.begin(); it != typeDictionary.end(); it++ ) {
+    for ( auto it = typeDictionary.begin(); it != typeDictionary.end(); it++ ) {
         delete it->second;
     }
 }

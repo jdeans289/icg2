@@ -11,7 +11,10 @@
 class TypeDictionaryTest : public ::testing::Test {
     protected:
     TypeDictionary *typeDictionary;
-    TypeDictionaryTest() { typeDictionary = new TypeDictionary; }
+    TypeDictionaryTest() { 
+        typeDictionary = new TypeDictionary;
+        typeDictionary->addBuiltinTypes();
+    }
     ~TypeDictionaryTest() { delete typeDictionary; }
     void SetUp() {}
     void TearDown() {}

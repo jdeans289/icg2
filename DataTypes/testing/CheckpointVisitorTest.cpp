@@ -4,6 +4,10 @@
 #include "Algorithm/CheckpointVisitor.hh"
 
 #include "DataTypeTestSupport.hh"
+#include "Value/PointerValue.hh"
+#include "Value/StringValue.hh"
+
+
 
 
 #include "gtest/gtest.h"
@@ -130,4 +134,41 @@ TEST_F(CheckpointVisitorTest, composite3) {
     verifyDoubleValue(results[1], "var_to_checkpoint.pos[1]", var_to_checkpoint.pos[1]);
     verifyDoubleValue(results[2], "var_to_checkpoint.vel[0]", var_to_checkpoint.vel[0]);
     verifyDoubleValue(results[3], "var_to_checkpoint.vel[1]", var_to_checkpoint.vel[1]);
+}
+
+
+TEST_F(CheckpointVisitorTest, write_checkpoint_strings) {
+    // ARRANGE
+    addClassSixToTypeDictionary(&dataTypeInator);
+    const DataType * data_type = dataTypeInator.resolve("ClassSix");
+
+    const char * str_to_test_with =  "A string literal that we probably can't actually checkpoint";
+
+
+    ClassSix var_to_checkpoint;
+    
+    var_to_checkpoint.str = "Hello world :)";
+    var_to_checkpoint.char_ptr = str_to_test_with;
+
+    // ACT
+    CheckpointVisitor visitor("var_to_checkpoint", &var_to_checkpoint);
+    visitor.go(data_type);
+
+    // ASSERT
+    auto results = visitor.getResults();
+    ASSERT_EQ(2, results.size());
+
+    auto leaf = results[0];
+    EXPECT_EQ("var_to_checkpoint.char_ptr", leaf.name_stack.toString());
+
+    PointerValue * ptr_val = dynamic_cast <PointerValue *> (leaf.value);
+    ASSERT_TRUE(ptr_val != NULL);
+    ASSERT_EQ (str_to_test_with, ptr_val->getPointer());    
+
+    leaf = results[1];
+    EXPECT_EQ("var_to_checkpoint.str", leaf.name_stack.toString());
+    StringValue * str_val = dynamic_cast <StringValue *> (leaf.value);
+    ASSERT_TRUE(str_val != NULL);
+    ASSERT_EQ ("\"Hello world :)\"", str_val->toString());    
+
 }

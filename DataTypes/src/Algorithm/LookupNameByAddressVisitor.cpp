@@ -7,6 +7,8 @@
 #include "Type/ArrayDataType.hh"
 #include "Type/PointerDataType.hh"
 #include "Type/EnumDataType.hh"
+#include "Type/StringDataType.hh"
+
 #include "Type/NormalStructMember.hh"
 
 LookupNameByAddressVisitor::LookupNameByAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address) 
@@ -26,20 +28,7 @@ LookupNameByAddressVisitor::LookupNameByAddressVisitor(std::string starting_name
 
 // Look for the matching address
 
-bool LookupNameByAddressVisitor::visitPrimitiveDataType(const DataType * node) {
-    // std::cout << "Visiting PrimitiveDataType named " << node->toString() << std::endl;
-
-    if (search_offset != 0) {
-        std::cerr << "Got to a leaf, but the offset is not 0. Something went wrong. Current name stack: " << name_stack.toString() << "\tCurrent offset: " << search_offset << std::endl;
-        return false;
-    }
-
-    return typeCheck(node);
-}
-
 bool LookupNameByAddressVisitor::visitCompositeType(const CompositeDataType * node) {
-    // std::cout << "Visiting CompositeDataType named " << node->getTypeSpecName() << std::endl;
-
     if (search_offset == 0) {
         // Address found!
         // Check the type and return
@@ -140,23 +129,26 @@ bool LookupNameByAddressVisitor::visitArrayType(const ArrayDataType * node) {
     return subType->accept(this);
 }
 
+bool LookupNameByAddressVisitor::visitPrimitiveDataType(const DataType * node) {
+    return visitLeaf(node);
+}
+
 bool LookupNameByAddressVisitor::visitPointerType(const PointerDataType * node) {
     // A pointer is a leaf type
-    // std::cout << "Visiting PointerDataType named " << node->toString() << std::endl;
-
-    if (search_offset != 0) {
-        std::cerr << "Got to a leaf, but the offset is not 0. Something went wrong. Current name stack: " << name_stack.toString() << "\tCurrent offset: " << search_offset << std::endl;
-        return false;
-    }
-
-    // Yay! We found the variable!
-    return typeCheck(node);
+    return visitLeaf(node);
 }
 
 bool LookupNameByAddressVisitor::visitEnumeratedType(const EnumDataType * node) {
     // An enum is a leaf type
-    // std::cout << "Visiting EnumDataType named " << node->toString() << std::endl;
+    return visitLeaf(node);
+}
 
+bool LookupNameByAddressVisitor::visitStringType (const StringDataType * node) {
+    return visitLeaf(node);
+}
+
+
+bool LookupNameByAddressVisitor::visitLeaf(const DataType * node) {
     if (search_offset != 0) {
         std::cerr << "Got to a leaf, but the offset is not 0. Something went wrong. Current name stack: " << name_stack.toString() << "\tCurrent offset: " << search_offset << std::endl;
         return false;
@@ -166,21 +158,19 @@ bool LookupNameByAddressVisitor::visitEnumeratedType(const EnumDataType * node) 
     return typeCheck(node);
 }
 
-std::string LookupNameByAddressVisitor::getResult() {
-    return name_stack.toString();
-}
 
 bool LookupNameByAddressVisitor::typeCheck(const DataType * node) {
     // Check equality by comparing toString
     // This is not great but seems ok
     if (search_type != NULL && node->toString() != search_type->toString()) {
-            // std::cout << "Found the search offset at leaf at wrong type. Name:" << name_stack.toString() << std::endl;
-            // std::cout << "Expected type: " << search_type->toString() << "\tFound type: " << node->toString() << std::endl;
-
         // This is not necessarily an error, don't print anything
         return false;
     }        
 
     // Yay! We found it!
     return true;
+}
+
+std::string LookupNameByAddressVisitor::getResult() {
+    return name_stack.toString();
 }

@@ -105,9 +105,6 @@ void PointerDataType::clearValue(void * address) const {
 
 // MEMBER FUNCTION
 void PointerDataType::assignValue(void * address, Value*value) const {
-
-    // sus --jackie
-
     PointerValue * pointer_value_p = dynamic_cast<PointerValue*>(value);
     if (pointer_value_p) {
         *(void**)address =  pointer_value_p->getPointer();
