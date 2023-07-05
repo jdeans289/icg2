@@ -1,0 +1,31 @@
+cmake_minimum_required(VERSION 3.1)
+
+macro(add_datatype_test TESTNAME)
+    # Create an executable
+    add_executable(${TESTNAME} ${TESTNAME}.cpp ${ARGN})
+    # Link in gtest and the decl library
+    target_link_libraries(${TESTNAME} gtest gmock gtest_main decl)
+    # Tell cmake this test exists and how to run it
+    add_test(NAME ${TESTNAME} 
+             COMMAND ${TESTNAME})  
+endmacro()
+
+add_datatype_test(AllocInfoTest)
+add_datatype_test(ArrayTypeSpecTest)
+add_datatype_test(CheckpointVisitorTest DataTypeTestSupport.cpp)
+add_datatype_test(CompTypeSpecTest DataTypeTestSupport.cpp)
+add_datatype_test(DataTypeInatorTest DataTypeTestSupport.cpp)
+add_datatype_test(DeclarationBuilderTest)
+add_datatype_test(EnumTypeSpecTest)
+add_datatype_test(J_CheckpointAgentTest DataTypeTestSupport.cpp)
+add_datatype_test(LexicalAnalyzerTest)
+add_datatype_test(LookupAddressByNameVisitorTest DataTypeTestSupport.cpp)
+add_datatype_test(LookupNameByAddressVisitorTest DataTypeTestSupport.cpp)
+add_datatype_test(MutableDeclarationTest)
+add_datatype_test(MutableVariableNameTest)
+add_datatype_test(ParsedAssignmentTest)
+add_datatype_test(ParsedDeclarationTest)
+add_datatype_test(PointerTypeSpecTest)
+add_datatype_test(PrimTypeSpecTest)
+add_datatype_test(StringDataTypeTest)
+add_datatype_test(TypeDictionaryTest)

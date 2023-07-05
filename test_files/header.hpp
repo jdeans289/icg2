@@ -13,8 +13,6 @@ public:
     // virtual void method() const = 0;
     static int static_method();
 
-    void f() throw (int);
-
     static const int my_static_field;  /* m is a comment */
 
     int my_int; 

@@ -20,7 +20,6 @@ class AllocInfoTest : public ::testing::Test {
    ================================================================================
 */
 TEST_F(AllocInfoTest, instantiation1) {
-
     bool construction_result = true;
     try {
         AllocInfo * allocInfo = new AllocInfo("Apple", dataTypeInator->resolve("double"));

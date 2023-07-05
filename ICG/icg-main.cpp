@@ -5,7 +5,7 @@
 #include <clang-c/Index.h>  // libclang
 
 
-#include "clang-parse.hh"
+#include "icg-main.hh"
 #include "add-type-templates.hh"
 #include "io_template_engine/io_template_engine.hh"
 
@@ -181,7 +181,7 @@ int main(int argc, char ** argv)
     CXTranslationUnit unit = clang_parseTranslationUnit(index,
                                                 /* source_filename= */      filename, 
                                                 /* cmd_line_args= */        command_line_args, 
-                                                /* num_cmd_line_args= */    argc, 
+                                                /* num_cmd_line_args= */    ARG_NUM, 
                                                 /* unsaved_files= */        nullptr, 
                                                 /* num_unsaved_files= */    0, 
                                                 /* options= */              CXTranslationUnit_SkipFunctionBodies);

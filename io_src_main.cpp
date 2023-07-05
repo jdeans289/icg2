@@ -15,7 +15,6 @@ int main () {
     
     mm.restore_checkpoint("checkpoint_filename.txt");
     for (int i = 0; i < 5; i++) {
-        my_class_instance->my_nested_class.my_arr[i] = i+5;
         std::cout << "my_class_instance->my_nested_class.arr[" << i << "] = " << my_class_instance->my_nested_class.my_arr[i] << std::endl;
     }
 }

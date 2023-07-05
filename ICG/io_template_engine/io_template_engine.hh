@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 #include <sstream>
-#include "../clang-parse.hh"
+#include "../icg-main.hh"
 
 /******************************************/
 /*       String manipulation helpers      */
