@@ -23,6 +23,8 @@ jobs:
               dnf install -y llvm llvm-devel llvm-static cmake clang-devel python3-devel
         - name: Checkout
           uses: actions/checkout@v3
+        - name: Checkout submodules
+          uses: textbook/git-checkout-submodule-action@master
         - name: Build
           run: |
             mkdir build && cd build && cmake .. && make -j16
