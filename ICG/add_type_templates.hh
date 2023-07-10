@@ -27,7 +27,6 @@ void* construct (int num) {
 // Object constructed with placement new must call the destructor explicitly (https://isocpp.org/wiki/faq/dtors#placement-new)
 template <typename T>
 void destruct (void* address) {
-    // free(address);
     T* temp = static_cast<T*> (address);
     temp->~T();
 }

@@ -6,3 +6,4 @@ io_src_main
 io_src.hh
 clang-parse
 build/
+io_*

@@ -25,6 +25,7 @@ class TypeDictionary {
      */
     void addTypeDefinition(std::string name, BaseType * typeSpec);
 
+
     /**
      */
     bool validate();
@@ -46,10 +47,12 @@ class TypeDictionary {
     private:
     bool is_valid;
 
-
-
     std::map<std::string, BaseType*> typeDictionary;
-
-    // TODO: IMPLEMENT THIS
     std::map<std::string, TypeDictionary *> namespaceDictionary;
+
+    // Helpers to avoid having to parse the declaration multiple times
+    void addTypeDefinition(std::deque<std::string> nameParts, BaseType * typeSpec);
+    const BaseType* lookup(std::deque<std::string> nameParts);
+
+
 };

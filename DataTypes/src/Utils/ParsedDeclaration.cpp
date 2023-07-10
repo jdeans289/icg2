@@ -267,8 +267,6 @@ bool ParsedDeclaration::parseTypeSpecifier() {
 //                        | identifier::qualified-identifier
 // ==============================================================
 bool ParsedDeclaration::parseQualifiedIdentifier() {
-    // TODO: do we actually want to shove the whole typeSpecifier into a string? 
-    // We should probably do something better
 
     // We should see an identifier first
     Token::e token = lexer.getToken();
@@ -276,7 +274,10 @@ bool ParsedDeclaration::parseQualifiedIdentifier() {
         // This is an error condition
         return true;
     }
-    typeSpec += lexer.getText();
+    // Add the token to the typespec and the qualifiedNameParts list
+    std::string identifier = lexer.getText();
+    qualifiedTypeNameParts.push_back(identifier);
+    typeSpec += identifier;
     
     // Next two tokens must be ::
     // Or something completely different
@@ -306,6 +307,11 @@ bool ParsedDeclaration::parseQualifiedIdentifier() {
 std::string ParsedDeclaration::getTypeSpecifier() const {
     return typeSpec;
 }
+
+std::deque<std::string> ParsedDeclaration::getQualifiedNameParts() const {
+    return qualifiedTypeNameParts;
+}
+
 
 std::string ParsedDeclaration::getVariableName() const {
     return varName;

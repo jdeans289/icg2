@@ -2,15 +2,11 @@
 
 #include "Type/ModifierType.hh"
 #include "DataTypeInator.hh"
-// #include "VarAccessInfo.hh"
 
 #include <stddef.h>
 #include <string>
 #include <stdexcept>
 
-// #define MAX_CONSTRAINED_DIMS 8
-
-// class LexicalAnalyzer;
 
 /**
  */

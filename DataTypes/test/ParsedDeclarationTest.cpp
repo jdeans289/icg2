@@ -109,6 +109,10 @@ TEST(ParsedDeclaration, namespace_string) {
 
     std::string varName = parsedDeclaration.getVariableName();
     EXPECT_EQ( "var", varName );
+
+    auto qualifiedList = parsedDeclaration.getQualifiedNameParts();
+    std::deque<std::string> expected = {"std", "string"};
+    EXPECT_EQ(expected, qualifiedList);
 }
 
 TEST(ParsedDeclaration, arbitrary_namespace) {
@@ -120,16 +124,14 @@ TEST(ParsedDeclaration, arbitrary_namespace) {
 
     std::string varName = parsedDeclaration.getVariableName();
     EXPECT_EQ( "var", varName );
+
+    auto qualifiedList = parsedDeclaration.getQualifiedNameParts();
+    std::deque<std::string> expected = {"A", "B", "C", "D"};
+    EXPECT_EQ(expected, qualifiedList);
 }
 
 TEST(ParsedDeclaration, DISABLED_template_basic) {
 
     ParsedDeclaration parsedDeclaration("MyClass<int> var");
-
-    std::string typeSpecString = parsedDeclaration.getTypeSpecifier();
-    EXPECT_EQ( "int", typeSpecString );
-
-    std::string varName = parsedDeclaration.getVariableName();
-    EXPECT_EQ( "var", varName );
 }
 

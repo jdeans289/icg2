@@ -4,6 +4,7 @@
 #include "Utils/MutableDeclaration.hh"
 
 DataTypeInator::DataTypeInator () : typeDictionary(new TypeDictionary) {
+    // Probably shouldn't do this.
     typeDictionary->addBuiltinTypes();
 }
 
@@ -31,20 +32,16 @@ const DataType * DataTypeInator::resolve(std::string name) const {
 
         if (this_dim == -1) {
             // Pointer case
-            // std::cout << "Creating nested pointer type with subtype " << next_level_decl << std::endl;
             result = new PointerDataType(this, next_level_decl);            
         } else {
             // Constrained dim case
-            // std::cout << "Creating nested array type with subtype " << next_level_decl << " and dimension " << this_dim << std::endl;
             result = new ArrayDataType(this, next_level_decl, this_dim);
         }
 
-        // Should probably validate or something -jackie
         if (!result->validate()) {
             std::cerr << "Validate failed for " << result->toString() << std::endl;
         }
         return result;
-
     }
 }
 

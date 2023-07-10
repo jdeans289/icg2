@@ -7,7 +7,7 @@ macro(add_datatype_test TESTNAME)
     target_link_libraries(${TESTNAME} gtest gmock gtest_main decl)
     # Tell cmake this test exists and how to run it
     add_test(NAME ${TESTNAME} 
-             COMMAND ${TESTNAME})  
+             COMMAND ${TESTNAME} --gtest_output=xml:${TEST_OUTPUT_DIR}/${TESTNAME}.xml)  
 endmacro()
 
 add_datatype_test(AllocInfoTest)
@@ -15,7 +15,6 @@ add_datatype_test(ArrayTypeSpecTest)
 add_datatype_test(CheckpointVisitorTest DataTypeTestSupport.cpp)
 add_datatype_test(CompTypeSpecTest DataTypeTestSupport.cpp)
 add_datatype_test(DataTypeInatorTest DataTypeTestSupport.cpp)
-add_datatype_test(DeclarationBuilderTest)
 add_datatype_test(EnumTypeSpecTest)
 add_datatype_test(J_CheckpointAgentTest DataTypeTestSupport.cpp)
 add_datatype_test(LexicalAnalyzerTest)

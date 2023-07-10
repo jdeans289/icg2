@@ -1,2 +1,2 @@
-add_executable (icg icg-main.cpp icg-main.hh)
+add_executable (icg icg_main.cpp)
 target_link_libraries(icg PUBLIC clang)

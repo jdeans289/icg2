@@ -55,6 +55,8 @@
 
 
 #include "Type/DataType.hh"
+#include "Type/BaseType.hh"
+
 #include "TypeDictionary.hh"
 #include <map>
 

@@ -62,5 +62,21 @@ double
 
 See the issue board for in progress work.
 
+## Build
 
+Use the normal CMake process to build.
+
+```
+mkdir build
+cd build
+cmake ..
+make -j16
+```
+
+Tests are built along with the normal build process (should probably separate that out later).
+
+Run tests through ctest
+```
+
+```
 

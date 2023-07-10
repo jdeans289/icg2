@@ -4,10 +4,8 @@
 #include <fstream>
 #include <clang-c/Index.h>  // libclang
 
-
-#include "icg-main.hh"
-#include "add-type-templates.hh"
-#include "io_template_engine/io_template_engine.hh"
+#include "icg_main.hh"
+#include "add_type_templates.hh"
 
 /************************************/
 /*       FieldInfo Definitions      */
@@ -87,6 +85,7 @@ CXChildVisitResult forwarding_traverse(CXCursor c, CXCursor parent, CXClientData
         return CXChildVisit_Continue;
     }
 
+    // Use polymorphism to go to the right visitor
     BaseVisitor * visitor = reinterpret_cast<BaseVisitor*> (client_data);
     return visitor->traverse(c, parent);
 }
@@ -100,11 +99,11 @@ class FieldVisitor : public BaseVisitor {
     std::vector<FieldInfo> fields;
 
     virtual CXChildVisitResult traverse(CXCursor c, CXCursor parent) {
-        std::cout << "In Field Traverse--------------------------- " << std::endl;
-        std::cout << "\tKind: " << getKindSpelling(c) << std::endl;
-        std::cout << "\tName: " << getCursorSpelling(c) << std::endl;
-        std::cout << "\tType: " << getTypeSpelling(c) << std::endl;
-        std::cout << "------------------------------------------\n" << std::endl;
+        // std::cout << "In Field Traverse--------------------------- " << std::endl;
+        // std::cout << "\tKind: " << getKindSpelling(c) << std::endl;
+        // std::cout << "\tName: " << getCursorSpelling(c) << std::endl;
+        // std::cout << "\tType: " << getTypeSpelling(c) << std::endl;
+        // std::cout << "------------------------------------------\n" << std::endl;
         switch (clang_getCursorKind(c)) {
             case CXCursor_FieldDecl:
                 fields.emplace_back(getCursorSpelling(c), getTypeSpelling(c), getAccessLevel(c));
@@ -123,6 +122,8 @@ class AstVisitor : public BaseVisitor {
     AstVisitor (CXTranslationUnit * unit_ptr) : unit(unit_ptr) {}
 
     std::vector<ClassInfo> classes;
+
+    // TODO: Do we need this?
     CXTranslationUnit * unit;
 
     virtual CXChildVisitResult traverse(CXCursor c, CXCursor parent) {
@@ -134,12 +135,14 @@ class AstVisitor : public BaseVisitor {
 
         // We're looking for top level data types
         // ClassDecl, ClassTemplate, ...
+        // Pass to the correct visitor to handle
         switch (clang_getCursorKind(c)) {
             case CXCursor_ClassDecl:
                 {
                     ClassInfo new_class (getCursorSpelling(c));
+                    // TODO: This needs to be a ClassVisitor, not a field visitor. Need to make sure we don't skip levels to keep the design clean.
                     FieldVisitor fieldVisitor;
-                    std::cout << "Visiting fields for class " << new_class.name << std::endl;
+                    // std::cout << "Visiting fields for class " << new_class.name << std::endl;
                     clang_visitChildren(c, forwarding_traverse, &fieldVisitor);
                     new_class.fields = fieldVisitor.fields;
                     classes.emplace_back(new_class);
@@ -163,19 +166,18 @@ class AstVisitor : public BaseVisitor {
 /*                Main                  */
 /****************************************/
 
-int main(int argc, char ** argv)
-{
-    CXIndex index = clang_createIndex(0, 0);
+int main(int argc, char ** argv) {
 
-    // const int ARG_NUM = 2;
-    // char const * command_line_args[ARG_NUM] = {"-fparse-all-comments", "-I/users/jndeans/trick/include/trick"};
-    // const char * filename = "/users/jndeans/trick/test/SIM_test_varserv/S_source.hh";
-
+    if (argc != 2) {
+        std::cerr << "Usage: icg <headerfile>" << std::endl;
+        exit(-1);
+    }
 
     const int ARG_NUM = 1;
     char const * command_line_args[ARG_NUM] = {"-fparse-all-comments"};
-    const char * filename = "test_files/header.hpp";
+    const char * filename = argv[1];
 
+    CXIndex index = clang_createIndex(0, 0);
 
 
     CXTranslationUnit unit = clang_parseTranslationUnit(index,
@@ -185,35 +187,46 @@ int main(int argc, char ** argv)
                                                 /* unsaved_files= */        nullptr, 
                                                 /* num_unsaved_files= */    0, 
                                                 /* options= */              CXTranslationUnit_SkipFunctionBodies);
-    if (unit == nullptr)
-    {
+    if (unit == nullptr) {
         std::cerr << "Unable to parse translation unit. Quitting." << std::endl;
         exit(-1);
     }
 
+    // This is the data structure we'll use to gather information about the types defined in the header
     AstVisitor visitor(&unit);
 
     CXCursor cursor = clang_getTranslationUnitCursor(unit);
 
+    // Do the thing!
     clang_visitChildren(cursor, forwarding_traverse, &visitor);
 
     clang_disposeTranslationUnit(unit);
     clang_disposeIndex(index);
 
 
+    // Pull the classes that we found out of the visitor
     std::vector<const recursable *> classes_list;
-
     for (const auto& class_info : visitor.classes) {
         classes_list.push_back(&class_info);
-        // std::cout << class_info << std::endl;
     }
 
+    // Write the io_<headerfile> file
     std::ofstream outfile;
-    outfile.open("io_src.hh");
+    outfile.open(makeIOHeaderName(filename));
 
+    // The templates for what the io file should look like live in add-type-templates.hh
     template_dictionary["filename"] = filename;
 
-    outfile << big_format(template_dictionary["top"], template_dictionary, classes_list);
-    
+    // 'big_format' runs the template engine to construct the io file using the templates and data gathered from the AST
+    // TODO: big_format needs a better name @me
+    try {
+        outfile << big_format(template_dictionary["top"], template_dictionary, classes_list);
+    } catch (std::exception& ex) {
+        std::cerr << "IO file format failed." << std::endl;
+        outfile.close();
+        exit(-1);
+    }
+
     outfile.close();
+    exit(0);
 }

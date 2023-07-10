@@ -8,13 +8,8 @@
 #include <map>
 
 #include "utils.hh"
+#include "io_template_engine/io_template_engine.hh"
 
-
-class recursable {
-    public:
-    virtual std::map<std::string, std::string> toDictionary() const = 0;
-    virtual std::vector<const recursable *> nextLevel() const = 0;
-};
 
 class FieldInfo final : public recursable {
     public:

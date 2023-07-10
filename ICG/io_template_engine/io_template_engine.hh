@@ -6,7 +6,6 @@
 #include <vector>
 #include <map>
 #include <sstream>
-#include "../icg-main.hh"
 
 /******************************************/
 /*       String manipulation helpers      */
@@ -45,13 +44,16 @@ static inline std::vector<std::string> split (const std::string& str, const char
     return ret;
 }
 
+/******************************************/
+/*       Token replacement utilities      */
+/******************************************/
 
 int get_next_token (const std::string& format, std::string& token) {
     int start_pos = format.find(std::string("{{"), 0);
     if (start_pos == std::string::npos) return -1;
     int end_pos = format.find("}}", 0);
 
-    if (end_pos == std::string::npos || end_pos < start_pos) { throw std::runtime_error("Token is incorrect: " + format); }
+    if (end_pos == std::string::npos || end_pos < start_pos) { throw std::runtime_error("Found token missing an end bracket: " + format); }
 
     token = format.substr(start_pos+2, end_pos-start_pos-2);
 
@@ -88,7 +90,21 @@ std::string replace_token(const std::string& full, const std::string& token_name
     return result;
 }
 
+/******************************************/
+/*             Data Structures            */
+/******************************************/
+
 typedef std::map<std::string, std::string> Dictionary;
+
+class recursable {
+    public:
+    virtual std::map<std::string, std::string> toDictionary() const = 0;
+    virtual std::vector<const recursable *> nextLevel() const = 0;
+};
+
+/*************************************************************/
+/*             Entry point for io_template_engine            */
+/*************************************************************/
 
 std::string big_format(const std::string& fmt_string, const Dictionary& token_dictionary, const std::vector<const recursable *>& recursable_list) {
     std::string result_string = fmt_string;

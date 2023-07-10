@@ -5,6 +5,7 @@
 #include "Type/CompositeDataType.hh"
 #include "Value/CompositeValue.hh"
 #include "Type/PrimitiveDataType.hh"
+#include "Type/StringDataType.hh"
 #include "DataTypeTestSupport.hh"
 
 // Framework
@@ -131,3 +132,50 @@ TEST_F(TypeDictionaryTest, addTypeDefinition_2) {
     EXPECT_EQ( 1, test_result);
 }
 
+
+TEST_F(TypeDictionaryTest, namespaces_lookup) {
+    // ARRANGE
+    // std::string is in the builtins
+
+    // ACT
+    const DataType * type = typeDictionary->lookup("std::string");
+
+    // ASSERT
+    ASSERT_TRUE(type != NULL);
+    ASSERT_EQ("std::string", type->toString());
+}
+
+
+TEST_F(TypeDictionaryTest, namespaces_definition) {
+    // ARRANGE
+    typeDictionary->addTypeDefinition("A::B::C::D", new PrimitiveDataType<double>());
+
+    // ACT
+    const DataType * type = typeDictionary->lookup("A::B::C::D");
+
+    // ASSERT
+    ASSERT_TRUE(type != NULL);
+    ASSERT_EQ("double", type->toString());
+}
+
+TEST_F(TypeDictionaryTest, namespaces_failed_lookup) {
+    // ARRANGE
+    typeDictionary->addTypeDefinition("A::B::C::D", new PrimitiveDataType<double>());
+
+    // ACT
+    const DataType * type = typeDictionary->lookup("A::B::no_such_namespace");
+
+    // ASSERT
+    ASSERT_TRUE(type == NULL);
+}
+
+TEST_F(TypeDictionaryTest, namespaces_failed_lookup_2) {
+    // ARRANGE
+    typeDictionary->addTypeDefinition("A::B::C::D", new PrimitiveDataType<double>());
+
+    // ACT
+    const DataType * type = typeDictionary->lookup("A::B::C::no_such_type");
+
+    // ASSERT
+    ASSERT_TRUE(type == NULL);
+}

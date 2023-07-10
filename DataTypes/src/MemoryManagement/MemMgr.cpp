@@ -5,7 +5,6 @@
 #include "MemoryManagement/MemMgr.hh"
 #include "MemoryManagement/AllocInfo.hh"
 
-#include "Type/ArrayDataType.hh"
 #include "Utils/MutableDeclaration.hh"
 
 #include "J_CheckpointAgent.hh"

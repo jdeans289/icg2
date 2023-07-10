@@ -2,13 +2,7 @@
 
 #include "Algorithm/LookupAddressByNameVisitor.hh"
 
-#include "Type/DataType.hh"
-#include "Type/CompositeDataType.hh"
-#include "Type/ArrayDataType.hh"
-#include "Type/PointerDataType.hh"
-#include "Type/EnumDataType.hh"
-#include "Type/StringDataType.hh"
-
+#include "Type/Types.hh"
 #include "Type/NormalStructMember.hh"
 
 LookupAddressByNameVisitor::LookupAddressByNameVisitor(void * starting_address, std::string full_name) 

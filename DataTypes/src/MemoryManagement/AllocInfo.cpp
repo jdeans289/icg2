@@ -1,18 +1,14 @@
-#include "Type/PointerDataType.hh"
-#include "Type/ArrayDataType.hh"
-#include "Type/CompositeDataType.hh"
-#include "Type/NormalStructMember.hh"
-#include "Type/StaticStructMember.hh"
-
-#include "MemoryManagement/MemMgr.hh"
-#include "MemoryManagement/AllocInfo.hh"
-
-#include "Utils/MutableDeclaration.hh"
-
-#include "CheckpointAgent.hh"
-
 #include <sstream>
 #include <string.h> // for memcpy
+
+#include "Type/Types.hh"
+#include "Type/NormalStructMember.hh"
+#include "Type/StaticStructMember.hh"
+#include "MemoryManagement/MemMgr.hh"
+#include "MemoryManagement/AllocInfo.hh"
+#include "Utils/MutableDeclaration.hh"
+
+
 
 const std::string AllocInfo::localPrefix = "trick_local_";
 const std::string AllocInfo::externPrefix = "trick_extern_";

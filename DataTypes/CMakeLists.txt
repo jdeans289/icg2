@@ -33,7 +33,6 @@ set(DATATYPES_SRC
     TypeDictionary.cpp
     EnumDictionary.cpp
     DataTypeInator.cpp
-    ClassicChkPtAgent.cpp
     J_CheckpointAgent.cpp
 )
 
@@ -42,7 +41,6 @@ list(TRANSFORM DATATYPES_SRC PREPEND src/)
 add_library(decl STATIC ${DATATYPES_SRC})
 
 target_include_directories(decl PUBLIC include)
-
 
 enable_testing()
 

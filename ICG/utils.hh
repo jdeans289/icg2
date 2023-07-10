@@ -62,3 +62,7 @@ enum AccessLevel getAccessLevel (CXCursor c) {
 
     return level;
 }
+
+std::string makeIOHeaderName (std::string header_name) {
+    return "io_" + header_name;
+}
