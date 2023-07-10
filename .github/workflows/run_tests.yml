@@ -18,14 +18,15 @@ jobs:
               dnf -y install epel-release
               dnf -y update
               dnf install -y 'dnf-command(config-manager)'
-        - Name: Install Dependencies
+        - name: Install Dependencies
+          run: |
               dnf install -y llvm llvm-devel llvm-static cmake clang-devel python3-devel
-        - Name: Checkout
+        - name: Checkout
           uses: actions/checkout@v3
-        - Name: Build
+        - name: Build
           run: |
             mkdir build && cd build && cmake .. && make -j16
-        - Name: Test
+        - name: Test
           run: |
             cd build && ctest
 
