@@ -1,0 +1,34 @@
+name: Test
+
+on:
+  push:
+    branches:
+        - main
+  pull_request:
+  workflow_dispatch:
+
+
+jobs:
+  build:
+      runs-on: ubuntu-latest
+      container: docker://oraclelinux:8
+      steps:
+        - name: Update Package Manager
+          run: |
+              dnf -y install epel-release
+              dnf -y update
+              dnf install -y 'dnf-command(config-manager)'
+        - Name: Install Dependencies
+              dnf install -y llvm llvm-devel llvm-static cmake clang-devel python3-devel
+        - Name: Checkout
+          uses: actions/checkout@v3
+        - Name: Build
+          run: |
+            mkdir build && cd build && cmake .. && make -j16
+        - Name: Test
+          run: |
+            cd build && ctest
+
+          
+
+        
