@@ -4,7 +4,7 @@
 #include "Type/EnumDataType.hh"
 #include "Value/NumericValue.hh"
 #include "Value/IntegerValue.hh"
-#include "EnumDictionary.hh"
+#include "Type/EnumDictionary.hh"
 
 
 EnumDataType::EnumDataType( EnumDictionary * enumDictionary,

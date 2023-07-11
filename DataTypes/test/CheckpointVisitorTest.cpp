@@ -1,5 +1,4 @@
-#include "EnumDictionary.hh"
-#include "MemoryManagement/MemMgr.hh"
+#include "Type/EnumDictionary.hh"
 #include "Type/PrimitiveDataType.hh"
 #include "Algorithm/CheckpointVisitor.hh"
 
@@ -16,7 +15,6 @@ class CheckpointVisitorTest : public ::testing::Test {
     protected:
     DataTypeInator dataTypeInator;
     EnumDictionary enumDictionary;
-    MemMgr memMgr;
 
     CheckpointVisitorTest() {
 

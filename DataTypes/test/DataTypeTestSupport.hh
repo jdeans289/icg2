@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "DataTypeInator.hh"
-#include "EnumDictionary.hh"
+#include "Type/EnumDictionary.hh"
 
 // ClassOne contains regular, primitive, unarrayed, data-members.
 class ClassOne {

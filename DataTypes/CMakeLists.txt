@@ -19,8 +19,10 @@ set(DATATYPES_SRC
     Type/PrimitiveDataType.cpp
     Type/StringDataType.cpp
     Type/DataType.cpp
+    Type/Enumerator.cpp
+    Type/EnumDictionary.cpp
     MemoryManagement/AllocInfo.cpp
-    MemoryManagement/MemMgr.cpp
+    MemoryManagement/MemoryManager.cpp
     Utils/LexicalAnalyzer.cpp
     Utils/ParsedDeclaration.cpp
     Utils/MutableDeclaration.cpp
@@ -29,11 +31,9 @@ set(DATATYPES_SRC
     Algorithm/CheckpointVisitor.cpp
     Algorithm/LookupNameByAddressVisitor.cpp
     Algorithm/LookupAddressByNameVisitor.cpp
-    Enumerator.cpp
+    CheckpointAgent/J_CheckpointAgent.cpp
     TypeDictionary.cpp
-    EnumDictionary.cpp
     DataTypeInator.cpp
-    J_CheckpointAgent.cpp
 )
 
 list(TRANSFORM DATATYPES_SRC PREPEND src/)

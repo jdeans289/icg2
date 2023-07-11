@@ -2,9 +2,6 @@
 #include <string.h> // for memcpy
 
 #include "Type/Types.hh"
-#include "Type/NormalStructMember.hh"
-#include "Type/StaticStructMember.hh"
-#include "MemoryManagement/MemMgr.hh"
 #include "MemoryManagement/AllocInfo.hh"
 #include "Utils/MutableDeclaration.hh"
 
@@ -152,116 +149,6 @@ bool AllocInfo::contains(void* address) const {
     return false;
 }
 
-// PUBLIC MEMBER FUNCTION
-// void AllocInfo::appendDependenciesfromComposite( const CompositeDataType * compDataType,
-//                                                  void *address,
-//                                                  MemMgr* memMgr,
-//                                                  std::vector<AllocInfo*>& dependencies) {
-
-//     int memberCount = compDataType->getMemberCount();
-
-//     for (int ii = 0; ii < memberCount; ii++) {
-
-//         StructMember* structMember = compDataType->getStructMember(ii);
-//         //int ioControl = structMember->getIoControl();
-//         int ioControl = 1; // FIXME
-
-//         if ( ioControl == 1 || ioControl == 3) {
-
-//             // Get the Member address.
-//             char *memberAddress;
-//             const DataType* memberDataType;
-
-//             NormalStructMember* normalStructMember = dynamic_cast<NormalStructMember*>(structMember);
-//             if ( normalStructMember ) {
-//                memberAddress = (char*)address + normalStructMember->getOffset();
-//                memberDataType = normalStructMember->getDataType();
-//             } else {
-//                 StaticStructMember* staticStructMember = dynamic_cast<StaticStructMember*>(structMember);
-//                 if ( staticStructMember ) {
-//                     memberAddress =  (char*)staticStructMember->getAddress();
-//                     memberDataType = staticStructMember->getDataType();
-//                 } else {
-//                     memberAddress =  NULL; // For a bitfield.
-//                     memberDataType = NULL;
-//                 }
-//             }
-//             if (memberAddress != NULL)  {
-//                 const ArrayDataType* memberArrayDataType = dynamic_cast<const ArrayDataType*>(memberDataType);
-//                 if ( memberArrayDataType ) {
-//                     appendDependenciesfromArray( memberArrayDataType, memberAddress, memMgr, dependencies);
-//                 } else {
-//                     const CompositeDataType* memberCompositeDataType = dynamic_cast<const CompositeDataType*>(memberDataType);
-//                     if ( memberCompositeDataType ) {
-//                         appendDependenciesfromComposite( memberCompositeDataType, memberAddress, memMgr, dependencies);
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
-
-// // PUBLIC MEMBER FUNCTION
-// void AllocInfo::appendDependenciesfromArray( const ArrayDataType* arrayDataType,
-//                                              void* address,
-//                                              MemMgr* memMgr,
-//                                              std::vector<AllocInfo*>& dependencies) {
-
-//     int elementCount = arrayDataType->getElementCount();
-//     if ( elementCount == 0 ) {
-//         void* ptr = *(void**)address;
-//         AllocInfo* allocInfo = memMgr->getAllocInfoOf(ptr);
-//         allocInfo->appendDependencies( memMgr, dependencies );
-//     } else if ( arrayDataType->containsPointers() ){
-//         const DataType* elementType = arrayDataType->getSubType();
-//         int elementTypeSize = elementType->getSize();
-//         const ArrayDataType* memberArrayDataType = dynamic_cast<const ArrayDataType*>(elementType);
-//         if ( memberArrayDataType ) {
-//             for (int ii=0; ii < elementCount; ii++) {
-//                 void * elementAddress = (char*) address + (ii * elementTypeSize );
-//                 appendDependenciesfromArray( memberArrayDataType, elementAddress, memMgr, dependencies);
-//             }
-//         } else {
-//             const CompositeDataType* memberCompositeDataType = dynamic_cast<const CompositeDataType*>(elementType);
-//             if ( memberCompositeDataType ) {
-//                 for (int ii=0; ii < elementCount; ii++) {
-//                     void * elementAddress = (char*) address + (ii * elementTypeSize );
-//                     appendDependenciesfromComposite( memberCompositeDataType, elementAddress, memMgr, dependencies);
-//                 }
-//             }
-//         }
-//     }
-// }
-
-// // PUBLIC MEMBER FUNCTION
-// void AllocInfo::appendDependencies( MemMgr* memMgr, std::vector<AllocInfo*>& dependencies ) {
-
-//     bool found = false;
-//     int n_depends = dependencies.size();
-
-//     // Search through the dependencies to see if "this" is in it.
-//     for (int ii = 0 ; ii < n_depends ; ii ++) {
-//         if (dependencies[ii] == this) {
-//             found = true;
-//             return;
-//         }
-//     }
-
-//     if (!found) {
-//         // An allocation is dependent on itself.
-//         dependencies.push_back(this);
-//         const CompositeDataType* compositeDataType = dynamic_cast<const CompositeDataType *>(dataType);
-//         if (compositeDataType) {
-//             // Get the dependencies in the allocation of the composite type.
-//             appendDependenciesfromComposite( compositeDataType, start, memMgr, dependencies );
-//         } else {
-//             const ArrayDataType* arrayDataType =  dynamic_cast<const ArrayDataType *>(dataType);
-//             if ( arrayDataType ) {
-//                 appendDependenciesfromArray( arrayDataType, start, memMgr, dependencies );
-//             }
-//         }
-//     }
-// }
 
 // PUBLIC MEMBER FUNCTION
 std::string AllocInfo::toString() const {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "NewCheckpointAgentBase.hh"
+#include "CheckpointAgent/NewCheckpointAgentBase.hh"
 #include "DataTypeInator.hh"
 
 /**
@@ -57,7 +57,6 @@ class J_CheckpointAgent : public CheckpointAgentBase {
     static std::string resolvePointer(void * ptr_to_resolve, const DataType * expected_type, const std::vector<AllocInfo *>& allocs_to_search);
     static AllocInfo * findAllocByName(std::string name, std::vector<AllocInfo *> search_allocs);
     static void *  lookupPointer(std::string varname, const std::vector<AllocInfo *>& allocs_to_search);
-
 
     static const std::string error_str;
 };

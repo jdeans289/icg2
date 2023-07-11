@@ -1,5 +1,4 @@
-#include "Enumerator.hh"
-#include "Enumerator.hh"
+#include "Type/Enumerator.hh"
 #include <sstream>
 
 Enumerator::Enumerator( std::string name, int value) {

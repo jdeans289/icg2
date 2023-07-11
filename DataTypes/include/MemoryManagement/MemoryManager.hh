@@ -9,8 +9,8 @@
 #include "MemoryManagement/AllocInfo.hh"
 #include "Type/DataType.hh"
 
-#include "NewCheckpointAgentBase.hh"
-// #include "J_CheckpointAgent.hh"
+#include "CheckpointAgent/NewCheckpointAgentBase.hh"
+// #include "CheckpointAgent/J_CheckpointAgent.hh"
 
 // class AllocInfo;
 // class DataType;
@@ -18,11 +18,11 @@
 // class CheckpointAgent;
 // class ClassicChkPtAgent;
 
-class MemMgr {
+class MemoryManager {
 
     public:
-    MemMgr();
-    MemMgr (DataTypeInator * dictionary);
+    MemoryManager();
+    MemoryManager (DataTypeInator * dictionary);
     
     void* declare_var( const std::string& typeSpecName, const std::string& varName, unsigned int DimensionsCount, int *Dimensions, void* suppliedAllocation = 0);
     void* declare_var( const std::string& declaration, void* suppliedAllocation = 0);
@@ -87,7 +87,7 @@ class MemMgr {
 //    int ref_var( REF2* R, char* name);
 //    int ref_dim( REF2* R, V_DATA* V);
 //    int ref_name(REF2 * R, char *name);
-//    int get_enumerated(const char* name, V_DATA* v_data); (see EnumDictionary.hh)
+//    int get_enumerated(const char* name, V_DATA* v_data); (see Type/EnumDictionary.hh)
 //    int get_size(char *ptr);
 //    int get_truncated_size(char *ptr);
 //    int io_get_fixed_truncated_size(char *ptr, ATTRIBUTES * A, char *str, int dims, ATTRIBUTES * left_type);

@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 
 // Class under test
-#include "J_CheckpointAgent.hh"
+#include "CheckpointAgent/J_CheckpointAgent.hh"
 
 
 class J_CheckpointAgentTest : public ::testing::Test {

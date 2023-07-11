@@ -7,7 +7,7 @@
 #include "Value/Value.hh"
 
 #include "Enumerator.hh"
-#include "EnumDictionary.hh"
+#include "Type/EnumDictionary.hh"
 
 
 

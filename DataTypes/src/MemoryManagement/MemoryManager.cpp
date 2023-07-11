@@ -2,26 +2,26 @@
 #include <fstream>
 #include <algorithm>
 
-#include "MemoryManagement/MemMgr.hh"
+#include "MemoryManagement/MemoryManager.hh"
 #include "MemoryManagement/AllocInfo.hh"
 
 #include "Utils/MutableDeclaration.hh"
 
-#include "J_CheckpointAgent.hh"
+#include "CheckpointAgent/J_CheckpointAgent.hh"
 #include "DataTypeInator.hh"
 
 
 
 // Constructor
-MemMgr::MemMgr() : MemMgr(new DataTypeInator()) {}
+MemoryManager::MemoryManager() : MemoryManager(new DataTypeInator()) {}
 
-MemMgr::MemMgr (DataTypeInator * dictionary) : dataTypeInator(dictionary) {
+MemoryManager::MemoryManager (DataTypeInator * dictionary) : dataTypeInator(dictionary) {
    debugLevel = 0;
 
    checkpointAgent = new J_CheckpointAgent(dataTypeInator);
 }
 
-void* MemMgr::do_declare_var(const std::string& abstract_declarator, 
+void* MemoryManager::do_declare_var(const std::string& abstract_declarator, 
                              const std::string& variable_name,
                              void * supplied_allocation) {
 
@@ -65,7 +65,7 @@ void* MemMgr::do_declare_var(const std::string& abstract_declarator,
 }
 
 // MEMBER FUNCTION
-void* MemMgr::declare_var( const std::string& typeSpecifier,
+void* MemoryManager::declare_var( const std::string& typeSpecifier,
                            const std::string& variableName,
                            unsigned int       dimensionsCount,
                            int*               dimensions,
@@ -77,7 +77,7 @@ void* MemMgr::declare_var( const std::string& typeSpecifier,
 }
 
 // MEMBER FUNCTION
-void* MemMgr::declare_var( const std::string& declaration,
+void* MemoryManager::declare_var( const std::string& declaration,
                            void*              suppliedAllocation ) {
 
     MutableDeclaration typeName(declaration);
@@ -88,7 +88,7 @@ void* MemMgr::declare_var( const std::string& declaration,
 }
 
 // MEMBER FUNCTION
-void* MemMgr::declare_var( const std::string& typeSpecName,
+void* MemoryManager::declare_var( const std::string& typeSpecName,
                            const std::string& variableName,
                            int                n,
                            void*              suppliedAllocation) {
@@ -102,7 +102,7 @@ void* MemMgr::declare_var( const std::string& typeSpecName,
 }
 
 // MEMBER FUNCTION
-void* MemMgr::declare_var( const std::string& typeSpecName,
+void* MemoryManager::declare_var( const std::string& typeSpecName,
                            int                n,
                            void*              suppliedAllocation ) {
 
@@ -116,7 +116,7 @@ void* MemMgr::declare_var( const std::string& typeSpecName,
 }
 
 // // MEMBER FUNCTION
-// void* MemMgr::resize_var( void* address, size_t newElementCount) {
+// void* MemoryManager::resize_var( void* address, size_t newElementCount) {
 //     void* newAddress;
 //     AllocInfo* allocInfo = getAllocInfoOf(address);
 //     if (allocInfo != NULL) {
@@ -129,7 +129,7 @@ void* MemMgr::declare_var( const std::string& typeSpecName,
 // }
 
 // // MEMBER FUNCTION
-// void* MemMgr::resize_var( const std::string& name, size_t newElementCount) {
+// void* MemoryManager::resize_var( const std::string& name, size_t newElementCount) {
 //    void* newAddress;
 //    AllocInfo* allocInfo = getAllocInfoNamed(name);
 //     if (allocInfo != NULL) {
@@ -146,7 +146,7 @@ void* MemMgr::declare_var( const std::string& typeSpecName,
 
 
 // MEMBER FUNCTION
-bool MemMgr::var_exists( const std::string& variableName) {
+bool MemoryManager::var_exists( const std::string& variableName) {
 
     if ( !variableName.empty()) {
         AllocInfo* allocInfo = getAllocInfoNamed( variableName );
@@ -158,7 +158,7 @@ bool MemMgr::var_exists( const std::string& variableName) {
 }
 
 // MEMBER FUNCTION
-void MemMgr::clear_var( void* address) {
+void MemoryManager::clear_var( void* address) {
 
     AllocInfo* allocInfo;
     if ((allocInfo = getAllocInfoOf( address)) != NULL) {
@@ -174,7 +174,7 @@ void MemMgr::clear_var( void* address) {
 }
 
 // MEMBER FUNCTION
-void MemMgr::clear_var( const std::string& variableName) {
+void MemoryManager::clear_var( const std::string& variableName) {
 
     AllocInfo* allocInfo;
     if ((allocInfo = getAllocInfoNamed( variableName )) != NULL) {
@@ -190,11 +190,11 @@ void MemMgr::clear_var( const std::string& variableName) {
 }
 
 // MEMBER FUNCTION
-void MemMgr::clear_all_vars() {
+void MemoryManager::clear_all_vars() {
 }
 
 // MEMBER FUNCTION
-void MemMgr::write_checkpoint( std::ostream& out_s) {
+void MemoryManager::write_checkpoint( std::ostream& out_s) {
 
     AllocInfo* allocInfo;
     std::vector<AllocInfo*> allocInfoList;
@@ -212,7 +212,7 @@ void MemMgr::write_checkpoint( std::ostream& out_s) {
 }
 
 // MEMBER FUNCTION
-void MemMgr::write_checkpoint( const std::string& filename) {
+void MemoryManager::write_checkpoint( const std::string& filename) {
 
     std::ofstream out_s( filename.c_str(), std::ios::out);
     if (out_s.is_open()) {
@@ -224,7 +224,7 @@ void MemMgr::write_checkpoint( const std::string& filename) {
 }
 
 // MEMBER FUNCTION
-void MemMgr::write_checkpoint( std::ostream& out_s, const std::string& variableName) {
+void MemoryManager::write_checkpoint( std::ostream& out_s, const std::string& variableName) {
 
     std::vector<AllocInfo*> dependencies;
     pthread_mutex_lock(&allocInfoMapMutex);
@@ -237,7 +237,7 @@ void MemMgr::write_checkpoint( std::ostream& out_s, const std::string& variableN
 }
 
 // MEMBER FUNCTION
-void MemMgr::write_checkpoint(const std::string& filename, const std::string& variableName) {
+void MemoryManager::write_checkpoint(const std::string& filename, const std::string& variableName) {
 
     std::ofstream out_s( filename.c_str(), std::ios::out);
     if (out_s.is_open()) {
@@ -249,7 +249,7 @@ void MemMgr::write_checkpoint(const std::string& filename, const std::string& va
 }
 
 // MEMBER FUNCTION
-void MemMgr::write_checkpoint( std::ostream& out_s, std::vector<const char*>& variableNameList) {
+void MemoryManager::write_checkpoint( std::ostream& out_s, std::vector<const char*>& variableNameList) {
 
     std::vector<AllocInfo*> dependencies;
     const char* variableName;
@@ -268,7 +268,7 @@ void MemMgr::write_checkpoint( std::ostream& out_s, std::vector<const char*>& va
 }
 
 // MEMBER FUNCTION
-void MemMgr::write_checkpoint(const std::string& filename, std::vector<const char*>& variableNameList) {
+void MemoryManager::write_checkpoint(const std::string& filename, std::vector<const char*>& variableNameList) {
 
     std::ofstream out_s( filename.c_str(), std::ios::out);
     if (out_s.is_open()) {
@@ -298,11 +298,11 @@ static bool allocInfoCompare( AllocInfo* lhs, AllocInfo* rhs ) {
 }
 
 // PRIVATE MEMBER FUNCTION
-void MemMgr::write_checkpoint(std::ostream& outStream, std::vector<AllocInfo*>& allocInfoList) {
+void MemoryManager::write_checkpoint(std::ostream& outStream, std::vector<AllocInfo*>& allocInfoList) {
     checkpointAgent->dump(outStream, allocInfoList);
 }
 
-void MemMgr::restore_checkpoint(const std::string& filename) {
+void MemoryManager::restore_checkpoint(const std::string& filename) {
     std::ifstream in_s( filename.c_str(), std::ios::in);
     if (in_s.is_open()) {
         restore_checkpoint( in_s) ;
@@ -312,7 +312,7 @@ void MemMgr::restore_checkpoint(const std::string& filename) {
     }
 }
 
-void MemMgr::restore_checkpoint( std::istream& in_s) {
+void MemoryManager::restore_checkpoint( std::istream& in_s) {
     // TODO: We should be holding a lock here
     
     // Only pass external allocations into the agent
@@ -346,17 +346,17 @@ void MemMgr::restore_checkpoint( std::istream& in_s) {
     // We did it!
 }
 
-CheckpointAgentBase * MemMgr::get_CheckPointAgent() {
+CheckpointAgentBase * MemoryManager::get_CheckPointAgent() {
     return checkpointAgent;
 }
 
-void MemMgr::set_CheckPointAgent( CheckpointAgentBase* agent) {
+void MemoryManager::set_CheckPointAgent( CheckpointAgentBase* agent) {
     delete checkpointAgent;
     checkpointAgent = agent;
 }
 
 // MEMBER FUNCTION
-AllocInfo* MemMgr::getAllocInfoOf( void* address ) {
+AllocInfo* MemoryManager::getAllocInfoOf( void* address ) {
     AllocInfo* allocInfo;
     std::map<void*, AllocInfo*>::iterator pos;
     for ( pos = allocInfoByAddressMap.begin() ; pos != allocInfoByAddressMap.end() ; pos++ ) {
@@ -369,7 +369,7 @@ AllocInfo* MemMgr::getAllocInfoOf( void* address ) {
 }
 
 // MEMBER FUNCTION
-AllocInfo* MemMgr::getAllocInfoAt( void* address ) {
+AllocInfo* MemoryManager::getAllocInfoAt( void* address ) {
     std::map<void*, AllocInfo*>::iterator pos;
     pos = allocInfoByAddressMap.find( address );
     if ( pos == allocInfoByAddressMap.end()) {
@@ -380,7 +380,7 @@ AllocInfo* MemMgr::getAllocInfoAt( void* address ) {
 }
 
 // MEMBER FUNCTION
-AllocInfo* MemMgr::getAllocInfoNamed( const std::string& name ) {
+AllocInfo* MemoryManager::getAllocInfoNamed( const std::string& name ) {
     std::map<std::string, AllocInfo*>::iterator pos;
     pos = allocInfoByNameMap.find(name);
     if ( pos == allocInfoByNameMap.end()) {
@@ -392,12 +392,12 @@ AllocInfo* MemMgr::getAllocInfoNamed( const std::string& name ) {
 
 
 // MEMBER FUNCTION
-const DataType* MemMgr::getDataType( std::string typeName ) {
+const DataType* MemoryManager::getDataType( std::string typeName ) {
     return dataTypeInator->resolve(typeName);
 }
 
 #if NEWSTUFF
-void * MemMgr::getVarAccessInfo( const std::string& variableName, VarAccessInfo& varAccessInfo ) {
+void * MemoryManager::getVarAccessInfo( const std::string& variableName, VarAccessInfo& varAccessInfo ) {
 
     std::string varName = variableName;
     // Get identifier at beginnning of the string and the remiander.

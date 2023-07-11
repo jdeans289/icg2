@@ -1,5 +1,4 @@
-#include "EnumDictionary.hh"
-#include "MemoryManagement/MemMgr.hh"
+#include "Type/EnumDictionary.hh"
 #include "Type/PrimitiveDataType.hh"
 #include "Type/NormalStructMember.hh"
 #include "DataTypeTestSupport.hh"
@@ -13,7 +12,6 @@ class LookupNameByAddressVisitorTest : public ::testing::Test {
     protected:
     DataTypeInator dataTypeInator;
     EnumDictionary enumDictionary;
-    MemMgr memMgr;
 
     LookupNameByAddressVisitorTest() {
 

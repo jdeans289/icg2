@@ -10,7 +10,6 @@
 
 #include "Value/Value.hh"
 
-#include "VarAccessInfo.hh"
 #include "DataTypeInator.hh"
 
 
@@ -187,9 +186,6 @@ public:
      */
     StructMember* getStructMember (std::string name) const;
 
-    /**
-     */
-    // bool getMemberInfo( LexicalAnalyzer* lexer, void* baseAddress, VarAccessInfo& varAccessInfo );
 
 private:
     CompositeDataType();

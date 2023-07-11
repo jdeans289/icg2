@@ -7,7 +7,7 @@ std::string io_src = std::string(R"(
 #include <stddef.h>
 #include <stdlib.h>
 #include "DataTypeInator.hh"
-#include "EnumDictionary.hh"
+#include "Type/EnumDictionary.hh"
 #include "Type/CompositeDataType.hh"
 #include "Value/CompositeValue.hh"
 #include "Type/PrimitiveDataType.hh"

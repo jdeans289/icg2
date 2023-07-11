@@ -1,4 +1,4 @@
-#include "J_CheckpointAgent.hh"
+#include "CheckpointAgent/J_CheckpointAgent.hh"
 
 #include "Utils/ParsedAssignment.hh"
 #include "Utils/ParsedDeclaration.hh"

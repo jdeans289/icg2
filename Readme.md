@@ -1,6 +1,6 @@
 # ICG 2
 
-A revamped Interface Code Generator and associated type aware memory management library developed for the Trick Simulation Environment.
+A revamped Interface Code Generator and associated type aware memory management library developed for the [Trick Simulation Environment](https://github.com/nasa/trick).
 
 ## Overview
 
@@ -75,8 +75,16 @@ make -j16
 
 Tests are built along with the normal build process (should probably separate that out later).
 
-Run tests through ctest
+Run tests through ctest (or make test)
+```
+cd build
+ctest
 ```
 
-```
+## Usage
+
+See the `test/` directory for examples of intended usage. 
+
+The interface of the MemoryManager is intended to be (nearly?) identical to the Trick Project's [Memory Manager](https://nasa.github.io/trick/documentation/simulation_capabilities/memory_manager/MemoryManager), to allow for a smooth transition. Users of Trick should not have to update their simulations when this library is eventually integrated into Trick. The integration into `trick-CP` and excision of the old `ATTRIBUTES` (analogue of DataType)  and `REF2` (AllocInfo + specific reference instance info, like units. This does not have an analogus type in this project at this point, but it will probably need one eventually.) This integration is planned for Trick 23. 
+
 
