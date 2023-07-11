@@ -1,8 +1,8 @@
 #include <sstream>
 #include <iostream>
 
-#include "Type/NormalStructMember.hh"
-#include "DataTypeInator.hh"
+#include "Type/NormalStructMember.hpp"
+#include "DataTypeInator.hpp"
 
 
 // CONSTRUCTOR

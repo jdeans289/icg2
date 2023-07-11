@@ -1,4 +1,4 @@
-#include "Type/BitfieldStructMember.hh"
+#include "Type/BitfieldStructMember.hpp"
 
 /*
  Template specializations for BitfieldStructMember<T>::getTypeSpecName()

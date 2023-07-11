@@ -1,8 +1,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "Type/StringDataType.hh"
-#include "Value/StringValue.hh"
+#include "Type/StringDataType.hpp"
+#include "Value/StringValue.hpp"
 
 
 StringDataType::StringDataType(std::string typeSpecifierName) {

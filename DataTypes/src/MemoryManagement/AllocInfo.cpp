@@ -1,9 +1,9 @@
 #include <sstream>
 #include <string.h> // for memcpy
 
-#include "Type/Types.hh"
-#include "MemoryManagement/AllocInfo.hh"
-#include "Utils/MutableDeclaration.hh"
+#include "Type/Types.hpp"
+#include "MemoryManagement/AllocInfo.hpp"
+#include "Utils/MutableDeclaration.hpp"
 
 
 

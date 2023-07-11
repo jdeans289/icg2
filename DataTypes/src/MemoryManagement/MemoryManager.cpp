@@ -2,13 +2,13 @@
 #include <fstream>
 #include <algorithm>
 
-#include "MemoryManagement/MemoryManager.hh"
-#include "MemoryManagement/AllocInfo.hh"
+#include "MemoryManagement/MemoryManager.hpp"
+#include "MemoryManagement/AllocInfo.hpp"
 
-#include "Utils/MutableDeclaration.hh"
+#include "Utils/MutableDeclaration.hpp"
 
-#include "CheckpointAgent/J_CheckpointAgent.hh"
-#include "DataTypeInator.hh"
+#include "CheckpointAgent/J_CheckpointAgent.hpp"
+#include "DataTypeInator.hpp"
 
 
 

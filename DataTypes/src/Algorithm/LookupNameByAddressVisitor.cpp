@@ -1,15 +1,15 @@
 #include <cassert>
 
-#include "Algorithm/LookupNameByAddressVisitor.hh"
+#include "Algorithm/LookupNameByAddressVisitor.hpp"
 
-#include "Type/DataType.hh"
-#include "Type/CompositeDataType.hh"
-#include "Type/ArrayDataType.hh"
-#include "Type/PointerDataType.hh"
-#include "Type/EnumDataType.hh"
-#include "Type/StringDataType.hh"
+#include "Type/DataType.hpp"
+#include "Type/CompositeDataType.hpp"
+#include "Type/ArrayDataType.hpp"
+#include "Type/PointerDataType.hpp"
+#include "Type/EnumDataType.hpp"
+#include "Type/StringDataType.hpp"
 
-#include "Type/NormalStructMember.hh"
+#include "Type/NormalStructMember.hpp"
 
 LookupNameByAddressVisitor::LookupNameByAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address) 
         : LookupNameByAddressVisitor(starting_name, starting_address, lookup_address, NULL) {}

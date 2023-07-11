@@ -1,10 +1,10 @@
 // Test support
-#include "DataTypeTestSupport.hh"
+#include "DataTypeTestSupport.hpp"
 #include <sstream>
 #include <gtest/gtest.h>
 
 // Class under test
-#include "CheckpointAgent/J_CheckpointAgent.hh"
+#include "CheckpointAgent/J_CheckpointAgent.hpp"
 
 
 class J_CheckpointAgentTest : public ::testing::Test {

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Type/TypedStructMember.hh"
+#include "Type/TypedStructMember.hpp"
 
 
 // Real constructor

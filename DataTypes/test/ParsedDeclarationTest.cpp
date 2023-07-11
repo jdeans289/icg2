@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
-#include "Utils/ParsedDeclaration.hh"
+#include "Utils/ParsedDeclaration.hpp"
 #include <iostream>
 
 TEST(ParsedDeclaration, basic) {

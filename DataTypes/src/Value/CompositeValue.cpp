@@ -1,4 +1,4 @@
-#include "Value/CompositeValue.hh"
+#include "Value/CompositeValue.hpp"
 #include <sstream>
 
 // DESTRUCTOR

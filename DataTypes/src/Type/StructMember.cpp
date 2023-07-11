@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Type/StructMember.hh"
+#include "Type/StructMember.hpp"
 
 StructMember::StructMember(std::string name) : name(name){}
 

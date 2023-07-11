@@ -3,14 +3,14 @@
 #include <stack>
 #include <algorithm>
 
-#include "Type/PrimitiveDataType.hh"
-#include "Type/StringDataType.hh"
-#include "Type/ArrayDataType.hh"
-#include "Type/PointerDataType.hh"
+#include "Type/PrimitiveDataType.hpp"
+#include "Type/StringDataType.hpp"
+#include "Type/ArrayDataType.hpp"
+#include "Type/PointerDataType.hpp"
 
-#include "Utils/ParsedDeclaration.hh"
+#include "Utils/ParsedDeclaration.hpp"
 
-#include "TypeDictionary.hh"
+#include "TypeDictionary.hpp"
 
 
 

@@ -4,8 +4,8 @@
 #include <fstream>
 #include <clang-c/Index.h>  // libclang
 
-#include "icg_main.hh"
-#include "add_type_templates.hh"
+#include "icg_main.hpp"
+#include "add_type_templates.hpp"
 
 /************************************/
 /*       FieldInfo Definitions      */
@@ -214,7 +214,7 @@ int main(int argc, char ** argv) {
     std::ofstream outfile;
     outfile.open(makeIOHeaderName(filename));
 
-    // The templates for what the io file should look like live in add-type-templates.hh
+    // The templates for what the io file should look like live in add-type-templates.hpp
     template_dictionary["filename"] = filename;
 
     // 'big_format' runs the template engine to construct the io file using the templates and data gathered from the AST

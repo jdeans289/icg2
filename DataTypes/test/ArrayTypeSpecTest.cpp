@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 #include <iostream>
-#include "DataTypeInator.hh"
-#include "Type/ArrayDataType.hh"
-#include "Value/ArrayValue.hh"
-#include "Value/FloatingPointValue.hh"
-#include "Value/IntegerValue.hh"
+#include "DataTypeInator.hpp"
+#include "Type/ArrayDataType.hpp"
+#include "Value/ArrayValue.hpp"
+#include "Value/FloatingPointValue.hpp"
+#include "Value/IntegerValue.hpp"
 
 // Framework
 class ArrayDataTypeTest : public ::testing::Test {

@@ -1,4 +1,4 @@
-#include "Utils/LexicalAnalyzer.hh"
+#include "Utils/LexicalAnalyzer.hpp"
 #include <iostream>
 
 struct {

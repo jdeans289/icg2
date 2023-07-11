@@ -1,8 +1,8 @@
 // Class under test
-#include "Utils/ParsedAssignment.hh"
-#include "Value/FloatingPointValue.hh"
-#include "Value/IntegerValue.hh"
-#include "Value/StringValue.hh"
+#include "Utils/ParsedAssignment.hpp"
+#include "Value/FloatingPointValue.hpp"
+#include "Value/IntegerValue.hpp"
+#include "Value/StringValue.hpp"
 #include <gtest/gtest.h>
 
 TEST (ParsedAssignmentTest, parse_int) {

@@ -2,15 +2,15 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 
-#include "DataTypeInator.hh"
+#include "DataTypeInator.hpp"
 
-#include "Type/CompositeDataType.hh"
-#include "Type/PrimitiveDataType.hh"
+#include "Type/CompositeDataType.hpp"
+#include "Type/PrimitiveDataType.hpp"
 
-#include "Value/CompositeValue.hh"
-#include "Value/ArrayValue.hh"
+#include "Value/CompositeValue.hpp"
+#include "Value/ArrayValue.hpp"
 
-#include "DataTypeTestSupport.hh"
+#include "DataTypeTestSupport.hpp"
 
 // Framework
 class CompositeDataTypeTest : public ::testing::Test {

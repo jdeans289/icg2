@@ -1,4 +1,4 @@
-#include "Utils/ParsedDeclaration.hh"
+#include "Utils/ParsedDeclaration.hpp"
 
 /*
  type-name: type-specifier

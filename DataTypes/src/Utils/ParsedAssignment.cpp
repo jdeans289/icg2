@@ -1,10 +1,10 @@
-#include "Utils/ParsedAssignment.hh"
+#include "Utils/ParsedAssignment.hpp"
 
-#include "Utils/LexicalAnalyzer.hh"
+#include "Utils/LexicalAnalyzer.hpp"
 
-#include "Value/IntegerValue.hh"
-#include "Value/FloatingPointValue.hh"
-#include "Value/StringValue.hh"
+#include "Value/IntegerValue.hpp"
+#include "Value/FloatingPointValue.hpp"
+#include "Value/StringValue.hpp"
 
 
 // const ParsedAssignment::RegexTable ParsedAssignment::regex_table = {

@@ -1,9 +1,9 @@
 #include <cassert>
 
-#include "Algorithm/LookupAddressByNameVisitor.hh"
+#include "Algorithm/LookupAddressByNameVisitor.hpp"
 
-#include "Type/Types.hh"
-#include "Type/NormalStructMember.hh"
+#include "Type/Types.hpp"
+#include "Type/NormalStructMember.hpp"
 
 LookupAddressByNameVisitor::LookupAddressByNameVisitor(void * starting_address, std::string full_name) 
         : current_search_address(starting_address), name_elems(full_name) {}

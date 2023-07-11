@@ -2,9 +2,9 @@
 #include <stddef.h>
 #include <iostream>
 
-#include "TypeDictionary.hh"
-#include "Type/PointerDataType.hh"
-#include "Value/PointerValue.hh"
+#include "TypeDictionary.hpp"
+#include "Type/PointerDataType.hpp"
+#include "Value/PointerValue.hpp"
 
 // Framework
 class PointerDataTypeTest : public ::testing::Test {

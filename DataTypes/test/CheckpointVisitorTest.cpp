@@ -1,10 +1,10 @@
-#include "Type/EnumDictionary.hh"
-#include "Type/PrimitiveDataType.hh"
-#include "Algorithm/CheckpointVisitor.hh"
+#include "Type/EnumDictionary.hpp"
+#include "Type/PrimitiveDataType.hpp"
+#include "Algorithm/CheckpointVisitor.hpp"
 
-#include "DataTypeTestSupport.hh"
-#include "Value/PointerValue.hh"
-#include "Value/StringValue.hh"
+#include "DataTypeTestSupport.hpp"
+#include "Value/PointerValue.hpp"
+#include "Value/StringValue.hpp"
 
 
 

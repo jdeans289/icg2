@@ -1,5 +1,5 @@
-#include "Value/FloatingPointValue.hh"
-#include "Value/IntegerValue.hh"
+#include "Value/FloatingPointValue.hpp"
+#include "Value/IntegerValue.hpp"
 #include <sstream>
 
 // CONSTRUCTOR

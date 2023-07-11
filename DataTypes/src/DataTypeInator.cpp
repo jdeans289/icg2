@@ -1,7 +1,7 @@
-#include "DataTypeInator.hh"
-#include "Type/ArrayDataType.hh"
-#include "Type/PointerDataType.hh"
-#include "Utils/MutableDeclaration.hh"
+#include "DataTypeInator.hpp"
+#include "Type/ArrayDataType.hpp"
+#include "Type/PointerDataType.hpp"
+#include "Utils/MutableDeclaration.hpp"
 
 DataTypeInator::DataTypeInator () : typeDictionary(new TypeDictionary) {
     // Probably shouldn't do this.

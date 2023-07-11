@@ -1,7 +1,7 @@
 #include "io_header.hpp"
-#include "MemoryManagement/AllocInfo.hh"
+#include "MemoryManagement/AllocInfo.hpp"
 
-#include "ICGTestFixture.hh"
+#include "ICGTestFixture.hpp"
 
 
 TEST_F(ICGTest, CheckpointRestore) {

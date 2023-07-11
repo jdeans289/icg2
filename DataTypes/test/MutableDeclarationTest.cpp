@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
-#include "Utils/MutableDeclaration.hh"
+#include "Utils/MutableDeclaration.hpp"
 #include <iostream>
 
 

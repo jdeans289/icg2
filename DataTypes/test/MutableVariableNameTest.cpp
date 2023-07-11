@@ -1,4 +1,4 @@
-#include "Utils/MutableVariableName.hh"
+#include "Utils/MutableVariableName.hpp"
 #include <gtest/gtest.h>
 
 TEST(MutableVariableNameTest, toString_basic) {

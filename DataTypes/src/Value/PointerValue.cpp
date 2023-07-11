@@ -1,4 +1,4 @@
-#include "Value/PointerValue.hh"
+#include "Value/PointerValue.hpp"
 #include <sstream>
 
 // CONSTRUCTOR

@@ -1,10 +1,10 @@
 #include <iostream>
 #include <sstream>
 
-#include "Type/EnumDataType.hh"
-#include "Value/NumericValue.hh"
-#include "Value/IntegerValue.hh"
-#include "Type/EnumDictionary.hh"
+#include "Type/EnumDataType.hpp"
+#include "Value/NumericValue.hpp"
+#include "Value/IntegerValue.hpp"
+#include "Type/EnumDictionary.hpp"
 
 
 EnumDataType::EnumDataType( EnumDictionary * enumDictionary,

@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <iostream>
 
-#include "Type/PrimitiveDataType.hh"
+#include "Type/PrimitiveDataType.hpp"
 
 
 /*

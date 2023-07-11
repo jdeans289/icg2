@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 #include <iostream>
-#include "MemoryManagement/AllocInfo.hh"
-#include "DataTypeInator.hh"
-#include "Type/DataType.hh"
+#include "MemoryManagement/AllocInfo.hpp"
+#include "DataTypeInator.hpp"
+#include "Type/DataType.hpp"
 
 // Framework
 class AllocInfoTest : public ::testing::Test {

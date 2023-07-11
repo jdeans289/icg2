@@ -1,13 +1,13 @@
-#include "CheckpointAgent/J_CheckpointAgent.hh"
+#include "CheckpointAgent/J_CheckpointAgent.hpp"
 
-#include "Utils/ParsedAssignment.hh"
-#include "Utils/ParsedDeclaration.hh"
-#include "Type/DataType.hh"
-#include "Value/PointerValue.hh"
-#include "Value/StringValue.hh"
-#include "Algorithm/CheckpointVisitor.hh"
-#include "Algorithm/LookupAddressByNameVisitor.hh"
-#include "Algorithm/LookupNameByAddressVisitor.hh"
+#include "Utils/ParsedAssignment.hpp"
+#include "Utils/ParsedDeclaration.hpp"
+#include "Type/DataType.hpp"
+#include "Value/PointerValue.hpp"
+#include "Value/StringValue.hpp"
+#include "Algorithm/CheckpointVisitor.hpp"
+#include "Algorithm/LookupAddressByNameVisitor.hpp"
+#include "Algorithm/LookupNameByAddressVisitor.hpp"
 
 
 const std::string J_CheckpointAgent::error_str = "<UNDEFINED>";

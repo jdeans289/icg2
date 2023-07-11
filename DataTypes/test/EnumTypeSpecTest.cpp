@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 #include <iostream>
-#include "TypeDictionary.hh"
-#include "Type/EnumDataType.hh"
-#include "Value/IntegerValue.hh"
+#include "TypeDictionary.hpp"
+#include "Type/EnumDataType.hpp"
+#include "Value/IntegerValue.hpp"
 
 enum DayOfWeek {
     Sunday    = 1,

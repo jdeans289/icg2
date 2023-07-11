@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
-#include "TypeDictionary.hh"
-#include "DataTypeInator.hh"
-#include "Type/CompositeDataType.hh"
-#include "Value/CompositeValue.hh"
-#include "Type/PrimitiveDataType.hh"
-#include "Type/StringDataType.hh"
-#include "DataTypeTestSupport.hh"
+#include "TypeDictionary.hpp"
+#include "DataTypeInator.hpp"
+#include "Type/CompositeDataType.hpp"
+#include "Value/CompositeValue.hpp"
+#include "Type/PrimitiveDataType.hpp"
+#include "Type/StringDataType.hpp"
+#include "DataTypeTestSupport.hpp"
 
 // Framework
 class TypeDictionaryTest : public ::testing::Test {
@@ -163,7 +163,7 @@ TEST_F(TypeDictionaryTest, namespaces_failed_lookup) {
     typeDictionary->addTypeDefinition("A::B::C::D", new PrimitiveDataType<double>());
 
     // ACT
-    const DataType * type = typeDictionary->lookup("A::B::no_such_namespace");
+    const DataType * type = typeDictionary->lookup("A::B::no_such_namespace::no_such_type");
 
     // ASSERT
     ASSERT_TRUE(type == NULL);

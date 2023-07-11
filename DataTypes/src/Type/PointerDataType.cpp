@@ -2,11 +2,11 @@
 #include <sstream>
 #include <stdlib.h> // for free()
 
-#include "Type/PointerDataType.hh"
-#include "Value/PointerValue.hh"
-#include "Utils/MutableDeclaration.hh"
+#include "Type/PointerDataType.hpp"
+#include "Value/PointerValue.hpp"
+#include "Utils/MutableDeclaration.hpp"
 
-#include "DataTypeInator.hh"
+#include "DataTypeInator.hpp"
 
 
 

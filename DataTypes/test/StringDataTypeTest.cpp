@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 #include <iostream>
-#include "DataTypeInator.hh"
-#include "Type/StringDataType.hh"
-#include "Value/StringValue.hh"
+#include "DataTypeInator.hpp"
+#include "Type/StringDataType.hpp"
+#include "Value/StringValue.hpp"
 
 
 // Framework

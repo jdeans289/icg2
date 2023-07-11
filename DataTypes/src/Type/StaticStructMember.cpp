@@ -1,8 +1,8 @@
 #include <sstream>
 #include <iostream>
 
-#include "Type/StaticStructMember.hh"
-#include "DataTypeInator.hh"
+#include "Type/StaticStructMember.hpp"
+#include "DataTypeInator.hpp"
 
 
 

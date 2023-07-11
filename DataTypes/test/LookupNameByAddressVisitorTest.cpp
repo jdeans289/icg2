@@ -1,11 +1,11 @@
-#include "Type/EnumDictionary.hh"
-#include "Type/PrimitiveDataType.hh"
-#include "Type/NormalStructMember.hh"
-#include "DataTypeTestSupport.hh"
+#include "Type/EnumDictionary.hpp"
+#include "Type/PrimitiveDataType.hpp"
+#include "Type/NormalStructMember.hpp"
+#include "DataTypeTestSupport.hpp"
 
 #include "gtest/gtest.h"
 
-#include "Algorithm/LookupNameByAddressVisitor.hh"
+#include "Algorithm/LookupNameByAddressVisitor.hpp"
 
 
 class LookupNameByAddressVisitorTest : public ::testing::Test {

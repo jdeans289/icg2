@@ -2,10 +2,10 @@
 #include <sstream>
 #include <cassert>
 
-#include "Type/ArrayDataType.hh"
-#include "Value/ArrayValue.hh"
+#include "Type/ArrayDataType.hpp"
+#include "Value/ArrayValue.hpp"
 
-#include "Utils/MutableDeclaration.hh"
+#include "Utils/MutableDeclaration.hpp"
 
 // CONSTRUCTOR
 ArrayDataType:: ArrayDataType( const DataTypeInator* dataTypeInator, std::string typeSpecName, unsigned int n_elems ) : 

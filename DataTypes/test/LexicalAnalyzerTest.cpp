@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
-#include "Utils/LexicalAnalyzer.hh"
+#include "Utils/LexicalAnalyzer.hpp"
 #include <iostream>
 
 TEST(LexicalAnalyzer, test1) {

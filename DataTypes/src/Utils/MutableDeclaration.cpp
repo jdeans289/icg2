@@ -1,7 +1,7 @@
 #include <cstdlib>
 
-#include "Utils/MutableDeclaration.hh"
-#include "Utils/ParsedDeclaration.hh"
+#include "Utils/MutableDeclaration.hpp"
+#include "Utils/ParsedDeclaration.hpp"
 
 
 // CONSTRUCTOR

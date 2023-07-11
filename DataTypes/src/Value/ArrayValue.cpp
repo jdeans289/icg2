@@ -1,4 +1,4 @@
-#include "Value/ArrayValue.hh"
+#include "Value/ArrayValue.hpp"
 #include <sstream>
 
 // DESTRUCTOR

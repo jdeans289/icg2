@@ -1,4 +1,4 @@
-#include "Type/DataType.hh"
+#include "Type/DataType.hpp"
 #include <sstream>
 
 /*

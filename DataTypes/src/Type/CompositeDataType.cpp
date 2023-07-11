@@ -1,11 +1,11 @@
-#include "DataTypeInator.hh"
+#include "DataTypeInator.hpp"
 
-#include "Type/CompositeDataType.hh"
-#include "Type/NormalStructMember.hh"
-#include "Type/StaticStructMember.hh"
-#include "Type/BitfieldStructMember.hh"
+#include "Type/CompositeDataType.hpp"
+#include "Type/NormalStructMember.hpp"
+#include "Type/StaticStructMember.hpp"
+#include "Type/BitfieldStructMember.hpp"
 
-#include "Value/CompositeValue.hh"
+#include "Value/CompositeValue.hpp"
 
 #include <iostream>
 

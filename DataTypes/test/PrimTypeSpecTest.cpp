@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 #include <iostream>
-#include "TypeDictionary.hh"
-#include "Type/PrimitiveDataType.hh"
+#include "TypeDictionary.hpp"
+#include "Type/PrimitiveDataType.hpp"
 
 class PrimitiveDataTypeTest : public ::testing::Test {
     protected:

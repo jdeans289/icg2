@@ -1,7 +1,7 @@
-#include "Algorithm/CheckpointVisitor.hh"
+#include "Algorithm/CheckpointVisitor.hpp"
 
-#include "Type/Types.hh"
-#include "Type/TypedStructMember.hh"
+#include "Type/Types.hpp"
+#include "Type/TypedStructMember.hpp"
 
 CheckpointVisitor::CheckpointVisitor() {}
 

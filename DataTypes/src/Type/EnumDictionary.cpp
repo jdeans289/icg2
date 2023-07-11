@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include "Type/EnumDictionary.hh"
+#include "Type/EnumDictionary.hpp"
 
 int EnumDictionary::getValue(std::string name )  {
 

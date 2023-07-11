@@ -8,9 +8,9 @@ This project consists of 2 parts - the Interface Code Generator and the runtime 
 
 ## Interface Code Generator
 
-The Interface Code Generator reads header files and generates data type information about the class definitions in them. This data type information is in the form of DataType object instantiations in header files named io_<header_name>.hh 
+The Interface Code Generator reads header files and generates data type information about the class definitions in them. This data type information is in the form of DataType object instantiations in header files named io_<header_name>.hpp 
 
-ICG uses LibClang to understand the header files it is given. It implements a recursive AST traversal algorithm, similar to what is implemented by Clang's more sophisticated LibTooling and ASTMatchers. ICG only cares about class/struct definitions, class template definitions, and typedefs (or does it?). It gathers this information into an intermediate representation, and then uses that to create a header file io_<header_name>.hh that instantiates DataType objects based on the information that was gathered by using LibClang. This file is generated using a custom built template engine, contained in `io_template_engine/`. 
+ICG uses LibClang to understand the header files it is given. It implements a recursive AST traversal algorithm, similar to what is implemented by Clang's more sophisticated LibTooling and ASTMatchers. ICG only cares about class/struct definitions, class template definitions, and typedefs (or does it?). It gathers this information into an intermediate representation, and then uses that to create a header file io_<header_name>.hpp that instantiates DataType objects based on the information that was gathered by using LibClang. This file is generated using a custom built template engine, contained in `io_template_engine/`. 
 
 The choice to use LibClang comes from the Trick project's requirement to support many versions of Clang/LLVM. The previous ICG uses a mix of LLVM internals and LibTooling. It is littered with #ifdef statements to support various API changes in libclang, requiring constant maintenance. Part of the goal of this project is to eliminate that pain point for future generations of Trick developers and users. 
 
@@ -85,6 +85,6 @@ ctest
 
 See the `test/` directory for examples of intended usage. 
 
-The interface of the MemoryManager is intended to be (nearly?) identical to the Trick Project's [Memory Manager](https://nasa.github.io/trick/documentation/simulation_capabilities/memory_manager/MemoryManager), to allow for a smooth transition. Users of Trick should not have to update their simulations when this library is eventually integrated into Trick. The integration into `trick-CP` and excision of the old `ATTRIBUTES` (analogue of DataType)  and `REF2` (AllocInfo + specific reference instance info, like units. This does not have an analogus type in this project at this point, but it will probably need one eventually.) This integration is planned for Trick 23. 
+The interface of the MemoryManager is intended to be (nearly?) identical to the Trick Project's [Memory Manager](https://nasa.github.io/trick/documentation/simulation_capabilities/memory_manager/MemoryManager), to allow for a smooth transition. Users of Trick should not have to update their simulations when this library is eventually integrated into Trick. The integration into `trick-CP` and excision of the old `ATTRIBUTES` (analogue of DataType)  and `REF2` (AllocInfo + specific reference instance info, like units) will require a lot of work from Trick developers. This integration is planned for Trick 23. 
 
 
