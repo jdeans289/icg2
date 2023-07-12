@@ -42,7 +42,7 @@ add_library(decl STATIC ${DATATYPES_SRC})
 
 target_include_directories(decl PUBLIC include)
 
-enable_testing()
-
-add_subdirectory(test)
-
+if(DECL_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif()

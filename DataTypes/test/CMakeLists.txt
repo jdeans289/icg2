@@ -8,6 +8,8 @@ macro(add_datatype_test TESTNAME)
     # Tell cmake this test exists and how to run it
     add_test(NAME ${TESTNAME} 
              COMMAND ${TESTNAME} --gtest_output=xml:${TEST_OUTPUT_DIR}/${TESTNAME}.xml)  
+
+    add_dependencies(check ${TESTNAME})
 endmacro()
 
 add_datatype_test(AllocInfoTest)

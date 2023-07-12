@@ -30,6 +30,10 @@ macro(add_icg_integration_test DIRNAME HEADERNAME)
     # Tell cmake this test exists and how to run it
     add_test(NAME ${TESTNAME} 
              COMMAND python3 ${CMAKE_SOURCE_DIR}/test/test_driver.py ${CMAKE_SOURCE_DIR}/test/${DIRNAME} ${CMAKE_BINARY_DIR}/bin/${TESTNAME} --gtest_output=xml:${TEST_OUTPUT_DIR}/${TESTNAME}.xml)  
+
+    add_dependencies(check ${TESTNAME})
 endmacro()
 
 add_icg_integration_test(basic_checkpoint_restore header.hpp)
+# add_icg_integration_test(namespaces bar.hpp)
+
