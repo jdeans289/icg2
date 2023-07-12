@@ -1,3 +1,6 @@
+
+![Build Status](https://github.com/jdeans289/icg2/actions/workflows/run_tests.yml/badge.svg)
+
 # ICG 2
 
 A revamped Interface Code Generator and associated type aware memory management library developed for the [Trick Simulation Environment](https://github.com/nasa/trick).

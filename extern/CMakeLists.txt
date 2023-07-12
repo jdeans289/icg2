@@ -1,3 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-add_subdirectory(googletest)
+if(BUILD_TESTS)
+    add_subdirectory(googletest)
+endif()
+

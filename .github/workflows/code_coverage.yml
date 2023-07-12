@@ -27,11 +27,12 @@ jobs:
             submodules: recursive
         - name: Build
           run: |
-            mkdir build && cd build && cmake .. && make -j16
-        - name: Test
+            mkdir build && cd build && cmake -DICG_ENABLE_COVERAGE=ON .. && make -j16
+        - name: Run Test and Generate Coverage Information
           run: |
-            cd build && ctest
-
-          
-
-        
+            cd build && make coverage
+        - name: Upload to Coveralls
+          uses: coverallsapp/github-action@master
+          with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            path-to-lcov: "./build/coverage.lcov"
