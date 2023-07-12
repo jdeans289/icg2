@@ -1,4 +1,4 @@
-name: Build and Test
+name: Coverage
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
               dnf install -y 'dnf-command(config-manager)'
         - name: Install Dependencies
           run: |
-              dnf install -y git llvm llvm-devel llvm-static cmake clang-devel python3-devel
+              dnf install -y git llvm llvm-devel llvm-static cmake clang-devel python3-devel lcov
         - name: Checkout
           uses: actions/checkout@v3
           with:
