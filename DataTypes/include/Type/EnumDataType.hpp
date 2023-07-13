@@ -53,34 +53,34 @@ public:
 
     /**
      */
-    DataType * clone() const ;
+    DataType * clone() const override;
 
     /**
      */
-    bool validate();
+    bool validate() override;
 
     /**
      */
-    TypeClass::e getTypeClass() const {
+    TypeClass::e getTypeClass() const override{
         return TypeClass::ENUMERATION;
     }
 
     /**
      @return The size (in bytes) of an instance of the EnumDataType.
      */
-    size_t getSize() const;
+    size_t getSize() const override;
 
     /**
      */
-    void* createInstance(unsigned int num) const;
+    void* createInstance(unsigned int num) const override;
 
     /**
      */
-    void deleteInstance(void* address) const;
+    void deleteInstance(void* address) const override;
 
     /**
      */
-    void clearValue(void * address) const;
+    void clearValue(void * address) const override;
 
     /**
      Assign a value to the (unarrayed) element at the given base-address and
@@ -90,7 +90,7 @@ public:
      being assigned.
      @param value The Value to be assigned to the element.
      */
-    void assignValue(void * address, Value * value) const;
+    void assignValue(void * address, Value * value) const override;
 
     /**
      Print the value of the element at the given base-address and offset, to the
@@ -99,18 +99,18 @@ public:
      @param base_addr Address of the (entire) variable.
      @param offset Offset to the element, in the final dimension of the variable.
      */
-    void printValue(std::ostream &s, void *base_addr) const;
+    void printValue(std::ostream &s, void *base_addr) const override;
 
     /**
      */
-    std::string toString() const;
+    std::string toString() const override;
 
     /**
      Get the name of the enumeration type.
      */
-    std::string getTypeSpecName() const;
+    std::string getTypeSpecName() const override;
 
-    // virtual bool lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const;
+    bool accept (DataTypeVisitor* visitor) const override;
 
 
     /* ==================================================================== */

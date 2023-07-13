@@ -28,10 +28,12 @@ set(DATATYPES_SRC
     Utils/ParsedDeclaration.cpp
     Utils/MutableDeclaration.cpp
     Utils/ParsedAssignment.cpp
+    Algorithm/DataTypeAlgorithm.cpp
     Algorithm/DataTypeVisitor.cpp
-    Algorithm/CheckpointVisitor.cpp
-    Algorithm/LookupNameByAddressVisitor.cpp
-    Algorithm/LookupAddressByNameVisitor.cpp
+    Algorithm/FindLeaves.cpp
+    Algorithm/ContainsPointer.cpp
+    Algorithm/LookupAddressAndTypeByName.cpp
+    Algorithm/LookupNameByAddressAndType.cpp
     CheckpointAgent/J_CheckpointAgent.cpp
     TypeDictionary.cpp
     DataTypeInator.cpp

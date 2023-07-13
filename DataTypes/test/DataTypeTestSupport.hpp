@@ -41,10 +41,29 @@ class ClassFive {
     static int count;
 };
 
+// ClassSix contains a character ptr and and std::string
 class ClassSix {
     public:
     const char * char_ptr;
     std::string str;
+};
+
+class ClassWithNoPointers {
+    public:
+    int a;
+    std::string b;
+    double c[8][7][6][5];
+};
+
+class ClassWithPointer {
+    public:
+    void * a;
+};
+
+class ClassWithNestedClasses {
+    public:
+    ClassWithNoPointers a;
+    ClassWithPointer b;
 };
 
 // An Allocator
@@ -71,6 +90,8 @@ bool addClassFourToTypeDictionary(DataTypeInator* dataTypeInator);
 bool addClassFiveToTypeDictionary(DataTypeInator* dataTypeInator);
 bool addClassFiveToTypeDictionary(DataTypeInator* dataTypeInator);
 bool addClassSixToTypeDictionary(DataTypeInator* dataTypeInator);
+
+bool addPointerTestClassesToDictionary(DataTypeInator* dataTypeInator);
 
 
 enum DayOfWeek {

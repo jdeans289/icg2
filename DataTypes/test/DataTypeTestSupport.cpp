@@ -136,6 +136,45 @@ bool addClassSixToTypeDictionary(DataTypeInator* dataTypeInator) {
     return result;
 }
 
+
+bool addPointerTestClassesToDictionary(DataTypeInator* dataTypeInator) {
+    bool result = false;
+
+    try {
+        CompositeDataType * ClassWithNoPointersType = new CompositeDataType (dataTypeInator, "ClassWithNoPointers", sizeof(ClassWithNoPointers),    
+                                                                            &construct<ClassWithNoPointers>, &destruct<ClassWithNoPointers>);
+
+        ClassWithNoPointersType->addRegularMember( "a", offsetof(ClassWithNoPointers, a), "int");
+        ClassWithNoPointersType->addRegularMember( "b", offsetof(ClassWithNoPointers, b), "std::string");
+        ClassWithNoPointersType->addRegularMember( "c", offsetof(ClassWithNoPointers, c), "double[8][7][6][5]");
+
+        dataTypeInator->addToDictionary("ClassWithNoPointers", ClassWithNoPointersType);
+
+        CompositeDataType * ClassWithPointerType = new CompositeDataType (dataTypeInator, "ClassWithPointer", sizeof(ClassWithPointer),    
+                                                                    &construct<ClassWithPointer>, &destruct<ClassWithPointer>);
+        
+        ClassWithPointerType->addRegularMember( "a", offsetof(ClassWithPointer, a), "void *");
+        dataTypeInator->addToDictionary("ClassWithPointer", ClassWithPointerType);
+
+        CompositeDataType * ClassWithNestedClassesType = new CompositeDataType (dataTypeInator, "ClassWithNestedClasses", sizeof(ClassWithNestedClasses),    
+                                                                    &construct<ClassWithNestedClasses>, &destruct<ClassWithNestedClasses>);
+        
+        ClassWithNestedClassesType->addRegularMember( "a", offsetof(ClassWithNestedClasses, a), "ClassWithNoPointers");
+        ClassWithNestedClassesType->addRegularMember( "b", offsetof(ClassWithNestedClasses, b), "ClassWithPointer");
+
+        dataTypeInator->addToDictionary("ClassWithNestedClasses", ClassWithNestedClassesType);
+
+        result = ClassWithNoPointersType->validate();
+        result &= ClassWithPointerType->validate();
+        result &= ClassWithNestedClassesType->validate();
+
+    } catch( const std::logic_error& e ) {
+        std::cerr << e.what();
+        result = false;
+    }
+    return result;
+}
+
 bool addDayOfWeekEnumToTypeDictionary(DataTypeInator* dataTypeInator,  EnumDictionary* enumDictionary) {
 
     bool result = false;
