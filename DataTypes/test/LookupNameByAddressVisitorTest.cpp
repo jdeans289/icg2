@@ -1,5 +1,5 @@
 #include "Type/EnumDictionary.hpp"
-#include "Type/PrimitiveDataType.hpp"
+#include "Type/SpecifiedPrimitiveDataType.hpp"
 #include "Type/NormalStructMember.hpp"
 #include "DataTypeTestSupport.hpp"
 
@@ -26,7 +26,7 @@ class LookupNameByAddressVisitorTest : public ::testing::Test {
 
 TEST_F(LookupNameByAddressVisitorTest, basic) {
     // ARRANGE
-    PrimitiveDataType<int> int_data_type;
+    SpecifiedPrimitiveDataType<int> int_data_type;
     int var_to_search = 100;
 
     int * search_address = &var_to_search;

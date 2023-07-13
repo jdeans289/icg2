@@ -8,6 +8,8 @@
 #include "Type/PointerDataType.hpp"
 #include "Type/EnumDataType.hpp"
 #include "Type/StringDataType.hpp"
+#include "Type/PrimitiveDataType.hpp"
+
 
 #include "Type/NormalStructMember.hpp"
 
@@ -129,7 +131,7 @@ bool LookupNameByAddressVisitor::visitArrayType(const ArrayDataType * node) {
     return subType->accept(this);
 }
 
-bool LookupNameByAddressVisitor::visitPrimitiveDataType(const DataType * node) {
+bool LookupNameByAddressVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
     return visitLeaf(node);
 }
 

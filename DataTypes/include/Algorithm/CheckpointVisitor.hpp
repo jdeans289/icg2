@@ -18,8 +18,7 @@ class CheckpointVisitor : public DataTypeVisitor {
 
         // Visitor Interface 
 
-        virtual bool visitPrimitiveDataType(const DataType * node) override;
-
+        virtual bool visitPrimitiveDataType(const PrimitiveDataType * node) override;
         virtual bool visitCompositeType(const CompositeDataType * node) override;
         virtual bool visitArrayType(const ArrayDataType * node) override;
         virtual bool visitPointerType(const PointerDataType * node) override;

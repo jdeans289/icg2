@@ -4,7 +4,7 @@
 #include "DataTypeInator.hpp"
 #include "Type/CompositeDataType.hpp"
 #include "Value/CompositeValue.hpp"
-#include "Type/PrimitiveDataType.hpp"
+#include "Type/SpecifiedPrimitiveDataType.hpp"
 #include "Type/StringDataType.hpp"
 #include "DataTypeTestSupport.hpp"
 
@@ -122,7 +122,7 @@ TEST_F(TypeDictionaryTest, addTypeDefinition_2) {
     int test_result = 0;
 
     try {
-        typeDictionary->addTypeDefinition("char", new PrimitiveDataType<char>() );
+        typeDictionary->addTypeDefinition("char", new SpecifiedPrimitiveDataType<char>() );
     } catch (const std::logic_error& e) {
         std::cerr << "NOTE: Exception is expected as part of the test." << std::endl;
         std::cerr << e.what() << std::endl;
@@ -148,7 +148,7 @@ TEST_F(TypeDictionaryTest, namespaces_lookup) {
 
 TEST_F(TypeDictionaryTest, namespaces_definition) {
     // ARRANGE
-    typeDictionary->addTypeDefinition("A::B::C::D", new PrimitiveDataType<double>());
+    typeDictionary->addTypeDefinition("A::B::C::D", new SpecifiedPrimitiveDataType<double>());
 
     // ACT
     const DataType * type = typeDictionary->lookup("A::B::C::D");
@@ -160,7 +160,7 @@ TEST_F(TypeDictionaryTest, namespaces_definition) {
 
 TEST_F(TypeDictionaryTest, namespaces_failed_lookup) {
     // ARRANGE
-    typeDictionary->addTypeDefinition("A::B::C::D", new PrimitiveDataType<double>());
+    typeDictionary->addTypeDefinition("A::B::C::D", new SpecifiedPrimitiveDataType<double>());
 
     // ACT
     const DataType * type = typeDictionary->lookup("A::B::no_such_namespace::no_such_type");
@@ -171,7 +171,7 @@ TEST_F(TypeDictionaryTest, namespaces_failed_lookup) {
 
 TEST_F(TypeDictionaryTest, namespaces_failed_lookup_2) {
     // ARRANGE
-    typeDictionary->addTypeDefinition("A::B::C::D", new PrimitiveDataType<double>());
+    typeDictionary->addTypeDefinition("A::B::C::D", new SpecifiedPrimitiveDataType<double>());
 
     // ACT
     const DataType * type = typeDictionary->lookup("A::B::C::no_such_type");

@@ -39,22 +39,12 @@ class DataType {
     /**
     @return An enumeration value indicating which of the several specific subclasses of DataType this class is.
     */
+    // TODO: I kinda wanna jettison this
     virtual TypeClass::e getTypeClass() const = 0;
 
     /**
      */
     virtual std::string getTypeSpecName() const = 0;
-
-    /**
-    @return The number of arrayed Type-specifier elements of the DataType.
-    FIXME: THIS LOOKS HINKY and IS ARRAY SPECIFIC
-    */
-    // virtual unsigned int getTotalElementCount() const { return 1; }
-
-    /**
-    @return does the DataType or any member of the DataType represent a pointer?
-    */
-    virtual bool containsPointers() const { return false; }
 
     /**
     @return a duplicate DataType.
@@ -107,11 +97,6 @@ class DataType {
     Generate a definition of this DataType.
     */
     virtual std::string toString() const;
-
-    /**
-    @return true it this DataType represents void or false otherwise.
-    */
-    virtual bool isVoid() const { return false; }
 
     /* 
     Implement a Visitor Pattern

@@ -2,20 +2,20 @@
 #include <stddef.h>
 #include <iostream>
 #include "TypeDictionary.hpp"
-#include "Type/PrimitiveDataType.hpp"
+#include "Type/SpecifiedPrimitiveDataType.hpp"
 
-class PrimitiveDataTypeTest : public ::testing::Test {
+class SpecifiedPrimitiveDataTypeTest : public ::testing::Test {
     protected:
     TypeDictionary *typeDictionary;
-    PrimitiveDataTypeTest() { typeDictionary = new TypeDictionary; }
-    ~PrimitiveDataTypeTest() { delete typeDictionary; }
+    SpecifiedPrimitiveDataTypeTest() { typeDictionary = new TypeDictionary; }
+    ~SpecifiedPrimitiveDataTypeTest() { delete typeDictionary; }
     void SetUp() {}
     void TearDown() {}
 };
 
 template <typename T>
 void validate_getSize(size_t expectedSize) {
-    PrimitiveDataType<T> * primTypeSpec = new PrimitiveDataType<T>();
+    SpecifiedPrimitiveDataType<T> * primTypeSpec = new SpecifiedPrimitiveDataType<T>();
     size_t test_result = primTypeSpec->getSize();
     delete primTypeSpec;
     EXPECT_EQ(expectedSize, test_result);
@@ -24,7 +24,7 @@ void validate_getSize(size_t expectedSize) {
 template <typename T>
 void validate_printValue(T& testVar, const char* expectedString) {
     std::stringstream ss;
-    PrimitiveDataType<T> * primTypeSpec = new PrimitiveDataType<T>();
+    SpecifiedPrimitiveDataType<T> * primTypeSpec = new SpecifiedPrimitiveDataType<T>();
     primTypeSpec->printValue(ss, &testVar);
     int result = ss.str().compare(expectedString);
     delete primTypeSpec;
@@ -34,7 +34,7 @@ void validate_printValue(T& testVar, const char* expectedString) {
 template <typename T>
 void validate_toString(const char* expectedString) {
     std::string s;
-    PrimitiveDataType<T> * primTypeSpec = new PrimitiveDataType<T>();
+    SpecifiedPrimitiveDataType<T> * primTypeSpec = new SpecifiedPrimitiveDataType<T>();
     s = primTypeSpec->toString();
     int result = s.compare(expectedString);
     delete primTypeSpec;
@@ -43,7 +43,7 @@ void validate_toString(const char* expectedString) {
 
 template <typename T>
 void validate_isFloatingPoint(bool expectedResult) {
-    PrimitiveDataType<T> * primTypeSpec = new PrimitiveDataType<T>();
+    SpecifiedPrimitiveDataType<T> * primTypeSpec = new SpecifiedPrimitiveDataType<T>();
     bool result = primTypeSpec->isFloatingPoint();
     delete primTypeSpec;
     EXPECT_EQ(expectedResult, result);
@@ -51,7 +51,7 @@ void validate_isFloatingPoint(bool expectedResult) {
 
 template <typename T>
 void validate_isSigned(bool expectedResult) {
-    PrimitiveDataType<T> * primTypeSpec = new PrimitiveDataType<T>();
+    SpecifiedPrimitiveDataType<T> * primTypeSpec = new SpecifiedPrimitiveDataType<T>();
     bool result = primTypeSpec->isSigned();
     delete primTypeSpec;
     EXPECT_EQ(expectedResult, result);
@@ -59,7 +59,7 @@ void validate_isSigned(bool expectedResult) {
 
 template <typename T>
 void validate_isVoid(bool expectedResult) {
-    PrimitiveDataType<T> * primTypeSpec = new PrimitiveDataType<T>();
+    SpecifiedPrimitiveDataType<T> * primTypeSpec = new SpecifiedPrimitiveDataType<T>();
     bool result = primTypeSpec->isVoid();
     delete primTypeSpec;
     EXPECT_EQ(expectedResult, result);
@@ -69,10 +69,10 @@ void validate_isVoid(bool expectedResult) {
                                          Test Cases
    ================================================================================
 */
-TEST_F(PrimitiveDataTypeTest, validate ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, validate ) {
 
-    /* PrimitiveDataType is always valid, because it is a fundemental, builtin type. */
-    PrimitiveDataType<char> * primTypeSpec = new PrimitiveDataType<char>();
+    /* SpecifiedPrimitiveDataType is always valid, because it is a fundemental, builtin type. */
+    SpecifiedPrimitiveDataType<char> * primTypeSpec = new SpecifiedPrimitiveDataType<char>();
 
     bool test_result;
     test_result = primTypeSpec->validate();
@@ -80,59 +80,59 @@ TEST_F(PrimitiveDataTypeTest, validate ) {
     EXPECT_EQ(true, test_result);
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_void) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_void) {
     validate_getSize<void>(0);
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_char) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_char) {
     validate_getSize<char>((int)sizeof(char));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_short) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_short) {
     validate_getSize<short>((int)sizeof(short));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_int) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_int) {
     validate_getSize<int>((int)sizeof(int));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_long) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_long) {
     validate_getSize<long>((int)sizeof(long));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_long_long) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_long_long) {
     validate_getSize<long long>((int)sizeof(long long));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_unsigned_char) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_unsigned_char) {
     validate_getSize<unsigned char>((int)sizeof(unsigned char));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_unsigned_short) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_unsigned_short) {
     validate_getSize<unsigned short>((int)sizeof(unsigned short));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_unsigned_int) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_unsigned_int) {
     validate_getSize<unsigned int>((int)sizeof(unsigned int));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_unsigned_long) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_unsigned_long) {
     validate_getSize<unsigned long>((int)sizeof(unsigned long));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_unsigned_long_long) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_unsigned_long_long) {
     validate_getSize<unsigned long long>((int)sizeof(unsigned long long));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_wchar_t) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_wchar_t) {
     validate_getSize<wchar_t>((int)sizeof(wchar_t));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_float) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_float) {
     validate_getSize<float>((int)sizeof(float));
 }
 
-TEST_F(PrimitiveDataTypeTest, getSize_double) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getSize_double) {
     validate_getSize<double>((int)sizeof(double));
 }
 
@@ -140,9 +140,9 @@ TEST_F(PrimitiveDataTypeTest, getSize_double) {
 //                                    assignValue tests
 // -----------------------------------------------------------------------------------------
 
-TEST_F(PrimitiveDataTypeTest, assignValue_char) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, assignValue_char) {
     char test_var = '\0';
-    PrimitiveDataType<char> * primTypeSpec = new PrimitiveDataType<char>();
+    SpecifiedPrimitiveDataType<char> * primTypeSpec = new SpecifiedPrimitiveDataType<char>();
     IntegerValue * value = new IntegerValue((int)'A');
     primTypeSpec->assignValue(&test_var, value);
     delete value;
@@ -150,9 +150,9 @@ TEST_F(PrimitiveDataTypeTest, assignValue_char) {
     EXPECT_EQ('A', test_var);
 }
 
-TEST_F(PrimitiveDataTypeTest, assignValue_short) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, assignValue_short) {
     short test_var = 0;
-    PrimitiveDataType<short> * primTypeSpec = new PrimitiveDataType<short>();
+    SpecifiedPrimitiveDataType<short> * primTypeSpec = new SpecifiedPrimitiveDataType<short>();
     IntegerValue * value = new IntegerValue(314);
     primTypeSpec->assignValue(&test_var, value);
     delete value;
@@ -160,9 +160,9 @@ TEST_F(PrimitiveDataTypeTest, assignValue_short) {
     EXPECT_EQ(314, test_var);
 }
 
-TEST_F(PrimitiveDataTypeTest, assignValue_int) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, assignValue_int) {
     int test_var = 0;
-    PrimitiveDataType<int> * primTypeSpec = new PrimitiveDataType<int>();
+    SpecifiedPrimitiveDataType<int> * primTypeSpec = new SpecifiedPrimitiveDataType<int>();
     IntegerValue * value = new IntegerValue(723);
     primTypeSpec->assignValue(&test_var, value);
     delete value;
@@ -170,9 +170,9 @@ TEST_F(PrimitiveDataTypeTest, assignValue_int) {
     EXPECT_EQ(723, test_var);
 }
 
-TEST_F(PrimitiveDataTypeTest, assignValue_long) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, assignValue_long) {
     long test_var = 0;
-    PrimitiveDataType<long> * primTypeSpec = new PrimitiveDataType<long>();
+    SpecifiedPrimitiveDataType<long> * primTypeSpec = new SpecifiedPrimitiveDataType<long>();
     IntegerValue * value = new IntegerValue(723);
     primTypeSpec->assignValue(&test_var, value);
     delete value;
@@ -180,9 +180,9 @@ TEST_F(PrimitiveDataTypeTest, assignValue_long) {
     EXPECT_EQ(723, test_var);
 }
 
-TEST_F(PrimitiveDataTypeTest, assignValue_long_long) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, assignValue_long_long) {
     long long test_var = 0;
-    PrimitiveDataType<long long> * primTypeSpec = new PrimitiveDataType<long long>();
+    SpecifiedPrimitiveDataType<long long> * primTypeSpec = new SpecifiedPrimitiveDataType<long long>();
     IntegerValue * value = new IntegerValue(723);
     primTypeSpec->assignValue(&test_var, value);
     delete value;
@@ -190,9 +190,9 @@ TEST_F(PrimitiveDataTypeTest, assignValue_long_long) {
     EXPECT_EQ(723, test_var);
 }
 
-TEST_F(PrimitiveDataTypeTest, assignValue_float) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, assignValue_float) {
     float test_var = 0.0;
-    PrimitiveDataType<float> * primTypeSpec = new PrimitiveDataType<float>();
+    SpecifiedPrimitiveDataType<float> * primTypeSpec = new SpecifiedPrimitiveDataType<float>();
     FloatingPointValue * value = new FloatingPointValue(2.7182818);
     primTypeSpec->assignValue(&test_var, value);
     delete value;
@@ -200,9 +200,9 @@ TEST_F(PrimitiveDataTypeTest, assignValue_float) {
     EXPECT_NEAR(2.7182818, test_var, 0.000001);
 }
 
-TEST_F(PrimitiveDataTypeTest, assignValue_double) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, assignValue_double) {
     double test_var = 0.0;
-    PrimitiveDataType<double> * primTypeSpec = new PrimitiveDataType<double>();
+    SpecifiedPrimitiveDataType<double> * primTypeSpec = new SpecifiedPrimitiveDataType<double>();
     FloatingPointValue * value = new FloatingPointValue(3.1415927);
     primTypeSpec->assignValue(&test_var, value);
     delete value;
@@ -213,73 +213,73 @@ TEST_F(PrimitiveDataTypeTest, assignValue_double) {
 // -----------------------------------------------------------------------------------------
 //                                    printValue tests
 // -----------------------------------------------------------------------------------------
-TEST_F(PrimitiveDataTypeTest, printValue_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_char ) {
     char testVar = 'B';
     validate_printValue(testVar, "'B'");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_char_2 ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_char_2 ) {
     /* Unprintable chars. */
     char testVar = '\01';
     validate_printValue(testVar, "1");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_short ) {
     short testVar = -1234;
     validate_printValue(testVar, "-1234");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_int ) {
     int testVar = -1234;
     validate_printValue(testVar, "-1234");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_long ) {
     long testVar = -1234;
     validate_printValue(testVar, "-1234");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_long_long ) {
     long long testVar = -1234;
     validate_printValue(testVar, "-1234");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_unsigned_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_unsigned_char ) {
     unsigned char testVar = 'B';
     validate_printValue(testVar, "'B'");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_unsigned_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_unsigned_short ) {
     unsigned short testVar = 1234;
     validate_printValue(testVar, "1234");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_unsigned_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_unsigned_int ) {
     unsigned int testVar = 1234;
     validate_printValue(testVar, "1234");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_unsigned_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_unsigned_long ) {
     unsigned long testVar = 1234;
     validate_printValue(testVar, "1234");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_unsigned_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_unsigned_long_long ) {
     unsigned long long testVar = 1234;
     validate_printValue(testVar, "1234");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_wchar_t ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_wchar_t ) {
     wchar_t testVar = 1234;
     validate_printValue(testVar, "1234");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_float ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_float ) {
     float testVar = 3.14159;
     validate_printValue(testVar, "3.14159");
 }
 
-TEST_F(PrimitiveDataTypeTest, printValue_double ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, printValue_double ) {
     double testVar = 3.14159;
     validate_printValue(testVar, "3.14159");
 }
@@ -287,238 +287,238 @@ TEST_F(PrimitiveDataTypeTest, printValue_double ) {
 // -----------------------------------------------------------------------------------------
 //                                    toString tests
 // -----------------------------------------------------------------------------------------
-TEST_F(PrimitiveDataTypeTest, toString_void ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_void ) {
     validate_toString<void>("void");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_char ) {
     validate_toString<char>("char");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_short ) {
     validate_toString<short>("short");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_int ) {
     validate_toString<int>("int");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_long ) {
     validate_toString<long>("long");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_long_long ) {
     validate_toString<long long>("long long");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_unsigned_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_unsigned_char ) {
     validate_toString<unsigned char>("unsigned char");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_unsigned_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_unsigned_short ) {
     validate_toString<unsigned short>("unsigned short");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_unsigned_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_unsigned_int ) {
     validate_toString<unsigned int>("unsigned int");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_unsigned_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_unsigned_long ) {
     validate_toString<unsigned long>("unsigned long");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_unsigned_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_unsigned_long_long ) {
     validate_toString<unsigned long long>("unsigned long long");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_wchar_t ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_wchar_t ) {
     validate_toString<wchar_t>("wchar_t");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_float ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_float ) {
     validate_toString<float>("float");
 }
 
-TEST_F(PrimitiveDataTypeTest, toString_double ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, toString_double ) {
     validate_toString<double>("double");
 }
 
 // -----------------------------------------------------------------------------------------
 //                                    isFloatingPoint tests
 // -----------------------------------------------------------------------------------------
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_void ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_void ) {
     validate_isFloatingPoint<void>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_char ) {
     validate_isFloatingPoint<char>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_short ) {
     validate_isFloatingPoint<short>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_int ) {
     validate_isFloatingPoint<int>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_long ) {
     validate_isFloatingPoint<long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_long_long ) {
     validate_isFloatingPoint<long long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_unsigned_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_unsigned_char ) {
     validate_isFloatingPoint<unsigned char>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_unsigned_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_unsigned_short ) {
     validate_isFloatingPoint<unsigned short>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_unsigned_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_unsigned_int ) {
     validate_isFloatingPoint<unsigned int>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_unsigned_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_unsigned_long ) {
     validate_isFloatingPoint<unsigned long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_unsigned_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_unsigned_long_long ) {
     validate_isFloatingPoint<unsigned long long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_float ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_float ) {
     validate_isFloatingPoint<float>(true);
 }
 
-TEST_F(PrimitiveDataTypeTest, isFloatingPoint_double ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isFloatingPoint_double ) {
     validate_isFloatingPoint<double>(true);
 }
 
 // -----------------------------------------------------------------------------------------
 //                                  isSigned tests
 // -----------------------------------------------------------------------------------------
-TEST_F(PrimitiveDataTypeTest, isSigned_void ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_void ) {
     validate_isSigned<void>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_char ) {
     validate_isSigned<char>(true);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_short ) {
     validate_isSigned<short>(true);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_int ) {
     validate_isSigned<int>(true);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_long ) {
     validate_isSigned<long>(true);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_long_long ) {
     validate_isSigned<long long>(true);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_unsigned_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_unsigned_char ) {
     validate_isSigned<unsigned char>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_unsigned_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_unsigned_short ) {
     validate_isSigned<unsigned short>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_unsigned_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_unsigned_int ) {
     validate_isSigned<unsigned int>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_unsigned_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_unsigned_long ) {
     validate_isSigned<unsigned long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_unsigned_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_unsigned_long_long ) {
     validate_isSigned<unsigned long long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_wchar_t ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_wchar_t ) {
     validate_isSigned<wchar_t>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_float ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_float ) {
     validate_isSigned<float>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isSigned_double ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isSigned_double ) {
     validate_isSigned<double>(false);
 }
 
 // -----------------------------------------------------------------------------------------
 //                                  isVoid tests
 // -----------------------------------------------------------------------------------------
-TEST_F(PrimitiveDataTypeTest, isVoid_void ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_void ) {
     validate_isVoid<void>(true);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_char ) {
     validate_isVoid<char>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_short ) {
     validate_isVoid<short>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_int ) {
     validate_isVoid<int>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_long ) {
     validate_isVoid<long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_long_long ) {
     validate_isVoid<long long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_unsigned_char ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_unsigned_char ) {
     validate_isVoid<unsigned char>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_unsigned_short ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_unsigned_short ) {
     validate_isVoid<unsigned short>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_unsigned_int ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_unsigned_int ) {
     validate_isVoid<unsigned int>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_unsigned_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_unsigned_long ) {
     validate_isVoid<unsigned long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_unsigned_long_long ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_unsigned_long_long ) {
     validate_isVoid<unsigned long long>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_wchar_t ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_wchar_t ) {
     validate_isVoid<wchar_t>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_float ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_float ) {
     validate_isVoid<float>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, isVoid_double ) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, isVoid_double ) {
     validate_isVoid<double>(false);
 }
 
-TEST_F(PrimitiveDataTypeTest, createInstance_char) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, createInstance_char) {
 
-    PrimitiveDataType<char> * primTypeSpec = new PrimitiveDataType<char>();
+    SpecifiedPrimitiveDataType<char> * primTypeSpec = new SpecifiedPrimitiveDataType<char>();
     char* test_var = (char*)primTypeSpec->createInstance(1);
     IntegerValue * value = new IntegerValue((int)'A');
     primTypeSpec->assignValue(test_var, value);
@@ -531,10 +531,10 @@ TEST_F(PrimitiveDataTypeTest, createInstance_char) {
 //                                  GetValue Tests
 // -----------------------------------------------------------------------------------------
 
-TEST_F(PrimitiveDataTypeTest, getValue_int) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getValue_int) {
     // ARRANGE
 
-    PrimitiveDataType<int> int_type;
+    SpecifiedPrimitiveDataType<int> int_type;
     int my_test_int = 8765;
 
     // ACT
@@ -546,10 +546,10 @@ TEST_F(PrimitiveDataTypeTest, getValue_int) {
     ASSERT_EQ(result, my_test_int);
 }
 
-TEST_F(PrimitiveDataTypeTest, getValue_double) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getValue_double) {
     // ARRANGE
 
-    PrimitiveDataType<double> double_type;
+    SpecifiedPrimitiveDataType<double> double_type;
     double my_test_double = 5.4321;
     std::stringstream ss;
 
@@ -562,10 +562,10 @@ TEST_F(PrimitiveDataTypeTest, getValue_double) {
     ASSERT_EQ(result, my_test_double);
 }
 
-TEST_F(PrimitiveDataTypeTest, getValue_void) {
+TEST_F(SpecifiedPrimitiveDataTypeTest, getValue_void) {
     // ARRANGE
 
-    PrimitiveDataType<void> void_type;
+    SpecifiedPrimitiveDataType<void> void_type;
     double my_test_double = 5.4321;
     std::stringstream ss;
 
@@ -575,52 +575,3 @@ TEST_F(PrimitiveDataTypeTest, getValue_void) {
     // ASSERT
     ASSERT_TRUE(val == NULL);
 }
-
-// -----------------------------------------------------------------------------------------
-//                                  Checkpoint Tests
-// -----------------------------------------------------------------------------------------
-
-// TEST_F(PrimitiveDataTypeTest, checkpoint_int) {
-//     // ARRANGE
-
-//     PrimitiveDataType<int> int_type;
-//     int my_test_int = 8765;
-//     std::stringstream ss;
-
-//     // ACT
-//     int_type.checkpointValue(ss, "my_test_int", &my_test_int);
-
-//     // ASSERT
-//     std::string result = ss.str();
-//     ASSERT_EQ(result, "my_test_int = 8765;\n");
-// }
-
-// TEST_F(PrimitiveDataTypeTest, checkpoint_double) {
-//     // ARRANGE
-
-//     PrimitiveDataType<double> double_type;
-//     double my_test_double = 5.4321;
-//     std::stringstream ss;
-
-//     // ACT
-//     double_type.checkpointValue(ss, "my_test_double", &my_test_double);
-
-//     // ASSERT
-//     std::string result = ss.str();
-//     ASSERT_EQ(result, "my_test_double = 5.4321;\n");
-// }
-
-// TEST_F(PrimitiveDataTypeTest, checkpoint_char) {
-//     // ARRANGE
-
-//     PrimitiveDataType<char> char_type;
-//     char my_test_char = 'j';
-//     std::stringstream ss;
-
-//     // ACT
-//     char_type.checkpointValue(ss, "my_test_char", &my_test_char);
-
-//     // ASSERT
-//     std::string result = ss.str();
-//     ASSERT_EQ(result, "my_test_char = 'j';\n");
-// }

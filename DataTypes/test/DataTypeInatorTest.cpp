@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 #include "DataTypeInator.hpp"
-#include "Type/PrimitiveDataType.hpp"
+#include "Type/SpecifiedPrimitiveDataType.hpp"
 #include "Type/PointerDataType.hpp"
 #include "Type/ArrayDataType.hpp"
 
@@ -23,7 +23,7 @@ TEST_F(DataTypeInatorTest, basic) {
     const DataType * result = dataTypeInator->resolve("int");
 
     // ASSERT
-    const PrimitiveDataType<int> * casted_result = dynamic_cast<const PrimitiveDataType<int> *> (result);
+    const SpecifiedPrimitiveDataType<int> * casted_result = dynamic_cast<const SpecifiedPrimitiveDataType<int> *> (result);
     ASSERT_TRUE(casted_result != NULL);
 }
 
@@ -42,7 +42,7 @@ TEST_F(DataTypeInatorTest, Array) {
 
     const DataType * subtype_result = array_result->getSubType();
     // std::cout << "Subtype: " << subtype_result->toString() << std::endl;
-    const PrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const PrimitiveDataType<int> *> (subtype_result);
+    const SpecifiedPrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const SpecifiedPrimitiveDataType<int> *> (subtype_result);
     ASSERT_TRUE(subtype_casted_result != NULL);
 }
 
@@ -68,7 +68,7 @@ TEST_F(DataTypeInatorTest, MultidimArray) {
 
     // Subtype's subtype is int
     subtype_result = array_result->getSubType();
-    const PrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const PrimitiveDataType<int> *> (subtype_result);
+    const SpecifiedPrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const SpecifiedPrimitiveDataType<int> *> (subtype_result);
     ASSERT_TRUE(subtype_casted_result != NULL);
 }
 
@@ -86,7 +86,7 @@ TEST_F(DataTypeInatorTest, Pointer) {
 
     // Subtype is int
     const DataType * subtype_result = pointer_result->getSubType();
-    const PrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const PrimitiveDataType<int> *> (subtype_result);
+    const SpecifiedPrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const SpecifiedPrimitiveDataType<int> *> (subtype_result);
     ASSERT_TRUE(subtype_casted_result != NULL);
 }
 
@@ -109,7 +109,7 @@ TEST_F(DataTypeInatorTest, PointerPointer) {
 
     // Subtype's subtype is int
     subtype_result = pointer_result->getSubType();
-    const PrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const PrimitiveDataType<int> *> (subtype_result);
+    const SpecifiedPrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const SpecifiedPrimitiveDataType<int> *> (subtype_result);
     ASSERT_TRUE(subtype_casted_result != NULL);
 }
 
@@ -138,7 +138,7 @@ TEST_F(DataTypeInatorTest, ArrayPointerPointer) {
 
     // Subtype's subtype's subtype is int
     subtype_result = array_result->getSubType();
-    const PrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const PrimitiveDataType<int> *> (subtype_result);
+    const SpecifiedPrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const SpecifiedPrimitiveDataType<int> *> (subtype_result);
     ASSERT_TRUE(subtype_casted_result != NULL);
 }
 
@@ -167,7 +167,7 @@ TEST_F(DataTypeInatorTest, PointerPointerArray) {
 
     // Subtype's subtype's subtype is int
     subtype_result = pointer_result->getSubType();
-    const PrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const PrimitiveDataType<int> *> (subtype_result);
+    const SpecifiedPrimitiveDataType<int> * subtype_casted_result = dynamic_cast<const SpecifiedPrimitiveDataType<int> *> (subtype_result);
     ASSERT_TRUE(subtype_casted_result != NULL);
 }
 
