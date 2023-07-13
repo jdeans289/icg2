@@ -65,11 +65,6 @@ public:
     virtual bool validate() = 0;
 
     /**
-     @return does the DataType or any member of the DataType represent a pointer?
-     */
-    virtual bool containsPointers() const { return false; }
-
-    /**
      */
     virtual void clearValue(void *struct_address) const = 0;
 

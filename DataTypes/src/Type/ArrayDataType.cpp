@@ -105,14 +105,6 @@ unsigned int ArrayDataType::getTotalElementCount() const {
     return elementCount;
 }
 
-// MEMBER FUNCTION
-bool ArrayDataType::containsPointers() const {
-
-    if ((subType->containsPointers())) {
-        return true;
-    }
-    return false;
-}
 
 // MEMBER FUNCTION
 void* ArrayDataType::createInstance(unsigned int num) const {

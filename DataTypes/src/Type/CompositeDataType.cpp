@@ -119,17 +119,6 @@ CompositeDataType & CompositeDataType::operator=(const CompositeDataType & rhs) 
       return *this;
 }
 
-// MEMBER FUNCTION
-bool CompositeDataType::containsPointers() const {
-
-    int memberCount = memberList.size() ;
-    for (int ii=0; ii < memberCount ; ii++) {
-        if ( memberList[ii]->containsPointers() ) {
-            return true;
-        }
-    }
-    return false;
-}
 
 // MEMBER FUNCTION
 void* CompositeDataType::createInstance(unsigned int num) const {

@@ -54,10 +54,6 @@ class ArrayDataType : public ModifierType {
 
     /**
      */
-    bool containsPointers() const;
-
-    /**
-     */
     DataType * clone () const;
 
     /**
