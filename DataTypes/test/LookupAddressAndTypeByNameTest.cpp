@@ -5,31 +5,33 @@
 
 #include "gtest/gtest.h"
 
-#include "Algorithm/LookupAddressByNameVisitor.hpp"
+#include "Algorithm/LookupAddressAndTypeByName.hpp"
 
 
-class LookupAddressByNameVisitorTest : public ::testing::Test {
+class LookupAddressAndTypeByNameTest : public ::testing::Test {
     protected:
     DataTypeInator dataTypeInator;
     EnumDictionary enumDictionary;
 
-    LookupAddressByNameVisitorTest() {
+    LookupAddressAndTypeByNameTest() {
 
     }
 
-    ~LookupAddressByNameVisitorTest() {
+    ~LookupAddressAndTypeByNameTest() {
 
     }
     void SetUp() {}
     void TearDown() {}
 };
 
-TEST_F(LookupAddressByNameVisitorTest, basic) {
+namespace LookupAddressAndTypeByName {
+
+TEST_F(LookupAddressAndTypeByNameTest, basic) {
     // ARRANGE
     int x;
     SpecifiedPrimitiveDataType<int> int_data_type;
 
-    LookupAddressByNameVisitor visitor(&x, "");
+    LookupAddressAndTypeByNameVisitor visitor(&x, "");
     bool status = visitor.go(&int_data_type);
 
     ASSERT_TRUE(status);
@@ -39,18 +41,18 @@ TEST_F(LookupAddressByNameVisitorTest, basic) {
     EXPECT_EQ(int_data_type.toString(), result.type->toString());
 }
 
-TEST_F(LookupAddressByNameVisitorTest, int_error) {
+TEST_F(LookupAddressAndTypeByNameTest, int_error) {
     // ARRANGE
     int x;
     SpecifiedPrimitiveDataType<int> int_data_type;
 
-    LookupAddressByNameVisitor visitor(&x, "no_such_thing");
+    LookupAddressAndTypeByNameVisitor visitor(&x, "no_such_thing");
     bool status = visitor.go(&int_data_type);
 
     ASSERT_FALSE(status);
 }
 
-TEST_F(LookupAddressByNameVisitorTest, composite1) {
+TEST_F(LookupAddressAndTypeByNameTest, composite1) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     const DataType * data_type = dataTypeInator.resolve("ClassOne");
@@ -58,7 +60,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite1) {
     ClassOne var_to_search;
 
     // ACT
-    LookupAddressByNameVisitor visitor(&var_to_search, "b");
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "b");
     bool status = visitor.go(data_type);
 
     // ASSERT
@@ -71,7 +73,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite1) {
     EXPECT_EQ(double_data_type.toString(), result.type->toString());
 }
 
-TEST_F(LookupAddressByNameVisitorTest, composite2) {
+TEST_F(LookupAddressAndTypeByNameTest, composite2) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -81,7 +83,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite2) {
     ClassTwo var_to_search;
 
     // ACT
-    LookupAddressByNameVisitor visitor(&var_to_search, "c1.b");
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "c1.b");
     bool status = visitor.go(c2_data_type);
 
     // ASSERT
@@ -94,7 +96,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite2) {
     EXPECT_EQ(double_data_type.toString(), result.type->toString());
 }
 
-TEST_F(LookupAddressByNameVisitorTest, composite4) {
+TEST_F(LookupAddressAndTypeByNameTest, composite4) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -104,7 +106,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite4) {
     ClassTwo var_to_search;
 
     // ACT
-    LookupAddressByNameVisitor visitor(&var_to_search, "c1");
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "c1");
     bool status = visitor.go(c2_data_type);
 
     // ASSERT
@@ -116,7 +118,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite4) {
     EXPECT_EQ(c1_data_type->toString(), result.type->toString());
 }
 
-TEST_F(LookupAddressByNameVisitorTest, composite3) {
+TEST_F(LookupAddressAndTypeByNameTest, composite3) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -126,7 +128,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite3) {
     ClassTwo var_to_search;
 
     // ACT
-    LookupAddressByNameVisitor visitor(&var_to_search, "c1");
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "c1");
     bool status = visitor.go(c2_data_type);
 
     // ASSERT
@@ -138,7 +140,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite3) {
     EXPECT_EQ(c1_data_type->toString(), result.type->toString());
 }
 
-TEST_F(LookupAddressByNameVisitorTest, composite_non_existent_member) {
+TEST_F(LookupAddressAndTypeByNameTest, composite_non_existent_member) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -148,20 +150,20 @@ TEST_F(LookupAddressByNameVisitorTest, composite_non_existent_member) {
     ClassTwo var_to_search;
 
     // ACT
-    LookupAddressByNameVisitor visitor(&var_to_search, "c1.no_such_member");
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "c1.no_such_member");
     bool status = visitor.go(c2_data_type);
 
     // ASSERT
     ASSERT_FALSE(status);
 }
 
-TEST_F(LookupAddressByNameVisitorTest, array) {
+TEST_F(LookupAddressAndTypeByNameTest, array) {
     // ARRANGE
     const DataType * data_type = dataTypeInator.resolve("int[5]");
     int var_to_search[5];
 
     // ACT
-    LookupAddressByNameVisitor visitor(&var_to_search, "[3]");
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "[3]");
     bool status = visitor.go(data_type);
     
     // ASSERT
@@ -173,13 +175,13 @@ TEST_F(LookupAddressByNameVisitorTest, array) {
     EXPECT_EQ(int_type.toString(), result.type->toString());
 }
 
-TEST_F(LookupAddressByNameVisitorTest, multidim_array) {
+TEST_F(LookupAddressAndTypeByNameTest, multidim_array) {
     // ARRANGE
     const DataType * data_type = dataTypeInator.resolve("int[5][4][3]");
     int var_to_search[5][4][3];
 
     // ACT
-    LookupAddressByNameVisitor visitor(&var_to_search, "[3][2][1]");
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "[3][2][1]");
     bool status = visitor.go(data_type);
     
     // ASSERT
@@ -192,13 +194,13 @@ TEST_F(LookupAddressByNameVisitorTest, multidim_array) {
 }
 
 
-TEST_F(LookupAddressByNameVisitorTest, multidim_array2) {
+TEST_F(LookupAddressAndTypeByNameTest, multidim_array2) {
     // ARRANGE
     const DataType * data_type = dataTypeInator.resolve("int[5][4][3]");
     int var_to_search[5][4][3];
 
     // ACT
-    LookupAddressByNameVisitor visitor(&var_to_search, "[3][2]");
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "[3][2]");
     bool status = visitor.go(data_type);
     
     // ASSERT
@@ -210,7 +212,7 @@ TEST_F(LookupAddressByNameVisitorTest, multidim_array2) {
     EXPECT_EQ(expected_data_type->toString(), result.type->toString());
 }
 
-TEST_F(LookupAddressByNameVisitorTest, composite_array) {
+TEST_F(LookupAddressAndTypeByNameTest, composite_array) {
     // ARRANGE
     addClassOneToTypeDictionary(&dataTypeInator);
     addClassTwoToTypeDictionary(&dataTypeInator);
@@ -219,7 +221,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite_array) {
     ClassTwo var_to_search[5];
 
     // ACT
-    LookupAddressByNameVisitor visitor(&var_to_search, "[3].c1.b");
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "[3].c1.b");
     bool status = visitor.go(data_type);
     
     // ASSERT
@@ -229,4 +231,6 @@ TEST_F(LookupAddressByNameVisitorTest, composite_array) {
     EXPECT_EQ(&var_to_search[3].c1.b, result.address);
     SpecifiedPrimitiveDataType<double> int_type;
     EXPECT_EQ(int_type.toString(), result.type->toString());
+}
+
 }

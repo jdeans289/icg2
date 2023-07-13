@@ -192,3 +192,7 @@ void EnumDataType::addEnumerator( std::string name, int value)  {
 
     enumDictionary->addEnumerator(name, value);
 }
+
+bool EnumDataType::accept (DataTypeVisitor * visitor) const {
+    return visitor->visitEnumeratedType(this);
+}
