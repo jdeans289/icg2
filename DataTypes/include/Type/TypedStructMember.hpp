@@ -39,11 +39,6 @@ public:
      */
     virtual bool validate() override;
 
-    /**
-     @return does the DataType or any member of the DataType represent a pointer?
-     */
-    virtual bool containsPointers() const override;
-
     const DataType * getDataType() const;
 
     virtual void * getAddress(void * struct_address) const = 0;

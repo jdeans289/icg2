@@ -102,7 +102,7 @@ bool LookupAddressByNameVisitor::visitPointerType(const PointerDataType * node) 
     return visitLeaf(node);
 }
 
-bool LookupAddressByNameVisitor::visitPrimitiveDataType(const DataType * node) {
+bool LookupAddressByNameVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
     return visitLeaf(node);
 }
 

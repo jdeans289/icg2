@@ -30,14 +30,6 @@ bool TypedStructMember::validate() {
 }
 
 // MEMBER FUNCTION
-bool TypedStructMember::containsPointers() const {
-    if (isValid) {
-        return subType->containsPointers();
-    }
-    return false;
-}
-
-// MEMBER FUNCTION
 const DataType * TypedStructMember::getDataType() const {
     return subType;
 }

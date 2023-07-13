@@ -1,5 +1,5 @@
 #include "Type/EnumDictionary.hpp"
-#include "Type/PrimitiveDataType.hpp"
+#include "Type/SpecifiedPrimitiveDataType.hpp"
 #include "Type/NormalStructMember.hpp"
 #include "DataTypeTestSupport.hpp"
 
@@ -27,7 +27,7 @@ class LookupAddressByNameVisitorTest : public ::testing::Test {
 TEST_F(LookupAddressByNameVisitorTest, basic) {
     // ARRANGE
     int x;
-    PrimitiveDataType<int> int_data_type;
+    SpecifiedPrimitiveDataType<int> int_data_type;
 
     LookupAddressByNameVisitor visitor(&x, "");
     bool status = visitor.go(&int_data_type);
@@ -42,7 +42,7 @@ TEST_F(LookupAddressByNameVisitorTest, basic) {
 TEST_F(LookupAddressByNameVisitorTest, int_error) {
     // ARRANGE
     int x;
-    PrimitiveDataType<int> int_data_type;
+    SpecifiedPrimitiveDataType<int> int_data_type;
 
     LookupAddressByNameVisitor visitor(&x, "no_such_thing");
     bool status = visitor.go(&int_data_type);
@@ -67,7 +67,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite1) {
 
     EXPECT_EQ(&var_to_search.b, result.address);
 
-    PrimitiveDataType<double> double_data_type;
+    SpecifiedPrimitiveDataType<double> double_data_type;
     EXPECT_EQ(double_data_type.toString(), result.type->toString());
 }
 
@@ -90,7 +90,7 @@ TEST_F(LookupAddressByNameVisitorTest, composite2) {
 
     EXPECT_EQ(&var_to_search.c1.b, result.address);
 
-    PrimitiveDataType<double> double_data_type;
+    SpecifiedPrimitiveDataType<double> double_data_type;
     EXPECT_EQ(double_data_type.toString(), result.type->toString());
 }
 
@@ -169,7 +169,7 @@ TEST_F(LookupAddressByNameVisitorTest, array) {
     auto result = visitor.getResult();
 
     EXPECT_EQ(&var_to_search[3], result.address);
-    PrimitiveDataType<int> int_type;
+    SpecifiedPrimitiveDataType<int> int_type;
     EXPECT_EQ(int_type.toString(), result.type->toString());
 }
 
@@ -187,7 +187,7 @@ TEST_F(LookupAddressByNameVisitorTest, multidim_array) {
     auto result = visitor.getResult();
 
     EXPECT_EQ(&var_to_search[3][2][1], result.address);
-    PrimitiveDataType<int> int_type;
+    SpecifiedPrimitiveDataType<int> int_type;
     EXPECT_EQ(int_type.toString(), result.type->toString());
 }
 
@@ -227,6 +227,6 @@ TEST_F(LookupAddressByNameVisitorTest, composite_array) {
     auto result = visitor.getResult();
 
     EXPECT_EQ(&var_to_search[3].c1.b, result.address);
-    PrimitiveDataType<double> int_type;
+    SpecifiedPrimitiveDataType<double> int_type;
     EXPECT_EQ(int_type.toString(), result.type->toString());
 }

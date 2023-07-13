@@ -49,12 +49,6 @@ PointerDataType& PointerDataType::operator=( const PointerDataType & rhs ) {
     return *this;
 }
 
-// MEMBER FUNCTION
-// FIXME: make sure that this method in other DataTypes checks for PointerData types rather than ArrayDataTypes.
-bool PointerDataType::containsPointers() const {
-    return true;
-}
-
 // CLONE
 DataType * PointerDataType::clone () const {
     return new PointerDataType( *this );

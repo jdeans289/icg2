@@ -62,10 +62,6 @@ class StringDataType : public BaseType {
 
     /**
      */
-    bool containsPointers() const { return false; };
-
-    /**
-     */
     DataType * clone () const;
 
     /**

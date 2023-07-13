@@ -17,6 +17,7 @@ set(DATATYPES_SRC
     Type/ArrayDataType.cpp
     Type/PointerDataType.cpp
     Type/PrimitiveDataType.cpp
+    Type/SpecifiedPrimitiveDataType.cpp
     Type/StringDataType.cpp
     Type/DataType.cpp
     Type/Enumerator.cpp

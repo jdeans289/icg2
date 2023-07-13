@@ -3,7 +3,7 @@
 #include <stack>
 #include <algorithm>
 
-#include "Type/PrimitiveDataType.hpp"
+#include "Type/SpecifiedPrimitiveDataType.hpp"
 #include "Type/StringDataType.hpp"
 #include "Type/ArrayDataType.hpp"
 #include "Type/PointerDataType.hpp"
@@ -22,20 +22,20 @@ TypeDictionary::TypeDictionary() {
 
 void TypeDictionary::addBuiltinTypes() {
     // Add builtin types.
-    addTypeDefinition("void", new PrimitiveDataType<void>() );
-    addTypeDefinition("char", new PrimitiveDataType<char>() );
-    addTypeDefinition("short", new PrimitiveDataType<short>() );
-    addTypeDefinition("int", new PrimitiveDataType<int>() );
-    addTypeDefinition("long", new PrimitiveDataType<long>() );
-    addTypeDefinition("wchar_t", new PrimitiveDataType<wchar_t>() );
-    addTypeDefinition("long long", new PrimitiveDataType<long long>() );
-    addTypeDefinition("unsigned char", new PrimitiveDataType<unsigned char>() );
-    addTypeDefinition("unsigned short", new PrimitiveDataType<unsigned short>() );
-    addTypeDefinition("unsigned int", new PrimitiveDataType<unsigned int>() );
-    addTypeDefinition("unsigned long", new PrimitiveDataType<unsigned long>() );
-    addTypeDefinition("unsigned long long", new PrimitiveDataType<unsigned long long>() );
-    addTypeDefinition("float", new PrimitiveDataType<float>() );
-    addTypeDefinition("double", new PrimitiveDataType<double>() );
+    addTypeDefinition("void", new SpecifiedPrimitiveDataType<void>() );
+    addTypeDefinition("char", new SpecifiedPrimitiveDataType<char>() );
+    addTypeDefinition("short", new SpecifiedPrimitiveDataType<short>() );
+    addTypeDefinition("int", new SpecifiedPrimitiveDataType<int>() );
+    addTypeDefinition("long", new SpecifiedPrimitiveDataType<long>() );
+    addTypeDefinition("wchar_t", new SpecifiedPrimitiveDataType<wchar_t>() );
+    addTypeDefinition("long long", new SpecifiedPrimitiveDataType<long long>() );
+    addTypeDefinition("unsigned char", new SpecifiedPrimitiveDataType<unsigned char>() );
+    addTypeDefinition("unsigned short", new SpecifiedPrimitiveDataType<unsigned short>() );
+    addTypeDefinition("unsigned int", new SpecifiedPrimitiveDataType<unsigned int>() );
+    addTypeDefinition("unsigned long", new SpecifiedPrimitiveDataType<unsigned long>() );
+    addTypeDefinition("unsigned long long", new SpecifiedPrimitiveDataType<unsigned long long>() );
+    addTypeDefinition("float", new SpecifiedPrimitiveDataType<float>() );
+    addTypeDefinition("double", new SpecifiedPrimitiveDataType<double>() );
     // FIXME: add the other goofy types (e.g., uint8 ) that were added via the old lexical analyzer.
 
     addTypeDefinition("std::string", new StringDataType("std::string"));

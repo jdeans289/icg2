@@ -63,10 +63,6 @@ class PointerDataType : public ModifierType {
 
     /**
      */
-    bool containsPointers() const;
-
-    /**
-     */
     DataType * clone () const;
 
     /**

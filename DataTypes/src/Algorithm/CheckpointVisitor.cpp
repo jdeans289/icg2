@@ -12,7 +12,7 @@ CheckpointVisitor::CheckpointVisitor(std::string starting_name, void * starting_
 
 // Harvest all the values from the tree
 
-bool CheckpointVisitor::visitPrimitiveDataType(const DataType * node) {
+bool CheckpointVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
     // std::cout << "Visiting PrimitiveDataType named " << node->toString() << std::endl;
 
     // Add to the leaf stack

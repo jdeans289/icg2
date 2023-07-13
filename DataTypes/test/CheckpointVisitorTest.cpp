@@ -1,5 +1,5 @@
 #include "Type/EnumDictionary.hpp"
-#include "Type/PrimitiveDataType.hpp"
+#include "Type/SpecifiedPrimitiveDataType.hpp"
 #include "Algorithm/CheckpointVisitor.hpp"
 
 #include "DataTypeTestSupport.hpp"
@@ -45,7 +45,7 @@ void verifyDoubleValue (const CheckpointVisitor::Leaf& leaf, std::string expecte
 
 TEST_F(CheckpointVisitorTest, basic) {
     // ARRANGE
-    PrimitiveDataType<int> int_data_type;
+    SpecifiedPrimitiveDataType<int> int_data_type;
     int var_to_checkpoint = 100;
 
     // ACT

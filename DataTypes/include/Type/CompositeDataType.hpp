@@ -59,11 +59,6 @@ public:
     /* ==================================================================== */
 
     /**
-     @return does the DataType or any member of the DataType represent a pointer?
-     */
-     bool containsPointers() const;
-
-    /**
      */
     DataType * clone() const;
 
