@@ -5,11 +5,7 @@
 #include "Value/StringValue.hpp"
 
 
-StringDataType::StringDataType(std::string typeSpecifierName) {
-
-    // this->dataTypeInator = dataTypeInator;
-    this->typeSpecName = typeSpecifierName;
-}
+StringDataType::StringDataType() {}
 
 /* ==================================================================== */
 /*                         RULE OF THREE INTERFACE                      */
@@ -36,6 +32,10 @@ DataType * StringDataType::clone () const {
 }
 
 bool StringDataType::validate() {
+    return true;
+}
+
+bool StringDataType::isValid() const {
     return true;
 }
 
@@ -67,9 +67,6 @@ void StringDataType::assignValue(void * address, Value * value) const {
     * (std::string * ) address = str_value->getRawString();
 }
 
-void StringDataType::printValue(std::ostream &s, void *address) const {
-    s << * (std::string * ) address;
-}
 
 Value * StringDataType::getValue(void *address) const {
     return new StringValue(* (std::string * ) address);
@@ -77,7 +74,7 @@ Value * StringDataType::getValue(void *address) const {
 
 // MEMBER FUNCTION
 std::string StringDataType::getTypeSpecName() const {
-    return typeSpecName;
+    return "std::string";
 }
 
 bool StringDataType::accept (DataTypeVisitor* visitor) const {

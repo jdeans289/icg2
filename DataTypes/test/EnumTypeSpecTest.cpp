@@ -146,21 +146,49 @@ TEST_F(EnumDataTypeTest, AssignValue ) {
     EXPECT_EQ(Wednesday, dayOfWeek);
 }
 
-TEST_F(EnumDataTypeTest, printValue ) {
+TEST_F(EnumDataTypeTest, LookupEnumName ) {
 
-    EXPECT_EQ(true, addDayOfWeekEnumToTypeDictionary( typeDictionary, enumDictionary));
+    // ARRANGE
+    EnumDataType * dataType = new EnumDataType( enumDictionary, "DayOfWeek", sizeof(enum DayOfWeek) );
+    dataType->addEnumerator( "Sunday",   1);
+    dataType->addEnumerator( "Monday",   2);
+    dataType->addEnumerator( "Tuesday",  3);
+    dataType->addEnumerator( "Wednesday",4);
+    dataType->addEnumerator( "Thursday", 5);
+    dataType->addEnumerator( "Friday",   6);
+    dataType->addEnumerator( "Saturday", 7);
 
-    const DataType* dataType = typeDictionary->lookup("DayOfWeek");
+    typeDictionary->addTypeDefinition( "DayOfWeek", dataType );
+    dataType->validate();
 
-    ASSERT_TRUE(dataType != NULL) ;
+    // ACT
+    std::string name = dataType->lookupEnumeratorName(4);
 
-    DayOfWeek dayOfWeek = Monday;
-
-    std::stringstream ss;
-
-    dataType->printValue(ss, &dayOfWeek);
-
-    int result = ss.str().compare("Monday");
-
-    EXPECT_EQ(0, result);
+    // ASSERT
+    std::string expected = "Wednesday";
+    ASSERT_EQ(expected, name);
 }
+
+TEST_F(EnumDataTypeTest, LookupEnumNameNotFound ) {
+
+    // ARRANGE
+    EnumDataType * dataType = new EnumDataType( enumDictionary, "DayOfWeek", sizeof(enum DayOfWeek) );
+    dataType->addEnumerator( "Sunday",   1);
+    dataType->addEnumerator( "Monday",   2);
+    dataType->addEnumerator( "Tuesday",  3);
+    dataType->addEnumerator( "Wednesday",4);
+    dataType->addEnumerator( "Thursday", 5);
+    dataType->addEnumerator( "Friday",   6);
+    dataType->addEnumerator( "Saturday", 7);
+
+    typeDictionary->addTypeDefinition( "DayOfWeek", dataType );
+    dataType->validate();
+
+    // ACT
+    std::string name = dataType->lookupEnumeratorName(1000000);
+
+    // ASSERT
+    std::string expected = "";
+    ASSERT_EQ(expected, name);
+}
+

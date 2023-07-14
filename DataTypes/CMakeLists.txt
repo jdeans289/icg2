@@ -34,6 +34,7 @@ set(DATATYPES_SRC
     Algorithm/ContainsPointer.cpp
     Algorithm/LookupAddressAndTypeByName.cpp
     Algorithm/LookupNameByAddressAndType.cpp
+    Algorithm/PrintValue.cpp
     CheckpointAgent/J_CheckpointAgent.cpp
     TypeDictionary.cpp
     DataTypeInator.cpp

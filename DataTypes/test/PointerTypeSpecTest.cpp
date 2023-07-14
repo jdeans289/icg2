@@ -101,21 +101,6 @@ TEST_F( PointerDataTypeTest , assignValue ) {
     EXPECT_EQ(1.2345, *d_ptr);
 }
 
-TEST_F( PointerDataTypeTest , printValue ) {
-
-    double * d_ptr = (double*)0x12345678;
-
-    // Create a PointerDataType.
-    PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
-
-    // Verify that printValue prints the value that we expect.
-    std::stringstream ss;
-    ptrTypeSpec->printValue(ss, &d_ptr);
-    int result = ss.str().compare("0x12345678");
-
-    EXPECT_EQ(0, result);
-}
-
 TEST_F( PointerDataTypeTest , getValue ) {
 
     // ARRANGE

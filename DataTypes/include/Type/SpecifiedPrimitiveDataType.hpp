@@ -28,6 +28,8 @@ public:
      */
     bool validate() { return true; }
 
+    bool isValid() const { return true; }
+    
     /**
      @return The size (in bytes) of an instance of the DataType
      */

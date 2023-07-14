@@ -9,7 +9,6 @@
 // Framework
 class StringDataTypeTest : public ::testing::Test {
     protected:
-    // DataTypeInator *dataTypeInator;
     StringDataTypeTest() {  }
     ~StringDataTypeTest() {  }
     void SetUp() {}
@@ -18,7 +17,7 @@ class StringDataTypeTest : public ::testing::Test {
 
 TEST_F(StringDataTypeTest, validate) {
     // ARRANGE
-    StringDataType type ("std::string");
+    StringDataType type ;
 
     // ACT
     bool result = type.validate();
@@ -29,7 +28,7 @@ TEST_F(StringDataTypeTest, validate) {
 
 TEST_F(StringDataTypeTest, toString) {
     // ARRANGE
-    StringDataType type ("std::string");
+    StringDataType type ;
 
     // ACT
     std::string result = type.toString();
@@ -40,7 +39,7 @@ TEST_F(StringDataTypeTest, toString) {
 
 TEST_F(StringDataTypeTest, makeDeclaration) {
     // ARRANGE
-    StringDataType type ("std::string");
+    StringDataType type ;
 
     // ACT
     std::string result = type.makeDeclaration("a");
@@ -52,7 +51,7 @@ TEST_F(StringDataTypeTest, makeDeclaration) {
 TEST_F(StringDataTypeTest, getValue) {
     // ARRANGE
     std::string my_str = "Hi there!";
-    StringDataType type ("std::string");
+    StringDataType type ;
 
     // ACT
     Value * result = type.getValue(&my_str);
@@ -69,7 +68,7 @@ TEST_F(StringDataTypeTest, getValue) {
 TEST_F(StringDataTypeTest, assignValue) {
     // ARRANGE
     std::string my_str;
-    StringDataType type ("std::string");
+    StringDataType type ;
     StringValue value ("Hi there!");
 
     // ACT
@@ -82,7 +81,7 @@ TEST_F(StringDataTypeTest, assignValue) {
 TEST_F(StringDataTypeTest, clearValue) {
     // ARRANGE
     std::string my_str = "A string to clear";
-    StringDataType type ("std::string");
+    StringDataType type ;
 
     // ACT
     type.clearValue(&my_str);

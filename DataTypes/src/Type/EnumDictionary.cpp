@@ -4,20 +4,20 @@
 
 int EnumDictionary::getValue(std::string name )  {
 
-    enumDictionaryIterator = enumDictionary.find(name);
-    if (enumDictionaryIterator == enumDictionary.end()) {
+    auto it = enumDictionary.find(name);
+    if (it == enumDictionary.end()) {
         std::stringstream error_stream ;
         error_stream << "ERROR: Enumerator \"" << name << "\" not defined." << std::endl;
         throw std::logic_error( error_stream.str());
     } else {
-        return( enumDictionaryIterator->second );
+        return( it->second );
     }
 }
 
 void EnumDictionary::addEnumerator(std::string name, int value)  {
 
-    enumDictionaryIterator = enumDictionary.find(name);
-    if (enumDictionaryIterator == enumDictionary.end()) {
+    auto it = enumDictionary.find(name);
+    if (it == enumDictionary.end()) {
         enumDictionary[name] = value;
     } else {
         std::stringstream error_stream ;
@@ -30,12 +30,10 @@ void EnumDictionary::addEnumerator(std::string name, int value)  {
 std::string EnumDictionary::toString() {
     std::ostringstream oss;
 
-    for ( enumDictionaryIterator  = enumDictionary.begin();
-          enumDictionaryIterator != enumDictionary.end();
-          enumDictionaryIterator++ ) {
-
-        oss << enumDictionaryIterator->first << " = " << enumDictionaryIterator->second << std::endl;
+    for ( auto it : enumDictionary ) {
+        oss << it.first << " = " << it.second << std::endl;
     }
+
     return oss.str();
 }
 

@@ -314,36 +314,6 @@ TEST_F( ArrayDataTypeTest , createInstance_and_assignValue ) {
     EXPECT_EQ(4.5, (*A)[1][2][3]);
 }
 
-TEST_F( ArrayDataTypeTest, printValue ) {
-
-    double A[2][3][4] = {{{1.2, 2.3, 3.4, 4.5},
-                          {5.6, 6.7, 7.8, 8.9},
-                          {9.0, 0.1, 1.2, 2.3}},
-                         {{3.4, 4.5, 5.6, 6.7},
-                          {7.8, 8.9, 9.0, 0.1},
-                          {1.2, 2.3, 3.4, 4.5}}};
-
-    // Create a ArrayDataType.
-    int cdims[] = {2,3,4};
-    ArrayDataType * arrayTypeSpec = new ArrayDataType( dataTypeInator, "double[3][4]", 2);
-
-    arrayTypeSpec->validate();
-
-    // Verify that printValue prints the value that we expect.
-    std::stringstream ss;
-    arrayTypeSpec->printValue(ss, &A);
-    int result = ss.str().compare(
-        "{{{1.2,2.3,3.4,4.5},"
-        "{5.6,6.7,7.8,8.9},"
-        "{9,0.1,1.2,2.3}},"
-        "{{3.4,4.5,5.6,6.7},"
-        "{7.8,8.9,9,0.1},"
-        "{1.2,2.3,3.4,4.5}}}"
-        );
-
-    EXPECT_EQ(0, result);
-}
-
 TEST_F( ArrayDataTypeTest, validate_1 ) {
 
     // Create a ArrayDataType.

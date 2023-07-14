@@ -86,15 +86,6 @@ public:
      */
     virtual Value * getValue(void *struct_address) const = 0;
 
-    /**
-     @param s
-     @param struct_address
-     */
-    virtual void printValue(std::ostream &s, void *struct_address) const = 0;
-
-
-    // virtual void checkpointValue(std::ostream &s, std::string var_name, void *address) const = 0;
-
 
     /**
     Get a string representation of this StructMember.

@@ -59,6 +59,8 @@ public:
      */
     bool validate() override;
 
+    bool isValid() const override;
+
     /**
      */
     TypeClass::e getTypeClass() const override{
@@ -93,15 +95,6 @@ public:
     void assignValue(void * address, Value * value) const override;
 
     /**
-     Print the value of the element at the given base-address and offset, to the
-     given stream.
-     @param s The stream to print to.
-     @param base_addr Address of the (entire) variable.
-     @param offset Offset to the element, in the final dimension of the variable.
-     */
-    void printValue(std::ostream &s, void *base_addr) const override;
-
-    /**
      */
     std::string toString() const override;
 
@@ -124,12 +117,23 @@ public:
      the struct, union or class.
      @param type_decl TypeDeclaration of the data-member.
      */
-    void addEnumerator( std::string member_name, int value)  ;
+    void addEnumerator( std::string member_name, int value);
+
+    /**
+     * @brief Get the string name that corresponds to the integer for this type
+     * 
+     * @param value integer value to find
+     * @return std::string name of this value for this type, or empty string if value is not named in this enum
+     */
+    std::string lookupEnumeratorName(int value) const;
 
 private:
     EnumDataType() {};
     std::vector<Enumerator*> enum_list;
     size_t enumSize;
-    EnumDictionary * enumDictionary;
     std::string name;
+
+    // Pointer to EnumDictionary that this belongs to
+    // TODO: does this belong here?
+    EnumDictionary * enumDictionary;
 };

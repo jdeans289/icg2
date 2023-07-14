@@ -89,6 +89,10 @@ bool ArrayDataType::validate() {
     return is_valid;
 }
 
+bool ArrayDataType::isValid() const {
+    return is_valid;
+}
+
 // MEMBER FUNCTION
 size_t ArrayDataType::getSize() const {
 
@@ -168,24 +172,6 @@ Value * ArrayDataType::getValue(void * address) const {
     } else {
         std::cerr << "Attempt to getValue via an unvalidated data type." << std::endl;
         return NULL;
-    }
-}
-
-// MEMBER FUNCTION
-void ArrayDataType::printValue(std::ostream &s, void * address) const {
-
-    if (is_valid) {
-        s << "{";
-        for (unsigned int ii=0; ii < elementCount ; ii++) {
-            if (ii) {
-            s << ",";
-            }
-            void * elementAddress = (char*) address + (ii * subType->getSize());
-            subType->printValue( s, elementAddress );
-        }
-        s << "}";
-    } else {
-        std::cerr << "ERROR: Type is not valid.";
     }
 }
 

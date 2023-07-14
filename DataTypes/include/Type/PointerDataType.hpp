@@ -48,57 +48,55 @@ class PointerDataType : public ModifierType {
 
     /**
      */
-     bool validate();
+     bool validate() override;
+
+    bool isValid() const override;
+
 
     /**
      @return The size (in bytes) of an instance of the PointerDataType.
      */
-    size_t getSize() const ;
+    size_t getSize() const override;
 
     /**
      */
-    TypeClass::e getTypeClass() const {
+    TypeClass::e getTypeClass() const override {
         return TypeClass::POINTER;
     }
 
     /**
      */
-    DataType * clone () const;
+    DataType * clone () const override;
 
     /**
      Create zero or more instances of this DataType.
      */
-    void* createInstance(unsigned int num) const ;
+    void* createInstance(unsigned int num) const override;
 
     /**
      */
-    void deleteInstance(void* address) const;
+    void deleteInstance(void* address) const override;
 
     /**
      */
-    void clearValue(void * address) const;
+    void clearValue(void * address) const override;
 
     /**
      */
-    void assignValue(void * address, Value * value) const;
-
-    /**
-     @param s The stream to print to.
-     @param base_addr Address of the (entire) variable.
-     */
-    void printValue(std::ostream &s, void * address ) const;
+    void assignValue(void * address, Value * value) const override;
 
 
-    Value * getValue(void *address) const;
+
+    Value * getValue(void *address) const override;
 
 
     /**
      */
-    std::string getTypeSpecName() const;
+    std::string getTypeSpecName() const override;
 
     /**
      */
-    std::string makeDeclaration(std::string declarator) const;
+    std::string makeDeclaration(std::string declarator) const override;
     
     bool accept (DataTypeVisitor* visitor) const override;
 
