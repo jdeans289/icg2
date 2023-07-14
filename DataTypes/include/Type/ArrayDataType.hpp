@@ -60,6 +60,9 @@ class ArrayDataType : public ModifierType {
      */
      bool validate() override;
 
+     bool isValid() const override;
+
+
     /**
      @return The size (in bytes) of an instance of the ArrayDataType.
      */
@@ -68,11 +71,6 @@ class ArrayDataType : public ModifierType {
     TypeClass::e getTypeClass() const override {
         return TypeClass::ARRAY;
     }
-
-    /**
-     @return The number of arrayed Type-specifier elements of the DataType.
-    */
-    unsigned int getTotalElementCount() const;
 
     /**
      */
@@ -91,12 +89,6 @@ class ArrayDataType : public ModifierType {
     void assignValue(void * address, Value * value) const override;
 
     Value * getValue(void * address) const override;
-
-    /**
-     @param s The stream to print to.
-     @param base_addr Address of the (entire) variable.
-     */
-    void printValue(std::ostream &s, void * address ) const override;
 
     /**
      */
@@ -118,6 +110,11 @@ class ArrayDataType : public ModifierType {
     /**
      */
     // bool getElementInfo( LexicalAnalyzer* lexer, void* baseAddress, VarAccessInfo& varAccessInfo);
+
+    /**
+     @return The number of arrayed Type-specifier elements of the DataType.
+    */
+    unsigned int getTotalElementCount() const;
 
     /**
      @return Returns number of elements in this level of the array

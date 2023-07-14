@@ -77,6 +77,10 @@ bool CompositeDataType::validate() {
     return is_valid;
 }
 
+bool CompositeDataType::isValid () const {
+    return is_valid;
+}
+
 // MEMBER FUNCTION
 size_t CompositeDataType::getSize() const {
     return structSize;
@@ -201,20 +205,6 @@ Value * CompositeDataType::getValue(void * address) const {
 
     return ret;
 
-}
-
-// MEMBER FUNCTION
-void CompositeDataType::printValue(std::ostream &s, void *address) const {
-
-   int memberCount = memberList.size() ;
-   s << "{";
-   for (int ii=0; ii < memberCount ; ii++) {
-       if (ii) {
-           s << ", ";
-       }
-       memberList[ii]->printValue(s, address);
-   }
-   s << "}";
 }
 
 

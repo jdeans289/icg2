@@ -90,6 +90,10 @@ bool EnumDataType::validate() {
     return true;
 }
 
+bool EnumDataType::isValid() const {
+    return true;
+}
+
 size_t EnumDataType::getSize() const {
     return enumSize;
 }
@@ -135,35 +139,6 @@ void EnumDataType::assignValue(void * address, Value * value) const {
     }
 }
 
-void EnumDataType::printValue(std::ostream &s, void *address) const {
-
-    int value;
-
-    if (enumSize == sizeof(int)) {
-        value = *(int*)address;
-    } else if (enumSize == sizeof(short)) {
-        value = *(short*)address;
-    } else if (enumSize == sizeof(char)) {
-        value = *(char*)address;
-    } else {
-        std::cerr << "ERROR: Enumeration of size " << enumSize << "is not supported.";
-    }
-
-    // search the enum_list for the name/value pair.
-    int enum_count = enum_list.size() ;
-    int ii = 0;
-    bool found = false;
-    while ((ii < enum_count) && !found ) {
-        if (value == enum_list[ii]->getValue()) {
-             s << enum_list[ii]->getName();
-             found = true;
-        }
-        ii ++;
-    }
-    if (!found) {
-        s << value;
-    }
-}
 
 // MEMBER FUNCTION
 std::string EnumDataType::toString() const {
@@ -185,6 +160,10 @@ std::string EnumDataType::getTypeSpecName() const {
     return name;
 }
 
+bool EnumDataType::accept (DataTypeVisitor * visitor) const {
+    return visitor->visitEnumeratedType(this);
+}
+
 void EnumDataType::addEnumerator( std::string name, int value)  {
 
     Enumerator* enumerator = new Enumerator( name, value );
@@ -193,6 +172,14 @@ void EnumDataType::addEnumerator( std::string name, int value)  {
     enumDictionary->addEnumerator(name, value);
 }
 
-bool EnumDataType::accept (DataTypeVisitor * visitor) const {
-    return visitor->visitEnumeratedType(this);
+std::string EnumDataType::lookupEnumeratorName(int value) const {
+    for (auto enumerator : enum_list) {
+        if (value == enumerator->getValue()) {
+            return enumerator->getName();
+        }
+    }
+
+    return "";
 }
+
+

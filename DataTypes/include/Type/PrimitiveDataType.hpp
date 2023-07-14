@@ -54,5 +54,10 @@ public:
      */
     virtual bool isVoid() const = 0;
 
+    /**
+     * Print an ascii representation of the value at the given address to the stream.
+     */
+    virtual void printValue(std::ostream &s, void *address ) const = 0;
+
 
 };

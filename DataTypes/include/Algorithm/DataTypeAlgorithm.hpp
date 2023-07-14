@@ -5,6 +5,7 @@
 #include "LookupAddressAndTypeByName.hpp"
 #include "LookupNameByAddressAndType.hpp"
 #include "ContainsPointer.hpp"
+#include "PrintValue.hpp"
 
 
 namespace DataTypeAlgorithm {
@@ -59,4 +60,13 @@ namespace DataTypeAlgorithm {
      * @return LookupNamebyAddressAndType::Result 
      */
     LookupNameByAddressAndType::Result lookupNameByAddressAndType (const DataType * node, std::string starting_name, void * starting_address, void * lookup_address, const DataType * const search_type);
+
+    /**
+     * @brief Print an ascii representation of the value starting at the given address of the given type to the given stream
+     * 
+     * @param node DataType of value to print
+     * @param s ostream to print to
+     * @param address Starting address of value to print
+     */
+    void printValue(const DataType * node, std::ostream& s, void * address);
 }

@@ -17,9 +17,8 @@ class StringDataType : public BaseType {
     /**
      Constructor for ArrayDataType.
      @param DataTypeInator The Type resolver machine
-     @param typeSpecifierName Name of the type on with this type is based.
      */
-    StringDataType( std::string typeSpecifierName ) ;
+    StringDataType( ) ;
 
     /* ==================================================================== */
     /*                         RULE OF THREE INTERFACE                      */
@@ -47,60 +46,50 @@ class StringDataType : public BaseType {
 
     /**
      */
-     bool validate();
+     bool validate() override;
+
+    bool isValid() const override;
+
 
     /**
      @return The size (in bytes) of an instance of the PointerDataType.
      */
-    size_t getSize() const ;
+    size_t getSize() const override;
 
     /**
      */
-    TypeClass::e getTypeClass() const {
+    TypeClass::e getTypeClass() const override {
         return TypeClass::PRIMITIVE;
     }
 
     /**
      */
-    DataType * clone () const;
+    DataType * clone () const override;
 
     /**
      Create zero or more instances of this DataType.
      */
-    void* createInstance(unsigned int num) const ;
+    void* createInstance(unsigned int num) const override;
 
     /**
      */
-    void deleteInstance(void* address) const;
+    void deleteInstance(void* address) const override;
 
     /**
      */
-    void clearValue(void * address) const;
+    void clearValue(void * address) const override;
 
     /**
      */
-    void assignValue(void * address, Value * value) const;
+    void assignValue(void * address, Value * value) const override;
 
-    /**
-     @param s The stream to print to.
-     @param base_addr Address of the (entire) variable.
-     */
-    void printValue(std::ostream &s, void * address ) const;
+    Value * getValue(void *address) const override;
 
-
-    Value * getValue(void *address) const;
-
-    std::string getTypeSpecName () const;
+    std::string getTypeSpecName () const override;
 
     
     bool accept (DataTypeVisitor* visitor) const override;
 
 
     private:
-    StringDataType(){}
-
-    bool             is_valid;
-    std::string      typeSpecName;
-
-    // const DataTypeInator * dataTypeInator;
 };

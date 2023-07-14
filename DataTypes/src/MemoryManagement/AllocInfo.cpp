@@ -164,7 +164,7 @@ std::string AllocInfo::toString() const {
     oss << std::hex << start << ".." ;
     oss << std::hex << end   << " " ;
     oss << "\tValue: ";
-    getDataType()->printValue(oss, start);
+    // getDataType()->printValue(oss, start);
     oss << std::endl;
     return oss.str();
 }

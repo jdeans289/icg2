@@ -35,6 +35,5 @@ public:
 
 private:
     std::map<std::string, int> enumDictionary;
-    std::map<std::string, int>::iterator enumDictionaryIterator;
 };
 #endif
