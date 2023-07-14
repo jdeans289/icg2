@@ -154,6 +154,38 @@ TEST_F(CompositeDataTypeTest, getSize ) {
 
 }
 
+TEST_F(CompositeDataTypeTest, assignment_operator ) {
+    // ARRANGE
+    CompositeDataType  type_a(dataTypeInator,
+                                    "ClassOne",
+                                    sizeof(ClassOne),
+                                    &construct<ClassOne>,
+                                    &destruct<ClassOne>);
+
+    type_a.addRegularMember( "a", offsetof(ClassOne, a), "int");
+    type_a.addRegularMember( "b", offsetof(ClassOne, b), "double");
+
+    CompositeDataType  type_b(dataTypeInator,
+                                    "SomeOtherClass",
+                                    4,
+                                    NULL,
+                                    NULL);
+
+    type_b.addRegularMember( "somethingidk", 0, "int");
+
+    type_a.validate();
+    type_b.validate();
+
+
+    // ACT
+    type_a = type_b;
+
+    // ASSERT
+    EXPECT_EQ( type_b.getSize(), type_a.getSize());
+    EXPECT_EQ( std::string("SomeOtherClass"), type_a.getTypeSpecName());
+    ASSERT_EQ( type_b.getMemberCount(), type_a.getMemberCount());
+}
+
 TEST_F(CompositeDataTypeTest, assignValue_1) {
 
     /* Requirement: */

@@ -34,25 +34,47 @@ CompositeDataType::CompositeDataType ( const CompositeDataType & original ) {
 
     this->structSize = original.structSize;
     this->is_valid = original.is_valid;
+    this->name = original.name;
+    this->allocator = original.allocator;
+    this->deAllocator = original.deAllocator;
+    this->dataTypeInator = original.dataTypeInator;
 
-    int memberCount = original.memberList.size() ;
-    for (int ii=0; ii < memberCount ; ii++) {
-        StructMember* cloned_member = original.memberList[ii]->clone();
-        this->memberList.push_back( cloned_member );
+    for (auto member : original.memberList) {
+        this->memberList.push_back( member->clone() );
     }
+}
+
+// DESTRUCTOR
+CompositeDataType::~CompositeDataType() {
+    for (auto member : memberList) {
+        delete member;
+    }
+}
+
+// OPERATOR=
+CompositeDataType & CompositeDataType::operator=( CompositeDataType rhs)  {
+    swap(*this, rhs);
+    return *this;
+}
+
+// SWAP
+void swap(CompositeDataType& a, CompositeDataType& b) 
+{
+    // enable ADL
+    using std::swap;
+    swap(a.is_valid, b.is_valid);
+    swap(a.name, b.name);
+    swap(a.allocator, b.allocator);
+    swap(a.deAllocator, b.deAllocator);
+    swap(a.dataTypeInator, b.dataTypeInator);
+    swap(a.memberList , b.memberList);
+    swap(a.structSize , b.structSize);
 }
 
 DataType * CompositeDataType::clone() const {
     return new CompositeDataType( *this );
 }
 
-// DESTRUCTOR
-CompositeDataType::~CompositeDataType() {
-    int memberCount = memberList.size() ;
-    for (int ii=0; ii < memberCount ; ii++) {
-        delete memberList[ii];
-    }
-}
 
 bool CompositeDataType::validate() {
 
@@ -85,44 +107,6 @@ bool CompositeDataType::isValid () const {
 size_t CompositeDataType::getSize() const {
     return structSize;
 }
-
-// OPERATOR=
-CompositeDataType & CompositeDataType::operator=(const CompositeDataType & rhs)  {
-// FIXME:
-//    int memberCount;
-//    if (this != &rhs) {
-//        std::vector<StructMember*> new_member_list;
-//
-//        // Copy the RHS members before messing with the LHS.
-//        try {
-//            memberCount = rhs.memberList.size() ;
-//            for (int ii=0; ii < memberCount ; ii++) {
-//                StructMember* cloned_member = rhs.memberList[ii]->clone();
-//                new_member_list.push_back( cloned_member );
-//            }
-//        } catch (std::logic_error) {
-//            memberCount = new_member_list.size() ;
-//            for (int ii=0; ii < memberCount ; ii++) {
-//                delete new_member_list[ii];
-//            }
-//            throw;
-//        }
-//
-//        // Delete any pre-existing LHS members.
-//        memberCount = memberList.size() ;
-//        for (int ii=0; ii < memberCount ; ii++) {
-//            delete this->memberList[ii];
-//        }
-//
-//        // Assign the copied RHS members to the LHS.
-//        memberCount = new_member_list.size() ;
-//        for (int ii=0; ii < memberCount ; ii++) {
-//            memberList.push_back( new_member_list[ii] );
-//        }
-//    }
-      return *this;
-}
-
 
 // MEMBER FUNCTION
 void* CompositeDataType::createInstance(unsigned int num) const {
@@ -294,67 +278,3 @@ StructMember* CompositeDataType::getStructMember (std::string name) const {
 
     return NULL;
 }
-
-#ifdef NEWSTUFF
-// MEMBER FUNCTION
-bool CompositeDataType::getMemberInfo( LexicalAnalyzer* lexer, void* baseAddress, VarAccessInfo& varAccessInfo ) {
-
-    bool errorCondition = false;
-
-    Token::e nextToken = lexer->getToken();
-
-    if (nextToken == Token::Identifier) {
-        std::string memberName = lexer->getText();
-        int memberCount = memberList.size() ;
-        int ii = 0;
-        while ( (ii < memberCount) &&
-                (memberName != memberList[ii]->getName())) {
-            ii ++;
-        }
-        if (ii < memberCount) {
-            StructMember*             member = memberList[ii];
-            MemberClass::e       memberClass = member->getMemberClass();
-            const DataType*   memberDataType = member->getDataType();
-            TypeClass::e memberDataTypeClass = memberDataType->getTypeClass();
-
-            void* memberAddress = NULL;
-            if ( memberClass == MemberClass::BITFIELD ) {
-                memberAddress = baseAddress;
-            } else if ( memberClass == MemberClass::STATIC ) {
-                memberAddress = ((StaticStructMember*)member)->getAddress();
-            } else if ( memberClass == MemberClass::NORMAL ) {
-                memberAddress =  baseAddress + ((NormalStructMember*)member)->getOffset() ;
-            } else {
-                errorCondition = true;
-            }
-
-            if (!errorCondition) {
-                nextToken = lexer->getToken();
-                if (nextToken == Token::EndOfFile) {
-                    varAccessInfo.dataType = memberDataType;
-                    varAccessInfo.address = memberAddress;
-                } else if (nextToken == Token::period) {
-                    if (memberDataTypeClass == TypeClass::COMPOSITE) {
-                        errorCondition |= ((const CompositeDataType*)memberDataType)->getMemberInfo( lexer, memberAddress, varAccessInfo);
-                    } else {
-                        errorCondition = true;
-                    }
-                } else if (nextToken == Token::LeftBracket) {
-                    if ( typeClass == TypeClass::ARRAY ) {
-                        errorCondition |= ((const ArrayDataType*)searchType)->getElementInfo( lexer, memberAddress, varAccessInfo);
-                    } else {
-                        errorCondition = true;
-                    }
-                } else {
-                    errorCondition = true;
-                }
-            }
-        } else {
-            errorCondition = true;
-        }
-    } else {
-        errorCondition = true;
-    }
-    return errorCondition;
-}
-#endif

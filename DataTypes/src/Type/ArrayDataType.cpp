@@ -19,19 +19,22 @@ ArrayDataType:: ArrayDataType( const DataTypeInator* dataTypeInator, std::string
 }
 
 
-// COPY CONSTRUCTOR
+/* ================================================================================= */
+/*                         RULE OF THREE (and a half) INTERFACE                      */
+/* ================================================================================= */
 ArrayDataType::ArrayDataType ( ArrayDataType const & original) {
-
     is_valid = original.is_valid;
     typeSpecName = original.typeSpecName;
     elementCount = original.elementCount;
     dataTypeInator = original.dataTypeInator;
-    subType = original.subType;
+    if (original.subType != NULL) {
+        subType = original.subType->clone();
+    } else {
+        subType = NULL;
+    }
 }
 
-DataType * ArrayDataType::clone () const {
-    return new ArrayDataType( *this );
-}
+
 
 // DESTRUCTOR
 ArrayDataType::~ArrayDataType () {
@@ -41,33 +44,25 @@ ArrayDataType::~ArrayDataType () {
 }
 
 // ASSIGNMENT OPERATOR
-ArrayDataType& ArrayDataType::operator=( const ArrayDataType & rhs ) {
-
-    if ( this != &rhs ) {
-
-        // Copy the RHS members before messing with the LHS.
-        DataType *clonedDataType;
-        if ( rhs.typeSpecName.empty() ) {
-            clonedDataType = rhs.subType->clone();
-        }
-
-        // Delete any pre-existing LHS members.
-        if ( typeSpecName.empty() ) {
-            delete subType;
-        }
-
-        // Assign the copied RHS members to the LHS.
-        elementCount = rhs.elementCount;
-        is_valid = rhs.is_valid;
-        typeSpecName = rhs.typeSpecName;
-
-        if ( typeSpecName.empty() ) {
-            subType = clonedDataType;
-        } else {
-            subType = rhs.subType;
-        }
-    }
+ArrayDataType& ArrayDataType::operator=( ArrayDataType rhs ) {
+    swap(*this, rhs);
     return *this;
+}
+
+// SWAP
+void swap(ArrayDataType& a, ArrayDataType& b) 
+{
+    // enable ADL
+    using std::swap;
+    swap(a.is_valid, b.is_valid);
+    swap(a.typeSpecName, b.typeSpecName);
+    swap(a.elementCount, b.elementCount);
+    swap(a.dataTypeInator, b.dataTypeInator);
+    swap(a.subType, b.subType);
+}
+
+DataType * ArrayDataType::clone () const {
+    return new ArrayDataType( *this );
 }
 
 // MEMBER FUNCTION
@@ -76,7 +71,6 @@ bool ArrayDataType::validate() {
     if (!is_valid) {
 
         subType = dataTypeInator->resolve( typeSpecName );
-
 
         if (subType == NULL) {
             std::cerr << "ERROR: Type \"" << typeSpecName << "\" not found." << std::endl;
@@ -201,82 +195,3 @@ unsigned int ArrayDataType::getElementCount() const {
 bool ArrayDataType::accept (DataTypeVisitor * visitor) const {
     return visitor->visitArrayType(this);
 }
-
-// bool ArrayDataType::lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const {
-//     // Look for the name of the variable associated with this offset.
-
-//     if (offset == 0) {
-//         // Address found!
-        
-//         // TODO: compare expected type? Does that make sense to do here?
-
-//         return true;
-//     }
-
-//     // If the offset is greater than the size of this array, there's an error.
-//     if (offset > getSize()) {
-//         std::cerr << "Search offset " << offset << " is greater than the size (" << getSize() << ") of this type (" << toString() << std::endl;
-//         return false;
-//     }
-
-//     // Figure out which element we should go into
-//     unsigned int elem_index = offset / subType->getSize();
-
-//     assert (elem_index < getElementCount());
-
-//     // New offset is the remainder of offset / subtypeSize
-//     unsigned int newOffset = offset % subType->getSize();
-
-//     // Push the index onto the stack
-//     nameStack.pushIndex(elem_index);
-
-//     // Continue the search in the element
-//     return subType->lookupVariableNameByOffset(nameStack, newOffset, expectedType);
-
-// }
-
-
-#ifdef NEWSTUFF
-// MEMBER FUNCTION
-bool ArrayDataType::getElementInfo( LexicalAnalyzer* lexer, void* baseAddress, VarAccessInfo& varAccessInfo ) {
-
-    bool errorCondition = false;
-    nextToken = lexer->getToken();
-    if (nextToken = Token::Integer) {
-       int index = std::atoi( (lexer->getText()).c_str() );
-    }
-    if ( (index >= 0) && (index < elementCount)) {
-        const DataType*   elementDataType = subType->getDataType();
-        TypeClass::e elementDataTypeClass = subType->getTypeClass();
-        void*              elementAddress = (char*) baseAddress + (index * subType->getSize());
-        nextToken = lexer->getToken();
-        if (nextToken == Token::RightBracket) {
-
-            nextToken = lexer->getToken();
-            if (nextToken == Token::EndOfFile) {
-                varAccessInfo.dataType = elementDataType;
-                varAccessInfo.address  = elementAddress;
-            } else if ( nextToken == Token::period) {
-                if (elementDataTypeClass == TypeClass::COMPOSITE) {
-                    errorCondition |= ((const CompositeDataType*)searchType)->getMemberInfo( lexer, elementAddress, varAccessInfo);
-                } else {
-                    errorCondition = true;
-                }
-            } else if (nextToken == Token::LeftBracket) {
-                if ( typeClass == TypeClass::ARRAY ) {
-                    errorCondition |= ((const ArrayDataType*)searchType)->getElementInfo( lexer, elementAddress, varAccessInfo);
-                } else {
-                    errorCondition = true;
-                }
-            } else {
-                errorCondition = true;
-            }
-        } else {
-            errorCondition = true;
-        }
-    } else {
-        errorCondition = true;
-    }
-    return errorCondition;
-}
-#endif

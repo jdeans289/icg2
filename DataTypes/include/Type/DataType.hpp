@@ -102,7 +102,7 @@ class DataType {
     Creates a Value object for the variable at the given address.
     @param address Address of the variable.
     */
-    virtual Value * getValue(void *address) const;
+    virtual Value * getValue(void *address) const = 0;
 
     /**
     Generate a declaration of this DataType.
@@ -120,7 +120,7 @@ class DataType {
     /* 
     Implement a Visitor Pattern
     */
-    virtual bool accept (DataTypeVisitor* visitor) const;
+    virtual bool accept (DataTypeVisitor* visitor) const = 0;
 
 
     private:

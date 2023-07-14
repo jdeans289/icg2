@@ -60,11 +60,7 @@ class BitfieldStructMember : public StructMember {
     /**
     Operator=
     */
-    BitfieldStructMember<T> & operator=(const BitfieldStructMember<T> & rhs) {
-        BitfieldStructMember<T> * decl;
-        decl = new BitfieldStructMember( rhs );
-        return *decl;
-    }
+    BitfieldStructMember<T> & operator=(const BitfieldStructMember<T> & rhs) = delete;
 
     /**
     Destructor

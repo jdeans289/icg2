@@ -36,19 +36,6 @@ PointerDataType::~PointerDataType () {
     }
 }
 
-// ASSIGNMENT OPERATOR
-PointerDataType& PointerDataType::operator=( const PointerDataType & rhs ) {
-
-    if ( this != &rhs ) {
-        // Assign the copied RHS members to the LHS.
-        // elementCount = rhs.elementCount;
-        is_valid = rhs.is_valid;
-        typeSpecName = rhs.typeSpecName;
-        subType = rhs.subType->clone();
-    }
-    return *this;
-}
-
 // CLONE
 DataType * PointerDataType::clone () const {
     return new PointerDataType( *this );

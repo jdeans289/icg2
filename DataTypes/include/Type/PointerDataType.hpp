@@ -22,25 +22,15 @@ class PointerDataType : public ModifierType {
     PointerDataType( const DataTypeInator * dataTypeInator,
                      std::string typeSpecifierName ) ;
 
-    /* ==================================================================== */
-    /*                         RULE OF THREE INTERFACE                      */
-    /* ==================================================================== */
+    /* ================================================================================= */
+    /*                         RULE OF THREE (and a half) INTERFACE                      */
+    /* ================================================================================= */
 
-    /**
-     Copy Constructor for PointerDataType.
-     */
     PointerDataType ( const PointerDataType & original );
-
-    /**
-     Destructor for PointerDataType.
-     */
     ~PointerDataType ();
+    PointerDataType & operator=( PointerDataType rhs ) ;
 
-    /**
-     Assignment operator for PointerDataType.
-     @param rhs right-hand-side.
-     */
-    PointerDataType& operator=( const PointerDataType & rhs );
+    friend void swap (PointerDataType& a, PointerDataType& b) ;
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                         */

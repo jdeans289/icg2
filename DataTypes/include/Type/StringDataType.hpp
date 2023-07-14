@@ -20,25 +20,13 @@ class StringDataType : public BaseType {
      */
     StringDataType( ) ;
 
-    /* ==================================================================== */
-    /*                         RULE OF THREE INTERFACE                      */
-    /* ==================================================================== */
+    /* ================================================================================= */
+    /*                         RULE OF THREE (and a half) INTERFACE                      */
+    /* ================================================================================= */
 
-    /**
-     Copy Constructor for PointerDataType.
-     */
-    StringDataType ( const StringDataType & original );
-
-    /**
-     Destructor for PointerDataType.
-     */
-    ~StringDataType ();
-
-    /**
-     Assignment operator for PointerDataType.
-     @param rhs right-hand-side.
-     */
-    StringDataType& operator=( const StringDataType & rhs );
+    StringDataType ( const StringDataType & original ) = default;
+    ~StringDataType () = default;
+    StringDataType& operator=( const StringDataType & rhs ) = default;
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                         */

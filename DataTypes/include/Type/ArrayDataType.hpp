@@ -28,9 +28,9 @@ class ArrayDataType : public ModifierType {
      */
     ArrayDataType ( const ArrayDataType & original, unsigned int newSize );
 
-    /* ==================================================================== */
-    /*                         RULE OF THREE INTERFACE                      */
-    /* ==================================================================== */
+    /* ================================================================================= */
+    /*                         RULE OF THREE (and a half) INTERFACE                      */
+    /* ================================================================================= */
 
     /**
      Copy Constructor for ArrayDataType.
@@ -46,7 +46,9 @@ class ArrayDataType : public ModifierType {
      Assignment operator for ArrayDataType.
      @param rhs right-hand-side.
      */
-    ArrayDataType& operator=( const ArrayDataType & rhs );
+    ArrayDataType& operator=( ArrayDataType rhs );
+
+    friend void swap (ArrayDataType& a, ArrayDataType& b);
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                         */

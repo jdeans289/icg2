@@ -26,26 +26,15 @@ public:
                   std::string name,
                   size_t sizeof_element);
 
-    /* ==================================================================== */
-    /*                         RULE OF THREE INTERFACE                      */
-    /* ==================================================================== */
+    /* ================================================================================= */
+    /*                         RULE OF THREE (and a half) INTERFACE                      */
+    /* ================================================================================= */
 
-    /**
-     Copy Constructor.
-     @param original The instance of EnumDataType that is to be copied.
-     */
     EnumDataType ( const EnumDataType & original );
-
-    /**
-     Destructor for EnumDataType.
-      */
     ~EnumDataType ();
+    EnumDataType & operator=( EnumDataType rhs ) ;
 
-    /**
-     Assignment operator for EnumDataType.
-     @param rhs right-hand-side.
-    */
-    EnumDataType & operator=( const EnumDataType & rhs );
+    friend void swap (EnumDataType& a, EnumDataType& b) ;
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                         */
@@ -84,15 +73,9 @@ public:
      */
     void clearValue(void * address) const override;
 
-    /**
-     Assign a value to the (unarrayed) element at the given base-address and
-     offset, where the offset is in the final dimension.
-     @param address Base-address of the (possibly arrayed) variable.
-     @param offset Offset, in the final dimension, to the particular element
-     being assigned.
-     @param value The Value to be assigned to the element.
-     */
     void assignValue(void * address, Value * value) const override;
+
+    Value * getValue(void *address) const override;
 
     /**
      */
@@ -137,3 +120,5 @@ private:
     // TODO: does this belong here?
     EnumDictionary * enumDictionary;
 };
+
+

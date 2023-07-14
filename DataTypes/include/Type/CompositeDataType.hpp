@@ -13,8 +13,6 @@
 #include "DataTypeInator.hpp"
 
 
-class LexicalAnalyzer;
-
 /**
  A CompositeDataType represents user-defined types, such as structs, unions, or classes.
  It is 'composed' of ordered lists of component types.
@@ -33,26 +31,15 @@ public:
                        void *(*allocator)(int),
                        void (*deAllocator)(void*) );
 
-    /* ==================================================================== */
-    /*                         RULE OF THREE INTERFACE                      */
-    /* ==================================================================== */
+    /* ================================================================================= */
+    /*                         RULE OF THREE (and a half) INTERFACE                      */
+    /* ================================================================================= */
 
-    /**
-     Copy Constructor.
-     @param original The instance of CompositeDataType that is to be copied.
-     */
     CompositeDataType ( const CompositeDataType & original );
-
-    /**
-     Destructor for CompositeDataType.
-      */
     ~CompositeDataType ();
+    CompositeDataType & operator=( CompositeDataType rhs ) ;
 
-    /**
-     Assignment operator for CompositeDataType.
-     @param rhs right-hand-side.
-    */
-    CompositeDataType & operator=( const CompositeDataType & rhs );
+    friend void swap (CompositeDataType& a, CompositeDataType& b) ;
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                         */
@@ -101,18 +88,8 @@ public:
     Value * getValue(void * address) const override;
 
     /**
-     Print the value at the given address, to the given stream.
-     @param s The stream to print to.
-     @param var_name Name of the variable to checkpoint.
-     @param address Address of the (entire) variable.
-     */
-    // void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
-
-    /**
      */
     std::string toString() const override;
-
-    // virtual bool lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const;
 
     bool accept (DataTypeVisitor* visitor) const override;
 
@@ -184,7 +161,6 @@ private:
 
     bool is_valid;
     std::vector<StructMember*> memberList;
-    std::vector<StructMember*>::iterator memberListIterator;
     std::string name;
     size_t structSize; /** Sizeof the struct/or class represented by the CompositeDataType. */
     void* (*allocator)(int);

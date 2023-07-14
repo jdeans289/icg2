@@ -78,20 +78,17 @@ TEST_F( ArrayDataTypeTest, copy_constructor ) {
 TEST_F( ArrayDataTypeTest , assignment_operator ) {
 
     // Create an ArrayDataType.
-    ArrayDataType * orig = new ArrayDataType( dataTypeInator, "long", 7);
+    ArrayDataType orig = ArrayDataType( dataTypeInator, "long", 7);
 
-    std::cout << orig->toString();
+    std::cout << orig.toString();
 
     // Assign it to another ArrayDataType.
-    ArrayDataType copy = *(const ArrayDataType*)orig;
+    ArrayDataType copy = orig;
 
     // Verify that the assigned ArrayDataType is what we expect.
     std::stringstream ss;
     ss << copy.toString();
     EXPECT_EQ("long[7]", ss.str());
-
-    // Clean up.
-    delete orig;
 }
 
 TEST_F( ArrayDataTypeTest , clone ) {

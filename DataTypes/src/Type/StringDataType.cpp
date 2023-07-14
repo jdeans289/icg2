@@ -8,22 +8,6 @@
 StringDataType::StringDataType() {}
 
 /* ==================================================================== */
-/*                         RULE OF THREE INTERFACE                      */
-/* ==================================================================== */
-
-StringDataType::StringDataType ( const StringDataType & original ) {
-
-}
-
-StringDataType::~StringDataType () {
-
-}
-
-StringDataType & StringDataType::operator=( const StringDataType & rhs ) {
-   return *this;
-}
-
-/* ==================================================================== */
 /*                           VIRTUAL INTERFACE                          */
 /* ==================================================================== */
 
