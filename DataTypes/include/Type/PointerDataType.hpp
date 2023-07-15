@@ -50,12 +50,6 @@ class PointerDataType : public ModifierType {
 
     /**
      */
-    TypeClass::e getTypeClass() const override {
-        return TypeClass::POINTER;
-    }
-
-    /**
-     */
     DataType * clone () const override;
 
     /**

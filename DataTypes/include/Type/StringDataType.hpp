@@ -46,12 +46,6 @@ class StringDataType : public BaseType {
 
     /**
      */
-    TypeClass::e getTypeClass() const override {
-        return TypeClass::PRIMITIVE;
-    }
-
-    /**
-     */
     DataType * clone () const override;
 
     /**

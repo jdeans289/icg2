@@ -51,12 +51,6 @@ public:
     bool isValid() const override;
 
     /**
-     */
-    TypeClass::e getTypeClass() const override{
-        return TypeClass::ENUMERATION;
-    }
-
-    /**
      @return The size (in bytes) of an instance of the EnumDataType.
      */
     size_t getSize() const override;

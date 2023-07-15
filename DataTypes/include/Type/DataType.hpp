@@ -7,16 +7,6 @@
 #include "Algorithm/DataTypeVisitor.hpp"
 #include "Utils/MutableVariableName.hpp"
 
-namespace TypeClass {
-    enum e {
-        PRIMITIVE   = 0,
-        ENUMERATION = 1,
-        POINTER     = 2,
-        ARRAY       = 3,
-        COMPOSITE   = 4
-    };
-};
-
 /** @brief Abstract base class for DataTypes. */
 class DataType {
 
@@ -46,14 +36,6 @@ class DataType {
      * @return size_t size of this type
      */
     virtual size_t getSize() const = 0;
-
-    /**
-     * @brief Get the class of the type
-     * 
-     * @return TypeClass::e An enumeration value indicating which of the several specific subclasses of DataType this class is.
-     * @note I kinda wanna jettison this
-     */
-    virtual TypeClass::e getTypeClass() const = 0;
 
     /**
      * @brief Get the Type Spec Name object

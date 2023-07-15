@@ -70,10 +70,6 @@ class ArrayDataType : public ModifierType {
      */
     size_t getSize() const override ;
 
-    TypeClass::e getTypeClass() const override {
-        return TypeClass::ARRAY;
-    }
-
     /**
      */
     void* createInstance(unsigned int num) const override;

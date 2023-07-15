@@ -235,13 +235,16 @@ bool J_CheckpointAgent::restoreAssignment(std::string assignment_string, const s
     void * this_addr = result.address;
 
     // Special case - pointer :(
-    if (this_type->getTypeClass() == TypeClass::POINTER ) {
+    if (result.isPointer ) {
         // this will return a string that says "&varname"
         // There's a better design than this
         // But we gotta handle special cases one way or another
 
-        // This is unsafe O_o
-        StringValue * ptr_name_value = (StringValue *) this_value;
+
+        StringValue * ptr_name_value = dynamic_cast<StringValue *> (this_value);
+        if (ptr_name_value == NULL) {
+            throw std::logic_error(full_varname + " is a pointer, but the value assigned is not compatible.");
+        }
 
         std::string ptr_varname = ptr_name_value->getRawString().substr(1);
         void * raw_addr = lookupPointer(ptr_varname, additional_search_allocs);

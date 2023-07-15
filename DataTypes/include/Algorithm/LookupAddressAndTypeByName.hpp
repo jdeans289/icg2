@@ -11,11 +11,12 @@
 namespace LookupAddressAndTypeByName {
 
     struct Result {
-        Result() : success(false), type(NULL), address(NULL) {}
+        Result() : success(false), type(NULL), address(NULL), isPointer(false) {}
 
         bool success;
         const DataType * type;
         void * address;
+        bool isPointer;
     };
 
     class LookupAddressAndTypeByNameVisitor : public DataTypeVisitor {

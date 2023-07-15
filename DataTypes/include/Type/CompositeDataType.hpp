@@ -62,12 +62,6 @@ public:
 
     /**
      */
-    TypeClass::e getTypeClass() const override {
-        return TypeClass::COMPOSITE;
-    };
-
-    /**
-     */
     void* createInstance(unsigned int num) const override;
 
     /**

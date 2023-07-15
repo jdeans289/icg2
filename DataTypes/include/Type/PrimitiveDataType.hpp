@@ -25,11 +25,6 @@ public:
 
     // Most of the DataTypeInterface is abstract here, will be defined by SpecifiedPrimitiveType
 
-    TypeClass::e getTypeClass() const {
-        return TypeClass::PRIMITIVE;
-    }
-
-
     bool accept (DataTypeVisitor* visitor) const override {
         return visitor->visitPrimitiveDataType(this);
     }

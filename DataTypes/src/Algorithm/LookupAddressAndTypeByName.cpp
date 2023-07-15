@@ -102,7 +102,13 @@ namespace LookupAddressAndTypeByName {
         // We're at a leaf, so if there's anything left in the name queue something has gone wrong
         // what even is a pointer anyway
 
-        return visitLeaf(node);
+        if (visitLeaf(node)) {
+            result.isPointer = true;
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     bool LookupAddressAndTypeByNameVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
