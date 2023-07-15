@@ -13,8 +13,6 @@
 #include "DataTypeInator.hpp"
 
 
-class LexicalAnalyzer;
-
 /**
  A CompositeDataType represents user-defined types, such as structs, unions, or classes.
  It is 'composed' of ordered lists of component types.
@@ -33,26 +31,15 @@ public:
                        void *(*allocator)(int),
                        void (*deAllocator)(void*) );
 
-    /* ==================================================================== */
-    /*                         RULE OF THREE INTERFACE                      */
-    /* ==================================================================== */
+    /* ================================================================================= */
+    /*                         RULE OF THREE (and a half) INTERFACE                      */
+    /* ================================================================================= */
 
-    /**
-     Copy Constructor.
-     @param original The instance of CompositeDataType that is to be copied.
-     */
     CompositeDataType ( const CompositeDataType & original );
-
-    /**
-     Destructor for CompositeDataType.
-      */
     ~CompositeDataType ();
+    CompositeDataType & operator=( CompositeDataType rhs ) ;
 
-    /**
-     Assignment operator for CompositeDataType.
-     @param rhs right-hand-side.
-    */
-    CompositeDataType & operator=( const CompositeDataType & rhs );
+    friend void swap (CompositeDataType& a, CompositeDataType& b) ;
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                         */
@@ -60,66 +47,49 @@ public:
 
     /**
      */
-    DataType * clone() const;
+    DataType * clone() const override;
 
     /**
      */
-    bool validate() ;
+    bool validate() override;
+
+    bool isValid() const override;
 
     /**
      @return The size (in bytes) of an instance of the CompositeDataType.
      */
-    size_t getSize() const ;
+    size_t getSize() const override;
 
     /**
      */
-    TypeClass::e getTypeClass() const {
-        return TypeClass::COMPOSITE;
-    };
+    void* createInstance(unsigned int num) const override;
 
     /**
      */
-    void* createInstance(unsigned int num) const;
+    void deleteInstance(void* address) const override;
 
     /**
      */
-    void deleteInstance(void* address) const;
-
-    /**
-     */
-    void clearValue(void * address) const;
+    void clearValue(void * address) const override;
 
     /**
      Assign a value to the variable at the given address.
      @param address Base-address of the (possibly arrayed) variable.
      @param value The Value to be assigned to the element.
      */
-    void assignValue(void * address, Value * value) const;
+    void assignValue(void * address, Value * value) const override;
 
-    Value * getValue(void * address) const;
-
-    /**
-     Print the value at the given address, to the given stream.
-     @param s The stream to print to.
-     @param address Address of the (entire) variable.
-     */
-    void printValue(std::ostream &s, void *address) const;
-
-    /**
-     Print the value at the given address, to the given stream.
-     @param s The stream to print to.
-     @param var_name Name of the variable to checkpoint.
-     @param address Address of the (entire) variable.
-     */
-    // void checkpointValue(std::ostream &s, std::string var_name, void *address) const;
+    Value * getValue(void * address) const override;
 
     /**
      */
-    std::string toString() const;
-
-    // virtual bool lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const;
+    std::string toString() const override;
 
     bool accept (DataTypeVisitor* visitor) const override;
+
+    /**
+     */
+    std::string getTypeSpecName() const override;
 
     /* ==================================================================== */
     /*                       CLASS SPECIFIC INTERFACE                       */
@@ -165,9 +135,7 @@ public:
 
     }
 
-    /**
-     */
-    std::string getTypeSpecName() const;
+
 
     /**
      */
@@ -187,7 +155,6 @@ private:
 
     bool is_valid;
     std::vector<StructMember*> memberList;
-    std::vector<StructMember*>::iterator memberListIterator;
     std::string name;
     size_t structSize; /** Sizeof the struct/or class represented by the CompositeDataType. */
     void* (*allocator)(int);

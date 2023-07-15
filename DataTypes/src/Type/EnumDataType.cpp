@@ -7,76 +7,49 @@
 #include "Type/EnumDictionary.hpp"
 
 
-EnumDataType::EnumDataType( EnumDictionary * enumDictionary,
-                            std::string name,
-                            size_t enumSize) {
+EnumDataType::EnumDataType( EnumDictionary * dict, std::string n, size_t s) : enumDictionary(dict), name(n) {
+    if (!(s == sizeof(int) || s == sizeof(short) || s == sizeof(char))) {
+        throw std::logic_error("Cannot support enum of size " + std::to_string(s));
+    }
 
-    if ((enumSize == sizeof(int)) || (enumSize == sizeof(short)) || (enumSize == sizeof(char))) {
-        this->enumSize = enumSize;
-    } // FIXME: else throw?
-
-    this->enumDictionary = enumDictionary;
-    this->name = name;
+    enumSize = s;
 }
 
-/* ==================================================================== */
-/*                         RULE OF THREE INTERFACE                      */
-/* ==================================================================== */
+/* ================================================================================= */
+/*                         RULE OF THREE (and a half) INTERFACE                      */
+/* ================================================================================= */
 
-EnumDataType::EnumDataType ( const EnumDataType & original ) {
-   this->enumSize = original.enumSize;
+EnumDataType::EnumDataType ( const EnumDataType & original ) : EnumDataType(original.enumDictionary, original.name, original.enumSize) {
+    enumDictionary = original.enumDictionary;
+    name = original.name;
+    enumSize = original.enumSize;
 
-   int enum_count = original.enum_list.size() ;
-   for (int ii=0; ii < enum_count ; ii++) {
-       Enumerator* dupl_enum = new Enumerator( *original.enum_list[ii]);
-       this->enum_list.push_back( dupl_enum );
-   }
+    for ( auto enumerator : original.enum_list ) {
+        enum_list.push_back( new Enumerator( *enumerator ) );
+    }
 }
 
 EnumDataType::~EnumDataType () {
-
-    int enum_count = enum_list.size() ;
-    for (int ii=0; ii < enum_count ; ii++) {
-        delete enum_list[ii];
+    for ( auto enumerator :  enum_list ) {
+        delete enumerator;
     }
 }
 
-EnumDataType & EnumDataType::operator=( const EnumDataType & rhs ) {
-    if (this != &rhs) {
-
-        std::vector<Enumerator*> new_enum_list;
-        int enum_count;
-
-        // Copy the RHS members before messing with the LHS.
-        try {
-            enum_count = rhs.enum_list.size() ;
-            for (int ii=0; ii < enum_count ; ii++) {
-                Enumerator* dupl_enum = new Enumerator( *rhs.enum_list[ii]);
-                new_enum_list.push_back( dupl_enum );
-            }
-        } catch (std::logic_error& e) {
-            enum_count = new_enum_list.size() ;
-            for (int ii=0; ii < enum_count ; ii++) {
-                delete new_enum_list[ii];
-            }
-            throw;
-        }
-
-        // Delete any pre-existing LHS members.
-        enum_count = enum_list.size() ;
-        for (int ii=0; ii < enum_count ; ii++) {
-            delete this->enum_list[ii];
-        }
-
-        // Assign the copied RHS members to the LHS.
-        enum_count = new_enum_list.size() ;
-        for (int ii=0; ii < enum_count ; ii++) {
-            enum_list.push_back( new_enum_list[ii] );
-        }
-
-    }
+EnumDataType & EnumDataType::operator=( EnumDataType rhs ) {
+    swap(*this, rhs);
     return *this;
 }
+
+void swap (EnumDataType& a, EnumDataType& b) {
+    // enable ADL
+    using std::swap;
+
+    swap(a.enumDictionary, b.enumDictionary);
+    swap(a.name, b.name);
+    swap(a.enumSize, b.enumSize);
+    swap(a.enum_list, b.enum_list);
+}
+
 
 /* ==================================================================== */
 /*                           VIRTUAL INTERFACE                          */
@@ -87,6 +60,10 @@ DataType * EnumDataType::clone () const {
 }
 
 bool EnumDataType::validate() {
+    return true;
+}
+
+bool EnumDataType::isValid() const {
     return true;
 }
 
@@ -109,10 +86,8 @@ void EnumDataType::clearValue(void * address) const {
        *(int*)address = 0;
    } else if (enumSize == sizeof(short)) {
        *(short*)address = 0;
-   } else if (enumSize == sizeof(char)) {
-       *(char*)address = 0;
    } else {
-       std::cerr << "ERROR: Enumeration of size " << enumSize << "is not supported.";
+       *(char*)address = 0;
    }
 }
 
@@ -125,44 +100,26 @@ void EnumDataType::assignValue(void * address, Value * value) const {
            *(int*)address =  numeric_value_p->getIntegerValue();
        } else if (enumSize == sizeof(short)) {
            *(short*)address =  numeric_value_p->getIntegerValue();
-       } else if (enumSize == sizeof(char)) {
-           *(char*)address =  numeric_value_p->getIntegerValue();
        } else {
-           std::cerr << "ERROR: Enumeration of size " << enumSize << "is not supported.";
-       }
+           *(char*)address =  numeric_value_p->getIntegerValue();
+       } 
     } else {
         std::cerr << "ERROR: Attempt to assign non-numeric value to a numeric type.";
     }
 }
 
-void EnumDataType::printValue(std::ostream &s, void *address) const {
-
-    int value;
+Value * EnumDataType::getValue(void *address) const {
+    int val;
 
     if (enumSize == sizeof(int)) {
-        value = *(int*)address;
+        val = *(int*) address;
     } else if (enumSize == sizeof(short)) {
-        value = *(short*)address;
-    } else if (enumSize == sizeof(char)) {
-        value = *(char*)address;
+        val = *(short*)address;
     } else {
-        std::cerr << "ERROR: Enumeration of size " << enumSize << "is not supported.";
+        val = *(char*)address;
     }
 
-    // search the enum_list for the name/value pair.
-    int enum_count = enum_list.size() ;
-    int ii = 0;
-    bool found = false;
-    while ((ii < enum_count) && !found ) {
-        if (value == enum_list[ii]->getValue()) {
-             s << enum_list[ii]->getName();
-             found = true;
-        }
-        ii ++;
-    }
-    if (!found) {
-        s << value;
-    }
+    return new IntegerValue(val);
 }
 
 // MEMBER FUNCTION
@@ -185,6 +142,10 @@ std::string EnumDataType::getTypeSpecName() const {
     return name;
 }
 
+bool EnumDataType::accept (DataTypeVisitor * visitor) const {
+    return visitor->visitEnumeratedType(this);
+}
+
 void EnumDataType::addEnumerator( std::string name, int value)  {
 
     Enumerator* enumerator = new Enumerator( name, value );
@@ -192,3 +153,15 @@ void EnumDataType::addEnumerator( std::string name, int value)  {
 
     enumDictionary->addEnumerator(name, value);
 }
+
+std::string EnumDataType::lookupEnumeratorName(int value) const {
+    for (auto enumerator : enum_list) {
+        if (value == enumerator->getValue()) {
+            return enumerator->getName();
+        }
+    }
+
+    return "";
+}
+
+

@@ -5,9 +5,8 @@
 #include "Type/DataType.hpp"
 #include "Value/PointerValue.hpp"
 #include "Value/StringValue.hpp"
-#include "Algorithm/CheckpointVisitor.hpp"
-#include "Algorithm/LookupAddressByNameVisitor.hpp"
-#include "Algorithm/LookupNameByAddressVisitor.hpp"
+
+#include "Algorithm/DataTypeAlgorithm.hpp"
 
 
 const std::string J_CheckpointAgent::error_str = "<UNDEFINED>";
@@ -72,20 +71,16 @@ bool J_CheckpointAgent::writeDeclaration( std::ostream& checkpoint_out, const Al
 bool J_CheckpointAgent::writeAssignment( std::ostream& checkpoint_out, const AllocInfo * alloc_to_write, const std::vector<AllocInfo *>& additional_search_allocs) {
     std::string name = getCheckpointableName(alloc_to_write);
 
-    CheckpointVisitor visitor (name, alloc_to_write->getStart());
-    bool status = visitor.go(alloc_to_write->getDataType());
-    if (!status) {
-        std::cerr << "Something when wrong while trying to find the leaves of AllocInfo named " << name << " of type " << alloc_to_write->getDataType()->toString() << ". Skipping." << std::endl;
-        return false;
-    }
-    
+    FindLeaves::Result result = DataTypeAlgorithm::findLeaves(alloc_to_write->getDataType(), name, alloc_to_write->getStart());
+
     // This is all of the leaf values in this alloc info
     // Write out an assignment for each
-    for (auto leaf : visitor.getResults()) {
+    for (auto leaf : result) {
         std::string value;
         if (leaf.is_pointer) {
             // If it's a pointer, we have to resolve the value to the name of another variable in the set of allocations.
             // Do a sketch cast but it's ok because we know that Value is definitely a PointerValue
+            // This is bad design >:(
             void * ptr_value = ((PointerValue *) leaf.value )->getPointer();
             std::string ptr_name = resolvePointer(ptr_value, leaf.pointer_subtype, additional_search_allocs);
             if (ptr_name == error_str) {
@@ -108,15 +103,18 @@ bool J_CheckpointAgent::writeAssignment( std::ostream& checkpoint_out, const All
 std::string J_CheckpointAgent::resolvePointer(void * ptr_to_resolve, const DataType * expected_type, const std::vector<AllocInfo *>& allocs_to_search) {
     for (auto allocInfo : allocs_to_search) {
         if (allocInfo->contains(ptr_to_resolve)) {
-            LookupNameByAddressVisitor visitor (getCheckpointableName(allocInfo), allocInfo->getStart(), ptr_to_resolve, expected_type);
-            bool status = visitor.go(allocInfo->getDataType());
 
+            auto result = DataTypeAlgorithm::lookupNameByAddressAndType(allocInfo->getDataType(), getCheckpointableName(allocInfo), 
+                                                                        allocInfo->getStart(), ptr_to_resolve, expected_type);
+            
             // If something went wrong, just continue.
             // Although we should probably be able to just return an error
             // assuming that the AllocInfos never overlap, which ~should~ be true
-            if (!status) continue;
+            if (!result.success) {
+                continue;
+            }
 
-            return visitor.getResult();
+            return result.name;
         }
     }
 
@@ -188,14 +186,11 @@ void *  J_CheckpointAgent::lookupPointer(std::string varname, const std::vector<
     if (alloc_to_assign == NULL) {
         return NULL;
     }
+    
     // Find the address that we're assigning to
-    LookupAddressByNameVisitor visitor(alloc_to_assign->getStart(), var_elems);
-    int status = visitor.go(alloc_to_assign->getDataType());
-    if (!status) {
-        return NULL;
-    }
+    auto result = DataTypeAlgorithm::lookupAddressAndTypeByName(alloc_to_assign->getDataType(), alloc_to_assign->getStart(), var_elems);
 
-    auto result = visitor.getResult();
+    // auto result = visitor.getResult();
     return result.address;
 }
 
@@ -231,24 +226,25 @@ bool J_CheckpointAgent::restoreAssignment(std::string assignment_string, const s
     }
 
     // Find the address and the datatype that we're assigning to
-    LookupAddressByNameVisitor visitor(alloc_to_assign->getStart(), var_elems);
-    int status = visitor.go(alloc_to_assign->getDataType());
-    if (!status) {
+    auto result = DataTypeAlgorithm::lookupAddressAndTypeByName(alloc_to_assign->getDataType(), alloc_to_assign->getStart(), var_elems);
+    if (!result.success) {
         throw std::logic_error("Could not find variable named " + full_varname);
     }
 
-    auto result = visitor.getResult();
     const DataType * this_type = result.type;
     void * this_addr = result.address;
 
     // Special case - pointer :(
-    if (this_type->getTypeClass() == TypeClass::POINTER ) {
+    if (result.isPointer ) {
         // this will return a string that says "&varname"
         // There's a better design than this
         // But we gotta handle special cases one way or another
 
-        // This is unsafe O_o
-        StringValue * ptr_name_value = (StringValue *) this_value;
+
+        StringValue * ptr_name_value = dynamic_cast<StringValue *> (this_value);
+        if (ptr_name_value == NULL) {
+            throw std::logic_error(full_varname + " is a pointer, but the value assigned is not compatible.");
+        }
 
         std::string ptr_varname = ptr_name_value->getRawString().substr(1);
         void * raw_addr = lookupPointer(ptr_varname, additional_search_allocs);

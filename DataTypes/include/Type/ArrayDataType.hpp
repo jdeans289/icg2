@@ -28,9 +28,9 @@ class ArrayDataType : public ModifierType {
      */
     ArrayDataType ( const ArrayDataType & original, unsigned int newSize );
 
-    /* ==================================================================== */
-    /*                         RULE OF THREE INTERFACE                      */
-    /* ==================================================================== */
+    /* ================================================================================= */
+    /*                         RULE OF THREE (and a half) INTERFACE                      */
+    /* ================================================================================= */
 
     /**
      Copy Constructor for ArrayDataType.
@@ -46,7 +46,9 @@ class ArrayDataType : public ModifierType {
      Assignment operator for ArrayDataType.
      @param rhs right-hand-side.
      */
-    ArrayDataType& operator=( const ArrayDataType & rhs );
+    ArrayDataType& operator=( ArrayDataType rhs );
+
+    friend void swap (ArrayDataType& a, ArrayDataType& b);
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                         */
@@ -60,19 +62,13 @@ class ArrayDataType : public ModifierType {
      */
      bool validate() override;
 
+     bool isValid() const override;
+
+
     /**
      @return The size (in bytes) of an instance of the ArrayDataType.
      */
     size_t getSize() const override ;
-
-    TypeClass::e getTypeClass() const override {
-        return TypeClass::ARRAY;
-    }
-
-    /**
-     @return The number of arrayed Type-specifier elements of the DataType.
-    */
-    unsigned int getTotalElementCount() const;
 
     /**
      */
@@ -91,12 +87,6 @@ class ArrayDataType : public ModifierType {
     void assignValue(void * address, Value * value) const override;
 
     Value * getValue(void * address) const override;
-
-    /**
-     @param s The stream to print to.
-     @param base_addr Address of the (entire) variable.
-     */
-    void printValue(std::ostream &s, void * address ) const override;
 
     /**
      */
@@ -118,6 +108,11 @@ class ArrayDataType : public ModifierType {
     /**
      */
     // bool getElementInfo( LexicalAnalyzer* lexer, void* baseAddress, VarAccessInfo& varAccessInfo);
+
+    /**
+     @return The number of arrayed Type-specifier elements of the DataType.
+    */
+    unsigned int getTotalElementCount() const;
 
     /**
      @return Returns number of elements in this level of the array

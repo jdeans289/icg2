@@ -36,19 +36,6 @@ PointerDataType::~PointerDataType () {
     }
 }
 
-// ASSIGNMENT OPERATOR
-PointerDataType& PointerDataType::operator=( const PointerDataType & rhs ) {
-
-    if ( this != &rhs ) {
-        // Assign the copied RHS members to the LHS.
-        // elementCount = rhs.elementCount;
-        is_valid = rhs.is_valid;
-        typeSpecName = rhs.typeSpecName;
-        subType = rhs.subType->clone();
-    }
-    return *this;
-}
-
 // CLONE
 DataType * PointerDataType::clone () const {
     return new PointerDataType( *this );
@@ -58,21 +45,17 @@ DataType * PointerDataType::clone () const {
 bool PointerDataType::validate() {
 
     if (!is_valid) {
-        // if we're not referencing a dictionary type.
-        // if (typeSpecName.empty()) {
-        //     is_valid = ownDataType->validate();
-        //     if (is_valid) {
-        //         subType = ownDataType;
-        //     }
-        // } else {
         subType = dataTypeInator->resolve( typeSpecName );
         if (subType != NULL) {
             is_valid = true;
         } else {
             std::cerr << "ERROR: Type \"" << typeSpecName << "\" not found." << std::endl;
         }
-        // }
     }
+    return is_valid;
+}
+
+bool PointerDataType::isValid() const {
     return is_valid;
 }
 
@@ -105,11 +88,6 @@ void PointerDataType::assignValue(void * address, Value*value) const {
     } else {
         std::cerr << "ERROR: Attempt to assign non-pointer value to a pointer.";
     }
-}
-
-// MEMBER FUNCTION
-void PointerDataType::printValue(std::ostream &s, void * address) const {
-    s << *(void**)address;
 }
 
 Value * PointerDataType::getValue(void *address) const {

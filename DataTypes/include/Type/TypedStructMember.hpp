@@ -43,8 +43,6 @@ public:
 
     virtual void * getAddress(void * struct_address) const = 0;
 
-
-
 protected:
     std::string typeSpecName;
     const DataType * subType;

@@ -154,6 +154,38 @@ TEST_F(CompositeDataTypeTest, getSize ) {
 
 }
 
+TEST_F(CompositeDataTypeTest, assignment_operator ) {
+    // ARRANGE
+    CompositeDataType  type_a(dataTypeInator,
+                                    "ClassOne",
+                                    sizeof(ClassOne),
+                                    &construct<ClassOne>,
+                                    &destruct<ClassOne>);
+
+    type_a.addRegularMember( "a", offsetof(ClassOne, a), "int");
+    type_a.addRegularMember( "b", offsetof(ClassOne, b), "double");
+
+    CompositeDataType  type_b(dataTypeInator,
+                                    "SomeOtherClass",
+                                    4,
+                                    NULL,
+                                    NULL);
+
+    type_b.addRegularMember( "somethingidk", 0, "int");
+
+    type_a.validate();
+    type_b.validate();
+
+
+    // ACT
+    type_a = type_b;
+
+    // ASSERT
+    EXPECT_EQ( type_b.getSize(), type_a.getSize());
+    EXPECT_EQ( std::string("SomeOtherClass"), type_a.getTypeSpecName());
+    ASSERT_EQ( type_b.getMemberCount(), type_a.getMemberCount());
+}
+
 TEST_F(CompositeDataTypeTest, assignValue_1) {
 
     /* Requirement: */
@@ -302,111 +334,3 @@ TEST_F(CompositeDataTypeTest, assignValue_5) {
     EXPECT_EQ( 13, classFive->count);
 }
 
-
-TEST_F(CompositeDataTypeTest, printValue_4) {
-
-    /* Requirment:  */
-
-    ClassFour classFour;
-    classFour.x[0] = 0.0;
-    classFour.x[1] = 0.0;
-    classFour.f1 = 1;
-    classFour.f2 = 13;
-    classFour.f3 = 55;
-
-    EXPECT_EQ(true, addClassFourToTypeDictionary( dataTypeInator ));
-
-    const DataType* dataType = dataTypeInator->resolve("ClassFour");
-    ASSERT_TRUE(dataType != NULL) ;
-
-    // Print the duplicate CompositeDataType.
-    std::stringstream ss;
-    dataType->printValue(ss, &classFour);
-
-    // Check the results.
-    int result = ss.str().compare("{{0,0}, 1, 13, 55}");
-    EXPECT_EQ(0, result);
-
-}
-
-// -----------------------------------------------------------------------------------------
-//                                  Checkpoint Tests
-// -----------------------------------------------------------------------------------------
-
-
-// TEST_F(CompositeDataTypeTest, checkpoint_1) {
-//     // ARRANGE
-//     CompositeDataType compTypeSpec( dataTypeInator,
-//                                     "ClassOne",
-//                                     sizeof(ClassOne),
-//                                     &construct<ClassOne>,
-//                                     &destruct<ClassOne>);
-
-//     compTypeSpec.addRegularMember( "a", offsetof(ClassOne, a), "int");
-//     compTypeSpec.addRegularMember( "b", offsetof(ClassOne, b), "double");
-
-//     compTypeSpec.validate();
-
-//     ClassOne my_class_instance;
-//     my_class_instance.a = 1234;
-//     my_class_instance.b = -1.234;
-
-//     std::stringstream ss;
-
-//     // ACT
-//     compTypeSpec.checkpointValue(ss, "my_class_instance", &my_class_instance);
-
-//     // ASSERT   
-//     std::string expected = "my_class_instance.a = 1234;\nmy_class_instance.b = -1.234;\n";
-//     ASSERT_EQ(expected, ss.str());
-// }
-
-// TEST_F(CompositeDataTypeTest, checkpoint_2) {
-//     // ARRANGE
-
-//     // I don't love how coupled this is becoming to the DataTypeInator
-//     // But idk how to fix it
-//     // If I mocked it out I would basically just have to reimplement it
-
-//     ClassTwo my_class_two_instance;
-//     my_class_two_instance.x = 3;
-//     my_class_two_instance.y = 3.333;
-//     my_class_two_instance.c1.a = 8;
-//     my_class_two_instance.c1.b = 8.888;
-
-//     EXPECT_EQ(true, addClassOneToTypeDictionary( dataTypeInator ));
-//     EXPECT_EQ(true, addClassTwoToTypeDictionary( dataTypeInator ));
-
-//     const DataType * classTwoDataType = dataTypeInator->resolve("ClassTwo"); 
-
-//     std::stringstream ss;
-
-//     // ACT
-//     classTwoDataType->checkpointValue(ss, "my_class_two_instance", &my_class_two_instance);
-
-//     // ASSERT   
-//     std::string expected = "my_class_two_instance.x = 3;\nmy_class_two_instance.y = 3.333;\nmy_class_two_instance.c1.a = 8;\nmy_class_two_instance.c1.b = 8.888;\n";
-//     ASSERT_EQ(expected, ss.str());
-// }
-
-
-// TEST_F(CompositeDataTypeTest, checkpoint_5) {
-//     // ARRANGE
-
-//     ClassFive my_class_five_instance;
-//     my_class_five_instance.x = 3;
-//     ClassFive::count = 100;
-
-//     EXPECT_EQ(true, addClassFiveToTypeDictionary( dataTypeInator ));
-
-//     const DataType * classFiveDataType = dataTypeInator->resolve("ClassFive"); 
-
-//     std::stringstream ss;
-
-//     // ACT
-//     classFiveDataType->checkpointValue(ss, "my_class_five_instance", &my_class_five_instance);
-
-//     // ASSERT   
-//     std::string expected = "my_class_five_instance.x = 3;\nmy_class_five_instance.count = 100;\n";
-//     ASSERT_EQ(expected, ss.str());
-// }

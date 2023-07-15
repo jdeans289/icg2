@@ -25,11 +25,6 @@ public:
 
     // Most of the DataTypeInterface is abstract here, will be defined by SpecifiedPrimitiveType
 
-    TypeClass::e getTypeClass() const {
-        return TypeClass::PRIMITIVE;
-    }
-
-
     bool accept (DataTypeVisitor* visitor) const override {
         return visitor->visitPrimitiveDataType(this);
     }
@@ -53,6 +48,11 @@ public:
      Return true if this type represents void. Return false otherwise.
      */
     virtual bool isVoid() const = 0;
+
+    /**
+     * Print an ascii representation of the value at the given address to the stream.
+     */
+    virtual void printValue(std::ostream &s, void *address ) const = 0;
 
 
 };

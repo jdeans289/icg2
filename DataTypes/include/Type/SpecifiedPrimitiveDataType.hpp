@@ -14,11 +14,15 @@ class SpecifiedPrimitiveDataType : public PrimitiveDataType {
 
 public:
 
-    /**
-     Constructor for SpecifiedPrimitiveDataType.
-     */
-    SpecifiedPrimitiveDataType() {}
-    ~SpecifiedPrimitiveDataType() {}
+    SpecifiedPrimitiveDataType<T> () {}
+
+    /* ==================================================================== */
+    /*                         RULE OF THREE INTERFACE                      */
+    /* ==================================================================== */
+
+    SpecifiedPrimitiveDataType<T> ( const SpecifiedPrimitiveDataType<T> & original ) = default;
+    ~SpecifiedPrimitiveDataType<T> () = default;
+    SpecifiedPrimitiveDataType<T> & operator=( SpecifiedPrimitiveDataType<T>& rhs ) = default;
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                           */
@@ -28,6 +32,8 @@ public:
      */
     bool validate() { return true; }
 
+    bool isValid() const { return true; }
+    
     /**
      @return The size (in bytes) of an instance of the DataType
      */
@@ -35,9 +41,6 @@ public:
         return sizeof(T);
     }
 
-    TypeClass::e getTypeClass() const {
-        return TypeClass::PRIMITIVE;
-    }
 
     /**
      */

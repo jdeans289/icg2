@@ -22,6 +22,7 @@ enum Fruit {
     Orange = 3
 };
 
+
 // Framework
 class EnumDataTypeTest : public ::testing::Test {
     protected:
@@ -60,6 +61,8 @@ bool addDayOfWeekEnumToTypeDictionary(TypeDictionary* typeDictionary, EnumDictio
     }
     return result;
 }
+
+
 
 /* ================================================================================
                                          Test Cases
@@ -125,6 +128,68 @@ TEST_F(EnumDataTypeTest, toString ) {
                       "Saturday = 7}\n",s);
 }
 
+TEST_F(EnumDataTypeTest, assignment_operator) {
+    // ARRANGE
+    EnumDataType e1( enumDictionary, "Fruit", sizeof(int) );
+    e1.addEnumerator("Apple", 0);
+    e1.addEnumerator("Orange", 1);
+    e1.addEnumerator("Pear", 2);
+
+    EnumDataType e2( enumDictionary, "Veggie", sizeof(short) );
+    e2.addEnumerator("Broccoli", 0);
+
+    // ACT
+    e1 = e2;
+
+    // ASSERT
+    EXPECT_EQ(e2.getSize(), e1.getSize());
+    EXPECT_EQ(e2.getTypeSpecName(), e1.getTypeSpecName());
+}
+
+TEST_F(EnumDataTypeTest, bad_size) {
+    try {
+        EnumDataType e1( enumDictionary, "Fruit", 7 );
+        FAIL() << "Expected an exception to be thrown." << std::endl;
+    } catch (std::exception& ex) {
+        // Just want to ensure that there is a message
+        EXPECT_TRUE(strlen(ex.what()) > 0);
+    }   
+}
+
+TEST_F (EnumDataTypeTest, create_instance) {
+    // ARRANGE
+    EnumDataType e1( enumDictionary, "Fruit", sizeof(int) );
+    e1.addEnumerator("Apple", 0);
+    e1.addEnumerator("Orange", 1);
+    e1.addEnumerator("Pear", 2);
+
+    // ACT
+    Fruit * fruit_arr = (Fruit *) e1.createInstance(3);
+
+    // ASSERT
+    ASSERT_TRUE(fruit_arr != NULL);
+
+    // I guess just assign to these and make sure they don't segfault?
+    fruit_arr[0] = Apple;
+    fruit_arr[1] = Orange;
+    fruit_arr[2] = Pear;
+}
+
+TEST_F (EnumDataTypeTest, delete_instance) {
+    // ARRANGE
+    EnumDataType e1( enumDictionary, "Fruit", sizeof(int) );
+    e1.addEnumerator("Apple", 0);
+    e1.addEnumerator("Orange", 1);
+    e1.addEnumerator("Pear", 2);
+    Fruit * fruit_arr = (Fruit *) e1.createInstance(3);
+
+    // ACT
+    e1.deleteInstance(fruit_arr);
+
+    // ASSERT
+    // I guess just make sure we don't segfault
+}
+
 TEST_F(EnumDataTypeTest, AssignValue ) {
 
     EXPECT_EQ(true, addDayOfWeekEnumToTypeDictionary( typeDictionary, enumDictionary));
@@ -146,21 +211,162 @@ TEST_F(EnumDataTypeTest, AssignValue ) {
     EXPECT_EQ(Wednesday, dayOfWeek);
 }
 
-TEST_F(EnumDataTypeTest, printValue ) {
+template <typename T>
+void runAssignValueTest(EnumDictionary * enumDictionary) {
+    // ARRANGE
+    enum Veggie : T {
+        Broccoli = 0,
+        Asparagus = 1,
+        Carrot = 2,
+        Eggplant = 3
+    };
 
-    EXPECT_EQ(true, addDayOfWeekEnumToTypeDictionary( typeDictionary, enumDictionary));
+    EnumDataType e2( enumDictionary, "Veggie", sizeof(Veggie) );
+    e2.addEnumerator("Broccoli", 0);
+    e2.addEnumerator("Asparagus", 1);
+    e2.addEnumerator("Carrot", 2);
+    e2.addEnumerator("Eggplant", 3);
 
-    const DataType* dataType = typeDictionary->lookup("DayOfWeek");
+    Veggie veg;
+    IntegerValue val (2);
 
-    ASSERT_TRUE(dataType != NULL) ;
+    // ACT
+    e2.assignValue(&veg, &val);
 
-    DayOfWeek dayOfWeek = Monday;
-
-    std::stringstream ss;
-
-    dataType->printValue(ss, &dayOfWeek);
-
-    int result = ss.str().compare("Monday");
-
-    EXPECT_EQ(0, result);
+    // ASSERT
+    ASSERT_EQ(Carrot, veg);
 }
+
+TEST_F(EnumDataTypeTest, AssignValue_short ) {
+    runAssignValueTest<short>(enumDictionary);
+}
+
+TEST_F(EnumDataTypeTest, AssignValue_char ) {
+    runAssignValueTest<char>(enumDictionary);
+}
+
+template <typename T>
+void runGetValueTest(EnumDictionary * enumDictionary) {
+    // ARRANGE
+    enum Veggie : T {
+        Broccoli = 0,
+        Asparagus = 1,
+        Carrot = 2,
+        Eggplant = 3
+    };
+
+    EnumDataType e2( enumDictionary, "Veggie", sizeof(Veggie) );
+    e2.addEnumerator("Broccoli", 0);
+    e2.addEnumerator("Asparagus", 1);
+    e2.addEnumerator("Carrot", 2);
+    e2.addEnumerator("Eggplant", 3);
+
+    Veggie veg = Eggplant;
+
+    // ACT
+    Value * v = e2.getValue(&veg);
+
+    // ASSERT
+    IntegerValue * int_val = dynamic_cast<IntegerValue *> (v);
+    ASSERT_TRUE(int_val != NULL);
+    ASSERT_EQ(Eggplant, int_val->getIntegerValue());
+
+    delete int_val;
+}
+
+TEST_F(EnumDataTypeTest, GetValue) {
+    runGetValueTest<int>(enumDictionary);
+}
+
+TEST_F(EnumDataTypeTest, GetValue_short) {
+    runGetValueTest<short>(enumDictionary);
+}
+
+TEST_F(EnumDataTypeTest, GetValue_char) {
+    runGetValueTest<char>(enumDictionary);
+}
+
+
+template <typename T>
+void runClearValTest(EnumDictionary * enumDictionary) {
+    // ARRANGE
+    enum Veggie : T {
+        Broccoli = 0,
+        Asparagus = 1,
+        Carrot = 2,
+        Eggplant = 3
+    };
+
+    EnumDataType e2( enumDictionary, "Veggie", sizeof(Veggie) );
+    e2.addEnumerator("Broccoli", 0);
+    e2.addEnumerator("Asparagus", 1);
+    e2.addEnumerator("Carrot", 2);
+    e2.addEnumerator("Eggplant", 3);
+
+    Veggie veg = Eggplant;
+
+    // ACT
+    e2.clearValue(&veg);
+
+    // ASSERT
+    ASSERT_EQ(0, veg);
+}
+
+TEST_F(EnumDataTypeTest, ClearValue) {
+    runClearValTest<int>(enumDictionary);
+}
+
+TEST_F(EnumDataTypeTest, ClearValue_short) {
+    runClearValTest<short>(enumDictionary);
+}
+
+TEST_F(EnumDataTypeTest, ClearValue_char) {
+    runClearValTest<char>(enumDictionary);
+}
+
+TEST_F(EnumDataTypeTest, LookupEnumName ) {
+
+    // ARRANGE
+    EnumDataType * dataType = new EnumDataType( enumDictionary, "DayOfWeek", sizeof(enum DayOfWeek) );
+    dataType->addEnumerator( "Sunday",   1);
+    dataType->addEnumerator( "Monday",   2);
+    dataType->addEnumerator( "Tuesday",  3);
+    dataType->addEnumerator( "Wednesday",4);
+    dataType->addEnumerator( "Thursday", 5);
+    dataType->addEnumerator( "Friday",   6);
+    dataType->addEnumerator( "Saturday", 7);
+
+    typeDictionary->addTypeDefinition( "DayOfWeek", dataType );
+    dataType->validate();
+
+    // ACT
+    std::string name = dataType->lookupEnumeratorName(4);
+
+    // ASSERT
+    std::string expected = "Wednesday";
+    ASSERT_EQ(expected, name);
+}
+
+TEST_F(EnumDataTypeTest, LookupEnumNameNotFound ) {
+
+    // ARRANGE
+    EnumDataType * dataType = new EnumDataType( enumDictionary, "DayOfWeek", sizeof(enum DayOfWeek) );
+    dataType->addEnumerator( "Sunday",   1);
+    dataType->addEnumerator( "Monday",   2);
+    dataType->addEnumerator( "Tuesday",  3);
+    dataType->addEnumerator( "Wednesday",4);
+    dataType->addEnumerator( "Thursday", 5);
+    dataType->addEnumerator( "Friday",   6);
+    dataType->addEnumerator( "Saturday", 7);
+
+    typeDictionary->addTypeDefinition( "DayOfWeek", dataType );
+    dataType->validate();
+
+    // ACT
+    std::string name = dataType->lookupEnumeratorName(1000000);
+
+    // ASSERT
+    std::string expected = "";
+    ASSERT_EQ(expected, name);
+}
+

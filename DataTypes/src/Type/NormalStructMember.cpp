@@ -62,31 +62,11 @@ Value * NormalStructMember::getValue(void *struct_address) const {
     }
 }
 
-// MEMBER FUNCTION
-void NormalStructMember::printValue(std::ostream &s, void *struct_address) const {
-    if (isValid) {
-        void * member_address = (char*)struct_address + byte_offset;
-        subType->printValue(s, member_address) ;
-    } else {
-        std::cerr << "ERROR: Attempt to print a value via unvalidate DataType." << std::endl;
-    }
-}
-
 
 void * NormalStructMember::getAddress(void * struct_address) const {
     // Struct address is unused, but we don't care
     return (char*)struct_address + byte_offset;;
 }
-
-// void NormalStructMember::checkpointValue(std::ostream &s, std::string var_name, void *struct_address) const {
-//     if (isValid) {
-//         std::string full_member_name = var_name + "." + getName();
-//         void * member_address = (char*)struct_address + byte_offset;
-//         subType->checkpointValue(s, full_member_name, member_address);
-//     } else {
-//         std::cerr << "ERROR: Attempt to checkpoint variable " << var_name << " via unvalidated DataType." << std::endl;
-//     }
-// }
 
 // MEMBER FUNCTION
 std::string NormalStructMember:: toString() const {

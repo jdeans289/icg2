@@ -5,7 +5,7 @@
 
 #include "gtest/gtest.h"
 
-#include "Algorithm/LookupNameByAddressVisitor.hpp"
+#include "Algorithm/LookupNameByAddressAndType.hpp"
 
 
 class LookupNameByAddressVisitorTest : public ::testing::Test {
@@ -24,6 +24,8 @@ class LookupNameByAddressVisitorTest : public ::testing::Test {
     void TearDown() {}
 };
 
+namespace LookupNameByAddressAndType {
+
 TEST_F(LookupNameByAddressVisitorTest, basic) {
     // ARRANGE
     SpecifiedPrimitiveDataType<int> int_data_type;
@@ -31,7 +33,7 @@ TEST_F(LookupNameByAddressVisitorTest, basic) {
 
     int * search_address = &var_to_search;
 
-    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, &int_data_type);
 
     // ACT
     bool success = int_data_type.accept(&visitor);
@@ -50,7 +52,7 @@ TEST_F(LookupNameByAddressVisitorTest, array) {
 
     int * search_address = &var_to_search[3];
 
-    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address);
+    LookupNameByAddressVisitor visitor("var_to_search", &var_to_search, search_address, dataTypeInator.resolve("int"));
 
     // ACT
     bool success = visitor.go(data_type);
@@ -245,4 +247,5 @@ TEST_F(LookupNameByAddressVisitorTest, search_type_ambiguous5) {
     std::string actual = visitor.getResult();
     std::string expected = "var_to_search[0]";
     ASSERT_EQ(expected, actual);
+}
 }
