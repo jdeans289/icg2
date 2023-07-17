@@ -25,9 +25,14 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://oraclelinux:8
     steps:
+      - name: Update Package Manager
+        run: |
+          dnf -y install epel-release
+          dnf -y update
+          dnf install -y 'dnf-command(config-manager)'
       - name: Install Doxygen
         run: |
-            yum -y install doxygen
+          yum -y install doxygen
       - name: Checkout
         uses: actions/checkout@v3
       - name: Generate Doxygen
