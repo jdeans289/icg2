@@ -41,19 +41,19 @@ void populate_type_dictionary(DataTypeInator * dataTypeInator) {
 )");
 
 std::string call_class_decl = std::string(R"(
-    add{{ClassName}}toDictionary(dataTypeInator);
+    add{{ClassName_mangled}}toDictionary(dataTypeInator);
 )");
 
 std::string class_decl = std::string(R"(
-bool add{{ClassName}}toDictionary(DataTypeInator* dataTypeInator) {
+bool add{{ClassName_mangled}}toDictionary(DataTypeInator* dataTypeInator) {
 
     bool result = false;
     try {
-        CompositeDataType* {{ClassName}}TypeSpec =
+        CompositeDataType* {{ClassName_mangled}}TypeSpec =
             new CompositeDataType(dataTypeInator, "{{ClassName}}", sizeof({{ClassName}}), &construct<{{ClassName}}>, &destruct<{{ClassName}}> );
             {{list_field_decl}}
 
-        dataTypeInator->addToDictionary("{{ClassName}}", {{ClassName}}TypeSpec);
+        dataTypeInator->addToDictionary("{{ClassName}}", {{ClassName_mangled}}TypeSpec);
     } catch( const std::logic_error& e ) {
         std::cerr << e.what();
         result = false;
@@ -63,7 +63,7 @@ bool add{{ClassName}}toDictionary(DataTypeInator* dataTypeInator) {
 )");
 
 std::string field_decl = std::string(R"(
-    {{ClassName}}TypeSpec->addRegularMember( "{{FieldName}}", offsetof({{ClassName}}, {{FieldName}}), "{{FieldType}}");
+    {{ClassName_mangled}}TypeSpec->addRegularMember( "{{FieldName}}", offsetof({{ClassName}}, {{FieldName}}), "{{FieldType}}");
 )");
 
 std::map<std::string, std::string> template_dictionary {
