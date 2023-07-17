@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Install Doxygen
         run: |
-            dnf -y install doxygen
+            yum -y install doxygen
       - name: Checkout
         uses: actions/checkout@v3
       - name: Generate Doxygen
