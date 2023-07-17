@@ -138,18 +138,17 @@ void TypeDictionary::addTypeDefinition(std::deque<std::string> nameParts, BaseTy
 // MEMBER FUNCTION
 bool TypeDictionary::validate() {
 
-    is_valid = true;
-    for ( auto it  = typeDictionary.begin();
-          it != typeDictionary.end();
-          it++ ) {
+    bool valid = true;
+    for (auto it : typeDictionary) {
+        valid &= it.second->validate();
+    }
 
-         BaseType* dataType = it->second;
-         is_valid = is_valid && dataType->validate();
+    // Validate the nested TypeDictionaries in the namespace dictionary
+    for (auto it : namespaceDictionary) {
+        valid &= it.second->validate();
     }
-    if (!is_valid) {
-        std::cerr << "TypeDictionary contains invalidate data-types.";
-    }
-    return is_valid;
+
+    return valid;
 }
 
 std::string addTabs(std::string str, int numTabs) {
@@ -204,8 +203,13 @@ std::string TypeDictionary::toString() {
 TypeDictionary::~TypeDictionary() {
 
     // Delete all DataTypes in the map.
-    for ( auto it = typeDictionary.begin(); it != typeDictionary.end(); it++ ) {
-        delete it->second;
+    for ( auto it : typeDictionary ) {
+        delete it.second;
+    }
+
+    // Delete all nested TypeDictionaries
+    for ( auto it : namespaceDictionary ) {
+        delete it.second;
     }
 }
 

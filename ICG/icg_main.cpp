@@ -11,6 +11,7 @@
 /*       FieldInfo Definitions      */
 /************************************/
 
+FieldInfo::FieldInfo () {}
 FieldInfo::FieldInfo (std::string n, std::string t, AccessLevel a) : type(t), name(n), access_info(a) {}
 
 std::map<std::string, std::string> FieldInfo::toDictionary() const {
@@ -18,6 +19,7 @@ std::map<std::string, std::string> FieldInfo::toDictionary() const {
     
     dictionary["FieldName"] = name;
     dictionary["FieldType"] = type;
+    dictionary["FieldType_mangled"] = makeVarname(type);
 
     return dictionary;
 }
@@ -37,12 +39,14 @@ std::ostream& operator<< (std::ostream& stream, const FieldInfo& field) {
 /*       ClassInfo Definitions      */
 /************************************/
 
+ClassInfo::ClassInfo() {}
 ClassInfo::ClassInfo(std::string n) : name(n) {}
 
 std::map<std::string, std::string> ClassInfo::toDictionary() const {
     std::map<std::string, std::string> dictionary;
     
     dictionary["ClassName"] = name;
+    dictionary["ClassName_mangled"] = makeVarname(name);
 
     return dictionary;
 }
@@ -71,17 +75,65 @@ std::ostream& operator<< (std::ostream& stream, const ClassInfo& class_info) {
 /*       Visitor Class Definitions      */
 /****************************************/
 
+/**
+ * @brief A base class for the visitors to traverse the Clang AST
+ * @note A correct design will usually go something like:
+ *      - go is the entry point of a visitor
+ *      - go should pull any useful information out of the current pointer and then call some version of clang_visitChildren
+ *      - clang_visitChildren will call traverse with all of the children it finds
+ *      - traverse should have a switch statement or something similar to handle any relevant types of nodes found
+ *      - Within this switch statement, a Visitor for the associated type should be created with relevant context, and then call visitor.go, and then pull out the result
+ *    Calls to clang_visitChildren use the method forwarding_traverse to pass to the correct visitor. Calls should look something like this:
+ *          clang_visitChildren(c, forwarding_traverse, &classVisitor);
+ */
 class BaseVisitor {
     public:
-        virtual CXChildVisitResult traverse(CXCursor c, CXCursor parent) = 0;
+ 
+        /**
+         * @brief This is the hook that will be called from clang_visitChildren via forwarding_traverse
+         * @param cursor Current cursor to investigate
+         * @param parent Parent cursor
+         * @return CXChildVisitResult
+         */
+        virtual CXChildVisitResult traverse(CXCursor cursor, CXCursor parent) = 0;
+
+        /**
+         * @brief The entry point for Clang AST visitors
+         * 
+         * @param cursor Clang cursor to start visiting from
+         */
+        virtual void go (CXCursor cursor) = 0;
 };
 
-// Forward to appropriate class method
+/**
+ * @brief Decide if we should recurse into this branch of the tree or exclude it.
+ * 
+ * @param c Cursor to investigate
+ * @return true if cursor is in a system library, false otherwise
+ * @todo Implement other excludes here
+ */
+bool should_exclude (CXCursor c) {
+    const CXSourceLocation location = clang_getCursorLocation(c);
+    
+    // Never go into system libraries
+    if (clang_Location_isInSystemHeader(location)) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * @brief A free function that should be passed into LibClang's clang_visitChildren method. 
+ * 
+ * @param c Cursor to visit
+ * @param parent parent of c
+ * @param client_data A pointer to an instance of the correct visitor class. This is casted to a BaseVisitor and used to call traverse in the correct context.
+ * @return CXChildVisitResult 
+ */
 CXChildVisitResult forwarding_traverse(CXCursor c, CXCursor parent, CXClientData client_data) {        
 
-    // Never go into system libraries
-    const CXSourceLocation location = clang_getCursorLocation(c);
-    if (clang_Location_isInSystemHeader(location)) {
+    if (should_exclude(c)) {
         return CXChildVisit_Continue;
     }
 
@@ -91,47 +143,124 @@ CXChildVisitResult forwarding_traverse(CXCursor c, CXCursor parent, CXClientData
 }
 
 
-
+/**
+ * @brief Visit a FieldDecl node
+ * 
+ */
 class FieldVisitor : public BaseVisitor {
     public: 
     FieldVisitor() {}
 
-    std::vector<FieldInfo> fields;
+    FieldInfo field;
+
+    virtual void go (CXCursor c) {
+        // Pull in field name, type, access level
+        field = FieldInfo(getCursorSpelling(c), getTypeSpelling(c), getAccessLevel(c));
+
+        // I don't think we need to traverse into this anymore?
+        // But let's do it anyway and see if we even get nodes printing
+        clang_visitChildren(c, forwarding_traverse, this);
+    }
 
     virtual CXChildVisitResult traverse(CXCursor c, CXCursor parent) {
-        // std::cout << "In Field Traverse--------------------------- " << std::endl;
-        // std::cout << "\tKind: " << getKindSpelling(c) << std::endl;
-        // std::cout << "\tName: " << getCursorSpelling(c) << std::endl;
-        // std::cout << "\tType: " << getTypeSpelling(c) << std::endl;
-        // std::cout << "------------------------------------------\n" << std::endl;
+
+        std::cout << "In Field Traverse--------------------------- " << std::endl;
+        std::cout << "\tKind: " << getKindSpelling(c) << std::endl;
+        std::cout << "\tName: " << getCursorSpelling(c) << std::endl;
+        std::cout << "\tType: " << getTypeSpelling(c) << std::endl;
+        std::cout << "------------------------------------------\n" << std::endl;
+
         switch (clang_getCursorKind(c)) {
-            case CXCursor_FieldDecl:
-                fields.emplace_back(getCursorSpelling(c), getTypeSpelling(c), getAccessLevel(c));
+            case CXCursor_TypeRef: {
+                // If we find a TypeRef, then the Type of this cursor is going to be fully qualified name of the type.
+                field.type = getTypeSpelling(c);
+                // I don't think this kind of node can have children
                 return CXChildVisit_Continue;
-            
-            default: ;
+            }
         }
 
         return CXChildVisit_Recurse;
     }
 };
 
+/**
+ * @brief Visit a ClassDecl node
+ * 
+ */
+class ClassVisitor : public BaseVisitor {
+    public: 
+    ClassVisitor() {}
 
+    ClassInfo classInfo;
+
+    virtual void go (CXCursor c) {
+        // Pull in the class name
+        // Make sure we have the move constructor for ClassInfo
+        classInfo = ClassInfo(getTypeSpelling(c));
+
+        // Traverse the children of this node
+        clang_visitChildren(c, forwarding_traverse, this);
+    }
+
+    virtual CXChildVisitResult traverse(CXCursor c, CXCursor parent) {
+        std::cout << "In Class Traverse--------------------------- " << std::endl;
+        std::cout << "\tKind: " << getKindSpelling(c) << std::endl;
+        std::cout << "\tName: " << getCursorSpelling(c) << std::endl;
+        std::cout << "\tType: " << getTypeSpelling(c) << std::endl;
+        std::cout << "------------------------------------------\n" << std::endl;
+
+        switch (clang_getCursorKind(c)) {
+            case CXCursor_FieldDecl: {
+                // Make a field visitor
+                FieldVisitor fieldVisitor;
+                // Do the thing
+                fieldVisitor.go(c);
+                // Get the info out
+                classInfo.fields.emplace_back(fieldVisitor.field);
+
+                // Continue at sibling nodes
+                return CXChildVisit_Continue;
+            }
+            default: 
+                return CXChildVisit_Recurse;
+        }
+
+    }
+};
+
+/**
+ * @brief Top level AST Visitor
+ * 
+ */
 class AstVisitor : public BaseVisitor {
     public:
     AstVisitor (CXTranslationUnit * unit_ptr) : unit(unit_ptr) {}
 
     std::vector<ClassInfo> classes;
 
-    // TODO: Do we need this?
     CXTranslationUnit * unit;
 
+    // Entry point
+    // Start traversal from this node
+    // This version is the top level so we aren't gonna do anything else here
+    virtual void go (CXCursor c) {
+        clang_visitChildren(c, forwarding_traverse, this);
+    }
+
+
     virtual CXChildVisitResult traverse(CXCursor c, CXCursor parent) {
+
+        std::cout << "In AST Traverse--------------------------- " << std::endl;
+        std::cout << "\tKind: " << getKindSpelling(c) << std::endl;
+        std::cout << "\tName: " << getCursorSpelling(c) << std::endl;
+        std::cout << "\tType: " << getTypeSpelling(c) << std::endl;
+        std::cout << "------------------------------------------\n" << std::endl;
+
         // Get comments
-        std::string comment_str = toStdString(clang_Cursor_getRawCommentText(c));        
-        if (comment_str.size() != 0) {
-            std::cout << "Comment found: " << comment_str << std::endl;
-        }
+        // std::string comment_str = toStdString(clang_Cursor_getRawCommentText(c));        
+        // if (comment_str.size() != 0) {
+        //     std::cout << "Comment found: " << comment_str << std::endl;
+        // }
 
         // We're looking for top level data types
         // ClassDecl, ClassTemplate, ...
@@ -139,25 +268,26 @@ class AstVisitor : public BaseVisitor {
         switch (clang_getCursorKind(c)) {
             case CXCursor_ClassDecl:
                 {
-                    ClassInfo new_class (getCursorSpelling(c));
-                    // TODO: This needs to be a ClassVisitor, not a field visitor. Need to make sure we don't skip levels to keep the design clean.
-                    FieldVisitor fieldVisitor;
-                    // std::cout << "Visiting fields for class " << new_class.name << std::endl;
-                    clang_visitChildren(c, forwarding_traverse, &fieldVisitor);
-                    new_class.fields = fieldVisitor.fields;
-                    classes.emplace_back(new_class);
+                    // Make a class visitor
+                    ClassVisitor classVisitor;
+                    // Traverse everything under this
+                    classVisitor.go(c);
+                    // Pull out the info that we need from it
+                    classes.emplace_back(classVisitor.classInfo);
+
+                    // Go to the next sibling node of this tree
                     return CXChildVisit_Continue; 
                 }
                 break;
-            default: ;
+            default: 
                 // std::cout << "Unhandled type---------------------------- " << std::endl;
                 // std::cout << "\tKind: " << getKindSpelling(c) << std::endl;
                 // std::cout << "\tName: " << getCursorSpelling(c) << std::endl;
                 // std::cout << "\tType: " << getTypeSpelling(c) << std::endl;
                 // std::cout << "------------------------------------------\n" << std::endl;
-        }
+                return CXChildVisit_Recurse;
 
-        return CXChildVisit_Recurse;
+        }
     }
 };
 
@@ -198,7 +328,7 @@ int main(int argc, char ** argv) {
     CXCursor cursor = clang_getTranslationUnitCursor(unit);
 
     // Do the thing!
-    clang_visitChildren(cursor, forwarding_traverse, &visitor);
+    visitor.go(cursor);
 
     clang_disposeTranslationUnit(unit);
     clang_disposeIndex(index);
