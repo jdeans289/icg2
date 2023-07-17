@@ -23,21 +23,15 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: docker://oraclelinux:8
     steps:
-      - name: Update Package Manager
-        run: |
-          dnf -y install epel-release
-          dnf -y update
-          dnf install -y 'dnf-command(config-manager)'
       - name: Install Doxygen
-        run: |
-          dnf -y install doxygen
+        run: sudo apt-get install doxygen -y
+        shell: bash
       - name: Checkout
         uses: actions/checkout@v3
       - name: Generate Doxygen
-        run: |
-          doxygen Doxyfile
+        run: doxygen Doxyfile
+        shell: bash
 
   deploy:
     needs: build
