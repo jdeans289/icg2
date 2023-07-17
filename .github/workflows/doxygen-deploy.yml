@@ -32,7 +32,7 @@ jobs:
           dnf install -y 'dnf-command(config-manager)'
       - name: Install Doxygen
         run: |
-          yum -y install doxygen
+          dnf -y install doxygen
       - name: Checkout
         uses: actions/checkout@v3
       - name: Generate Doxygen
