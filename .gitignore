@@ -8,3 +8,5 @@ clang-parse
 build/
 io_*
 test_results/
+html/
+latex/
