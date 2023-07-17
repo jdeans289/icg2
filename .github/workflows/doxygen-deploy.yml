@@ -23,10 +23,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: docker://oraclelinux:8
     steps:
       - name: Install Doxygen
         run: |
-            apt-get -y install doxygen
+            dnf -y install doxygen
       - name: Checkout
         uses: actions/checkout@v3
       - name: Generate Doxygen
@@ -39,6 +40,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    container: docker://oraclelinux:8
     steps:
       - name: Checkout
         uses: actions/checkout@v3
