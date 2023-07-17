@@ -21,27 +21,17 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  generate-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Install Doxygen
-        run: |
-            apt-get -y install doxygen
+        run: sudo apt-get install doxygen -y
+        shell: bash
       - name: Checkout
         uses: actions/checkout@v3
       - name: Generate Doxygen
-        run: |
-          doxygen Doxyfile
-
-  deploy:
-    needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+        run: doxygen Doxyfile
+        shell: bash
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
