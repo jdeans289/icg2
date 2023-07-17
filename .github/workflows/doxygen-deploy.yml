@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  generate-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Install Doxygen
@@ -32,17 +32,6 @@ jobs:
       - name: Generate Doxygen
         run: doxygen Doxyfile
         shell: bash
-
-  deploy:
-    needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    container: docker://oraclelinux:8
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
