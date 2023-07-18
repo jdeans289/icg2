@@ -20,12 +20,6 @@ class FieldInfo final : public recursable {
     FieldInfo (std::string n, std::string t, AccessLevel a);
 
     // Rule of 5 is default
-    FieldInfo (const FieldInfo& other) = default;
-    ~FieldInfo () = default;
-    FieldInfo& operator= (FieldInfo& other) = default;
-    FieldInfo(FieldInfo&& other) = default;
-    FieldInfo& operator=(FieldInfo&& other) = default;
-
 
     std::string type;
     std::string name;
@@ -48,11 +42,6 @@ public:
     ClassInfo(std::string n);
 
     // Rule of 5 is default
-    ClassInfo (const ClassInfo& other) = default;
-    ~ClassInfo () = default;
-    ClassInfo& operator= (ClassInfo& other) = default;
-    ClassInfo(ClassInfo&& other) = default;
-    ClassInfo& operator=(ClassInfo&& other) = default;
 
     std::string name;
     std::vector<FieldInfo> fields;
