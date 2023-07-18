@@ -1,14 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
 
 set(DATATYPES_SRC
-    # Value/CompositeValue.cpp
     Value/IntegerValue.cpp
     Value/FloatingPointValue.cpp
     Value/PointerValue.cpp
     Value/StringValue.cpp
-    # Value/ArrayValue.cpp
     Type/StructMember.cpp
-    # Type/TypedStructMember.cpp
     Type/NormalStructMember.cpp
     Type/StaticStructMember.cpp
     # Type/BitfieldStructMember.cpp

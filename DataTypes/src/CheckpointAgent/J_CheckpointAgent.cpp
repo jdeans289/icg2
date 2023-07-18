@@ -7,7 +7,6 @@
 #include "Value/StringValue.hpp"
 
 #include "Algorithm/DataTypeAlgorithm.hpp"
-#include <cassert>
 
 const std::string J_CheckpointAgent::error_str = "<UNDEFINED>";
 

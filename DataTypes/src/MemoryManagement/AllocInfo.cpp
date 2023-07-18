@@ -1,6 +1,5 @@
 #include <sstream>
 #include <string.h> // for memcpy
-#include <cassert>
 
 #include "Type/Types.hpp"
 #include "MemoryManagement/AllocInfo.hpp"

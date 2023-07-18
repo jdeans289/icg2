@@ -4,8 +4,6 @@
 #include "Type/NormalStructMember.hpp"
 #include "Type/StaticStructMember.hpp"
 
-#include "Value/CompositeValue.hpp"
-
 #include <iostream>
 
 CompositeDataType::CompositeDataType() {
@@ -212,39 +210,6 @@ int CompositeDataType::getStaticMemberCount() const {
     return staticMemberList.size() ;
 }
 
-// CompositeDataType::NormalMemberList::iterator CompositeDataType::getNormalMemberListBegin() {
-//     return normalMemberList.begin();
-// }
-
-// CompositeDataType::NormalMemberList::iterator CompositeDataType::getNormalMemberListEnd() {
-//     return normalMemberList.end();
-// }
-
-// CompositeDataType::StaticMemberList::iterator CompositeDataType::getStaticMemberListBegin() {
-//     return staticMemberList.begin();
-// }
-
-// CompositeDataType::StaticMemberList::iterator CompositeDataType::getStaticMemberListEnd() {
-//     return staticMemberList.end();
-// }
-
-// CompositeDataType::NormalMemberList::const_iterator CompositeDataType::getNormalMemberListBeginConst() {
-//     return normalMemberList.begin();
-// }
-
-// CompositeDataType::NormalMemberList::const_iterator CompositeDataType::getNormalMemberListEndConst() {
-//     return normalMemberList.end();
-// }
-
-
-// CompositeDataType::StaticMemberList::const_iterator CompositeDataType::getStaticMemberListBeginConst() {
-//     return staticMemberList.begin();
-// }
-
-// CompositeDataType::StaticMemberList::const_iterator CompositeDataType::getStaticMemberListEndConst() {
-//     return staticMemberList.end();
-// }
-
 
 bool CompositeDataType::hasMemberNamed(std::string name) {
     for (auto member : normalMemberList) {
@@ -257,22 +222,3 @@ bool CompositeDataType::hasMemberNamed(std::string name) {
 
     return false;
 }
-
-// // MEMBER FUNCTION
-// StructMember* CompositeDataType::getStructMember (const int index) const {
-//     if (index >= getMemberCount()) {
-//         return NULL;
-//     }
-//     return ( memberList[index] );
-// }
-
-// StructMember* CompositeDataType::getStructMember (std::string name) const {
-//     // Lookup struct member by name
-//     for (auto member : memberList) {
-//         if (member->getName() == name) {
-//             return member;
-//         }
-//     }
-
-//     return NULL;
-// }

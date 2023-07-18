@@ -36,11 +36,6 @@ void StringDataType::deleteInstance(void* address) const {
     free(address);
 }
 
-// void StringDataType::clearValue(void * address) const {
-//    ((std::string * ) address)->clear();
-// }
-
-
 // MEMBER FUNCTION
 std::string StringDataType::getTypeSpecName() const {
     return "std::string";

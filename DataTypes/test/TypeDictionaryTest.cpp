@@ -3,7 +3,6 @@
 #include "TypeDictionary.hpp"
 #include "DataTypeInator.hpp"
 #include "Type/CompositeDataType.hpp"
-#include "Value/CompositeValue.hpp"
 #include "Type/SpecifiedPrimitiveDataType.hpp"
 #include "Type/StringDataType.hpp"
 #include "DataTypeTestSupport.hpp"

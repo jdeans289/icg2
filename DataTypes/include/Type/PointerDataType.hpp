@@ -61,10 +61,6 @@ class PointerDataType : public ModifierType {
      */
     void deleteInstance(void* address) const override;
 
-    // /**
-    //  */
-    // void clearValue(void * address) const override;
-
     /**
      */
     std::string getTypeSpecName() const override;

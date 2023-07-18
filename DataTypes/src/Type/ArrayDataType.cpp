@@ -3,7 +3,6 @@
 #include <cassert>
 
 #include "Type/ArrayDataType.hpp"
-#include "Value/ArrayValue.hpp"
 
 #include "Utils/MutableDeclaration.hpp"
 
@@ -123,18 +122,6 @@ void ArrayDataType::deleteInstance(void* address) const {
         std::cout << "WARNING: Can't delete an instance of an unvalidated type." << std::endl;
     }
 }
-
-// // MEMBER FUNCTION
-// void ArrayDataType::clearValue(void * address) const {
-//     if (is_valid) {
-//         for (unsigned int ii=0; ii < elementCount ; ii++) {
-//             void * elementAddress = (char*)address + (ii * subType->getSize());
-//             subType->clearValue( elementAddress );
-//         }
-//     } else {
-//         std::cerr << "ERROR: Type is not yet validated.";
-//     }
-// }
 
 
 // MEMBER FUNCTION
