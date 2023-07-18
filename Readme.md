@@ -61,6 +61,8 @@ double
 - Constrained Arrays
 - Pointers
 - User Defined classes/structs with members of any of the above types
+- Namespaces
+- Nested classes
 - Any mix of the above
 
 See the issue board for in progress work.

@@ -191,7 +191,17 @@ class ClassVisitor : public BaseVisitor {
     public: 
     ClassVisitor() {}
 
+    // Info for this class
     ClassInfo classInfo;
+
+    // Info for possible nested classes
+    std::vector<ClassInfo> nestedClasses;
+    
+    std::vector<ClassInfo> getResult() {
+        std::vector<ClassInfo> result = { classInfo };
+        result.insert(result.end(), nestedClasses.begin(), nestedClasses.end());
+        return result;
+    }
 
     virtual void go (CXCursor c) {
         // Pull in the class name
@@ -217,6 +227,22 @@ class ClassVisitor : public BaseVisitor {
                 fieldVisitor.go(c);
                 // Get the info out
                 classInfo.fields.emplace_back(fieldVisitor.field);
+
+                // Continue at sibling nodes
+                return CXChildVisit_Continue;
+            }
+            case CXCursor_ClassDecl: {
+                // Found a nested class declaration
+
+                // Make a class visitor
+                ClassVisitor nestedClassVisitor;
+
+                // Traverse everything under this
+                nestedClassVisitor.go(c);
+                
+                // Pull out the info that we need from it
+                auto result = nestedClassVisitor.getResult();
+                nestedClasses.insert(nestedClasses.end(), result.begin(), result.end());
 
                 // Continue at sibling nodes
                 return CXChildVisit_Continue;
@@ -273,7 +299,8 @@ class AstVisitor : public BaseVisitor {
                     // Traverse everything under this
                     classVisitor.go(c);
                     // Pull out the info that we need from it
-                    classes.emplace_back(classVisitor.classInfo);
+                    auto result = classVisitor.getResult();
+                    classes.insert(classes.end(), result.begin(), result.end());
 
                     // Go to the next sibling node of this tree
                     return CXChildVisit_Continue; 
