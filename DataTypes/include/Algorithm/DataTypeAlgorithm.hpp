@@ -6,7 +6,9 @@
 #include "LookupNameByAddressAndType.hpp"
 #include "ContainsPointer.hpp"
 #include "PrintValue.hpp"
-
+#include "AssignValue.hpp"
+#include "GetValue.hpp"
+#include "ClearValue.hpp"
 
 namespace DataTypeAlgorithm {
 
@@ -69,4 +71,31 @@ namespace DataTypeAlgorithm {
      * @param address Starting address of value to print
      */
     void printValue(const DataType * node, std::ostream& s, void * address);
+
+    /**
+     * @brief Assign the value of a leaf type (string, pointer, primitive, enum)
+     * 
+     * @param node Type to assign to
+     * @param val Value to assign, must be compatible with node
+     * @param address instance of type to assign to
+     * @return AssignValue::Result bool representing success
+     */
+    AssignValue::Result assignValue(const DataType * node, Value * val, void * address);
+
+    /**
+     * @brief Get the value of a leaf type (string, pointer, primitive, enum)
+     * 
+     * @param node Type to get from 
+     * @param address instance of type to assign to
+     * @return GetValue::Result Value * representing the value
+     */
+    GetValue::Result getValue(const DataType * node, void * address);
+
+    /**
+     * @brief Clear the contents of an instance of a type
+     * 
+     * @param node Type to clear
+     * @param address instance of type to clear
+     */
+    void clearValue(const DataType * node, void * address);
 }

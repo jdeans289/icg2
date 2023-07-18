@@ -2,7 +2,7 @@
 
 #include "Algorithm/PrintValue.hpp"
 #include "Type/Types.hpp"
-#include "Type/TypedStructMember.hpp"
+#include "Type/NormalStructMember.hpp"
 
 namespace PrintValue {
 
@@ -18,32 +18,25 @@ namespace PrintValue {
     bool PrintValueVisitor::visitCompositeType(const CompositeDataType * node) {
         // MEMBER FUNCTION
         s << "{";
-        for (int i=0; i < node->getMemberCount() ; i++) {
-            if (i) {
+        int counter = 0;
+
+        // Static members
+
+        // Normal members
+        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++, counter++) {
+            if (counter != 0) {
                 s << ", ";
             }
-
-            StructMember * member = node->getStructMember(i);
             
-            // We need to figure out how to correctly handle the bitfields - that's a weird edge case
-            TypedStructMember * typed_member = dynamic_cast<TypedStructMember *> (member);
+            NormalStructMember * member = *it;
+            const DataType * member_subtype = member->getSubType();
+            address_stack.push(member->getAddress(address_stack.top()));
 
-            if (typed_member != NULL) {
-                const DataType * member_subtype = typed_member->getDataType();
-                // Push the member name on stack
-                
-                address_stack.push(typed_member->getAddress(address_stack.top()));
+            // Go into member
+            member_subtype->accept(this);
 
-                // Go into member
-                member_subtype->accept(this);
-
-                // Remove member name from stack
-                address_stack.pop();
-
-            } else {
-                // TODO: BITFIELD IS NOT IMPLEMENTED YET
-                std::cerr << "Found a bitfield member named " << member->getName() << " and got scared" << std::endl;
-            }
+            // Remove member name from stack
+            address_stack.pop();
         }
         s << "}";
 

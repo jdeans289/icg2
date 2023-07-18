@@ -6,9 +6,11 @@
 #include "Value/IntegerValue.hpp"
 #include "Type/EnumDictionary.hpp"
 
+const std::string EnumDataType::invalid_str("<INVALID>");
 
 EnumDataType::EnumDataType( EnumDictionary * dict, std::string n, size_t s) : enumDictionary(dict), name(n) {
     if (!(s == sizeof(int) || s == sizeof(short) || s == sizeof(char))) {
+        // Ensure that the size will always be valid so we don't have to check for this every time.
         throw std::logic_error("Cannot support enum of size " + std::to_string(s));
     }
 
@@ -81,34 +83,36 @@ void EnumDataType::deleteInstance(void* address) const {
 }
 
 void EnumDataType::clearValue(void * address) const {
-
-   if (enumSize == sizeof(int)) {
+    if (enumSize == sizeof(int)) {
        *(int*)address = 0;
-   } else if (enumSize == sizeof(short)) {
+    } else if (enumSize == sizeof(short)) {
        *(short*)address = 0;
-   } else {
-       *(char*)address = 0;
-   }
-}
-
-void EnumDataType::assignValue(void * address, Value * value) const {
-
-    NumericValue * numeric_value_p = dynamic_cast<NumericValue*>(value);
-    if (numeric_value_p) {
-
-       if (enumSize == sizeof(int)) {
-           *(int*)address =  numeric_value_p->getIntegerValue();
-       } else if (enumSize == sizeof(short)) {
-           *(short*)address =  numeric_value_p->getIntegerValue();
-       } else {
-           *(char*)address =  numeric_value_p->getIntegerValue();
-       } 
     } else {
-        std::cerr << "ERROR: Attempt to assign non-numeric value to a numeric type.";
+       *(char*)address = 0;
     }
 }
 
-Value * EnumDataType::getValue(void *address) const {
+bool EnumDataType::assignValue(void * address, int value) const {
+
+    if (!containsValue(value)) {
+        // We're trying to assign a value that is not part of this enum.
+        return false;
+    }
+
+    if (enumSize == sizeof(int)) {
+        *(int*)address = (int) value;
+    } else if (enumSize == sizeof(short)) {
+        *(short*)address = (short) value;
+    } else {
+        *(char*)address = (char) value;
+    } 
+
+    return true;
+
+}
+
+
+int EnumDataType::getValue(void *address) const {
     int val;
 
     if (enumSize == sizeof(int)) {
@@ -119,7 +123,7 @@ Value * EnumDataType::getValue(void *address) const {
         val = *(char*)address;
     }
 
-    return new IntegerValue(val);
+    return val;
 }
 
 // MEMBER FUNCTION
@@ -161,7 +165,18 @@ std::string EnumDataType::lookupEnumeratorName(int value) const {
         }
     }
 
-    return "";
+    return invalid_str;
 }
+
+bool EnumDataType::containsValue(int value) const {
+    for (auto enumerator : enum_list) {
+        if (value == enumerator->getValue()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 

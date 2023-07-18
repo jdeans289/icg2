@@ -9,15 +9,15 @@ CompositeValue::~CompositeValue() {
     }
 }
 
-// MEMBER FUNCTION
-void CompositeValue::addMember(Value* value) {
-    member_list.push_back(value);
-}
+// // MEMBER FUNCTION
+// void CompositeValue::addMember(Value* value) {
+//     member_list.push_back(value);
+// }
 
 // MEMBER FUNCTION
-int CompositeValue::getMemberCount() {
-    return ( (int)member_list.size() );
-}
+// int CompositeValue::getMemberCount() {
+//     return ( (int)member_list.size() );
+// }
 
 // MEMBER FUNCTION
 Value*&  CompositeValue::operator[] (const int index) {

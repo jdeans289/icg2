@@ -110,9 +110,10 @@ template <> void SpecifiedPrimitiveDataType<void>:: clearValue(void * address) c
     std::cerr << "WARNING: Cannot clear the value of the object, of type <void> at address ("
               << address << ")." << std::endl;
 }
-template <> void SpecifiedPrimitiveDataType<void>:: assignValue(void * address, Value * value) const {
+template <> bool SpecifiedPrimitiveDataType<void>:: assignValue(void * address, Value * value) const {
     std::cerr << "WARNING: Cannot assign a value to the object, of type <void> at address ("
               << address << ")." << std::endl;
+    return false;
 }
 template <> void SpecifiedPrimitiveDataType<void>::printValue(std::ostream &s, void *address ) const {
     std::cerr << "WARNING: Cannot print the value of the object, of type <void> at address (" << address

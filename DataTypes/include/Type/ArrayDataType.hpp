@@ -80,16 +80,6 @@ class ArrayDataType : public ModifierType {
 
     /**
      */
-    void clearValue(void * address) const override;
-
-    /**
-     */
-    void assignValue(void * address, Value * value) const override;
-
-    Value * getValue(void * address) const override;
-
-    /**
-     */
     std::string getTypeSpecName() const override;
 
     /**

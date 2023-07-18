@@ -21,7 +21,7 @@ class CompositeValue : public Value {
     /**
      Add a member to this CompositeValue.
      */
-    void addMember(Value* value);
+    void addMember(std::string name, Value* value);
 
     /**
      Get the number of members in this CompositeValue.

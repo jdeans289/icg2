@@ -68,25 +68,6 @@ class DataType {
     virtual void deleteInstance(void* address) const = 0;
 
     /**
-    Clear the variable at the given address.
-    @param address Address of the variable.
-    */
-    virtual void clearValue(void * address) const = 0;
-
-    /**
-    Assign a value to the variable at the given address.
-    @param address Address of the variable.
-    @param value Value to be assigned to the element.
-    */
-    virtual void assignValue(void * address, Value * value) const = 0;
-
-    /**
-    Creates a Value object for the variable at the given address.
-    @param address Address of the variable.
-    */
-    virtual Value * getValue(void *address) const = 0;
-
-    /**
     Generate a declaration of this DataType.
     @param declarator A declarator, which can be a
         1) a variable name or an array declarator (both are direct-declarators) or

@@ -44,7 +44,7 @@ public:
 
     /**
      */
-    BaseType * clone () const {
+    SpecifiedPrimitiveDataType<T> * clone () const {
         return new SpecifiedPrimitiveDataType<T>();
     }
 
@@ -65,12 +65,7 @@ public:
     /**
      */
     void clearValue(void * address) const {
-
-        if ( isFloatingPoint() ) {
-            *(T*)address =  0.0;
-        } else {
-            *(T*)address =  0;
-        }
+        *(T*)address =  0;
     }
 
     /**
@@ -78,7 +73,7 @@ public:
      @param address Address of the variable.
      @param value Value to be assigned to the variable.
      */
-    void assignValue(void * address, Value * value) const {
+    bool assignValue(void * address, Value * value) const {
 
         NumericValue * numeric_value_p = dynamic_cast<NumericValue*>(value);
         if (numeric_value_p) {
@@ -88,8 +83,11 @@ public:
                 *(T*)address =  numeric_value_p->getIntegerValue();
             }
         } else {
-            std::cerr << "ERROR: Attempt to assign non-numeric value to a numeric type.";
+            std::cerr << "ERROR: Attempt to assign non-numeric value to a numeric type." << std::endl;
+            return false;
         }
+
+        return true;
     }
 
     Value * getValue(void *address) const {
@@ -171,7 +169,7 @@ template <> size_t SpecifiedPrimitiveDataType<void>::getSize() const;
 template <> void* SpecifiedPrimitiveDataType<void>::createInstance(unsigned int num) const;
 template <> void SpecifiedPrimitiveDataType<void>::deleteInstance(void* address) const;
 template <> void SpecifiedPrimitiveDataType<void>::clearValue(void * address) const;
-template <> void SpecifiedPrimitiveDataType<void>::assignValue(void * address, Value * value) const;
+template <> bool SpecifiedPrimitiveDataType<void>::assignValue(void * address, Value * value) const;
 template <> void SpecifiedPrimitiveDataType<void>::printValue(std::ostream &s, void *address ) const;
 template <> Value * SpecifiedPrimitiveDataType<void>::getValue(void *address) const;
 

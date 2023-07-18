@@ -75,24 +75,11 @@ void PointerDataType::deleteInstance(void* address) const {
     free(address);
 }
 
-// MEMBER FUNCTION
-void PointerDataType::clearValue(void * address) const {
-    *(void**)address =  (void*)NULL;
-}
+// // MEMBER FUNCTION
+// void PointerDataType::clearValue(void * address) const {
+//     *(void**)address =  (void*)NULL;
+// }
 
-// MEMBER FUNCTION
-void PointerDataType::assignValue(void * address, Value*value) const {
-    PointerValue * pointer_value_p = dynamic_cast<PointerValue*>(value);
-    if (pointer_value_p) {
-        *(void**)address =  pointer_value_p->getPointer();
-    } else {
-        std::cerr << "ERROR: Attempt to assign non-pointer value to a pointer.";
-    }
-}
-
-Value * PointerDataType::getValue(void *address) const {
-    return new PointerValue(*(void**)address);
-}
 
 
 // MEMBER FUNCTION

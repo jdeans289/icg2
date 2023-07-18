@@ -121,195 +121,195 @@ TEST_F( ArrayDataTypeTest , getSize ) {
     EXPECT_EQ( sizeof(long)*60 , ptrTypeSpec->getSize());
 }
 
-TEST_F( ArrayDataTypeTest , assignValue ) {
+// TEST_F( ArrayDataTypeTest , assignValue ) {
 
-    double A[2][3][4];
+//     double A[2][3][4];
 
-    // Create a PointerDataType.
-    // int cdims[] = {2,3,4};
-    ArrayDataType * arrayTypeSpec = new ArrayDataType( dataTypeInator, "double var[3][4]", 2);
+//     // Create a PointerDataType.
+//     // int cdims[] = {2,3,4};
+//     ArrayDataType * arrayTypeSpec = new ArrayDataType( dataTypeInator, "double var[3][4]", 2);
 
-    arrayTypeSpec->validate(); // TODO: Test behavior when it isnt validated also.
-
-
-
-    ArrayValue * value_0_0 = new  ArrayValue();
-    value_0_0->pushElem( new FloatingPointValue(1.2));
-    value_0_0->pushElem( new FloatingPointValue(2.3));
-    value_0_0->pushElem( new FloatingPointValue(3.4));
-    value_0_0->pushElem( new FloatingPointValue(4.5));
-
-    ArrayValue * value_0_1 = new  ArrayValue();
-    value_0_1->pushElem( new FloatingPointValue(5.6));
-    value_0_1->pushElem( new FloatingPointValue(6.7));
-    value_0_1->pushElem( new FloatingPointValue(7.8));
-    value_0_1->pushElem( new FloatingPointValue(8.9));
-
-    ArrayValue * value_0_2 = new  ArrayValue();
-    value_0_2->pushElem( new FloatingPointValue(9.0));
-    value_0_2->pushElem( new FloatingPointValue(0.1));
-    value_0_2->pushElem( new FloatingPointValue(1.2));
-    value_0_2->pushElem( new FloatingPointValue(2.3));
-
-    ArrayValue * value_1_0 = new  ArrayValue();
-    value_1_0->pushElem( new FloatingPointValue(3.4));
-    value_1_0->pushElem( new FloatingPointValue(4.5));
-    value_1_0->pushElem( new FloatingPointValue(5.6));
-    value_1_0->pushElem( new FloatingPointValue(6.7));
-
-    ArrayValue * value_1_1 = new  ArrayValue();
-    value_1_1->pushElem( new FloatingPointValue(7.8));
-    value_1_1->pushElem( new FloatingPointValue(8.9));
-    value_1_1->pushElem( new FloatingPointValue(9.0));
-    value_1_1->pushElem( new FloatingPointValue(0.1));
-
-    ArrayValue * value_1_2 = new  ArrayValue();
-    value_1_2->pushElem( new FloatingPointValue(1.2));
-    value_1_2->pushElem( new FloatingPointValue(2.3));
-    value_1_2->pushElem( new FloatingPointValue(3.4));
-    value_1_2->pushElem( new FloatingPointValue(4.5));
-
-    ArrayValue * value_0 = new  ArrayValue();
-    value_0->pushElem( value_0_0 );
-    value_0->pushElem( value_0_1 );
-    value_0->pushElem( value_0_2 );
-
-    ArrayValue * value_1 = new  ArrayValue();
-    value_1->pushElem( value_1_0 );
-    value_1->pushElem( value_1_1 );
-    value_1->pushElem( value_1_2 );
-
-    ArrayValue * value = new  ArrayValue();
-    value->pushElem( value_0 );
-    value->pushElem( value_1 );
-
-    arrayTypeSpec->assignValue(A, value);
-
-    EXPECT_EQ(1.2, A[0][0][0]);
-    EXPECT_EQ(2.3, A[0][0][1]);
-    EXPECT_EQ(3.4, A[0][0][2]);
-    EXPECT_EQ(4.5, A[0][0][3]);
-
-    EXPECT_EQ(5.6, A[0][1][0]);
-    EXPECT_EQ(6.7, A[0][1][1]);
-    EXPECT_EQ(7.8, A[0][1][2]);
-    EXPECT_EQ(8.9, A[0][1][3]);
-
-    EXPECT_EQ(9.0, A[0][2][0]);
-    EXPECT_EQ(0.1, A[0][2][1]);
-    EXPECT_EQ(1.2, A[0][2][2]);
-    EXPECT_EQ(2.3, A[0][2][3]);
-
-    EXPECT_EQ(3.4, A[1][0][0]);
-    EXPECT_EQ(4.5, A[1][0][1]);
-    EXPECT_EQ(5.6, A[1][0][2]);
-    EXPECT_EQ(6.7, A[1][0][3]);
-
-    EXPECT_EQ(7.8, A[1][1][0]);
-    EXPECT_EQ(8.9, A[1][1][1]);
-    EXPECT_EQ(9.0, A[1][1][2]);
-    EXPECT_EQ(0.1, A[1][1][3]);
-
-    EXPECT_EQ(1.2, A[1][2][0]);
-    EXPECT_EQ(2.3, A[1][2][1]);
-    EXPECT_EQ(3.4, A[1][2][2]);
-    EXPECT_EQ(4.5, A[1][2][3]);
-}
-
-TEST_F( ArrayDataTypeTest , createInstance_and_assignValue ) {
-
-    // Create a PointerDataType.
-    int cdims[] = {2,3,4};
-    ArrayDataType * arrayTypeSpec = new ArrayDataType( dataTypeInator, "double[3][4]", 2);
-
-    arrayTypeSpec->validate(); // TODO: Test behavior when it isnt validated also.
-
-    double (*A)[2][3][4] = (double(*)[2][3][4])arrayTypeSpec->createInstance(1);
+//     arrayTypeSpec->validate(); // TODO: Test behavior when it isnt validated also.
 
 
 
-    ArrayValue * value_0_0 = new  ArrayValue();
-    value_0_0->pushElem( new FloatingPointValue(1.2));
-    value_0_0->pushElem( new FloatingPointValue(2.3));
-    value_0_0->pushElem( new FloatingPointValue(3.4));
-    value_0_0->pushElem( new FloatingPointValue(4.5));
+//     ArrayValue * value_0_0 = new  ArrayValue();
+//     value_0_0->pushElem( new FloatingPointValue(1.2));
+//     value_0_0->pushElem( new FloatingPointValue(2.3));
+//     value_0_0->pushElem( new FloatingPointValue(3.4));
+//     value_0_0->pushElem( new FloatingPointValue(4.5));
 
-    ArrayValue * value_0_1 = new  ArrayValue();
-    value_0_1->pushElem( new FloatingPointValue(5.6));
-    value_0_1->pushElem( new FloatingPointValue(6.7));
-    value_0_1->pushElem( new FloatingPointValue(7.8));
-    value_0_1->pushElem( new FloatingPointValue(8.9));
+//     ArrayValue * value_0_1 = new  ArrayValue();
+//     value_0_1->pushElem( new FloatingPointValue(5.6));
+//     value_0_1->pushElem( new FloatingPointValue(6.7));
+//     value_0_1->pushElem( new FloatingPointValue(7.8));
+//     value_0_1->pushElem( new FloatingPointValue(8.9));
 
-    ArrayValue * value_0_2 = new  ArrayValue();
-    value_0_2->pushElem( new FloatingPointValue(9.0));
-    value_0_2->pushElem( new FloatingPointValue(0.1));
-    value_0_2->pushElem( new FloatingPointValue(1.2));
-    value_0_2->pushElem( new FloatingPointValue(2.3));
+//     ArrayValue * value_0_2 = new  ArrayValue();
+//     value_0_2->pushElem( new FloatingPointValue(9.0));
+//     value_0_2->pushElem( new FloatingPointValue(0.1));
+//     value_0_2->pushElem( new FloatingPointValue(1.2));
+//     value_0_2->pushElem( new FloatingPointValue(2.3));
 
-    ArrayValue * value_1_0 = new  ArrayValue();
-    value_1_0->pushElem( new FloatingPointValue(3.4));
-    value_1_0->pushElem( new FloatingPointValue(4.5));
-    value_1_0->pushElem( new FloatingPointValue(5.6));
-    value_1_0->pushElem( new FloatingPointValue(6.7));
+//     ArrayValue * value_1_0 = new  ArrayValue();
+//     value_1_0->pushElem( new FloatingPointValue(3.4));
+//     value_1_0->pushElem( new FloatingPointValue(4.5));
+//     value_1_0->pushElem( new FloatingPointValue(5.6));
+//     value_1_0->pushElem( new FloatingPointValue(6.7));
 
-    ArrayValue * value_1_1 = new  ArrayValue();
-    value_1_1->pushElem( new FloatingPointValue(7.8));
-    value_1_1->pushElem( new FloatingPointValue(8.9));
-    value_1_1->pushElem( new FloatingPointValue(9.0));
-    value_1_1->pushElem( new FloatingPointValue(0.1));
+//     ArrayValue * value_1_1 = new  ArrayValue();
+//     value_1_1->pushElem( new FloatingPointValue(7.8));
+//     value_1_1->pushElem( new FloatingPointValue(8.9));
+//     value_1_1->pushElem( new FloatingPointValue(9.0));
+//     value_1_1->pushElem( new FloatingPointValue(0.1));
 
-    ArrayValue * value_1_2 = new  ArrayValue();
-    value_1_2->pushElem( new FloatingPointValue(1.2));
-    value_1_2->pushElem( new FloatingPointValue(2.3));
-    value_1_2->pushElem( new FloatingPointValue(3.4));
-    value_1_2->pushElem( new FloatingPointValue(4.5));
+//     ArrayValue * value_1_2 = new  ArrayValue();
+//     value_1_2->pushElem( new FloatingPointValue(1.2));
+//     value_1_2->pushElem( new FloatingPointValue(2.3));
+//     value_1_2->pushElem( new FloatingPointValue(3.4));
+//     value_1_2->pushElem( new FloatingPointValue(4.5));
 
-    ArrayValue * value_0 = new  ArrayValue();
-    value_0->pushElem( value_0_0 );
-    value_0->pushElem( value_0_1 );
-    value_0->pushElem( value_0_2 );
+//     ArrayValue * value_0 = new  ArrayValue();
+//     value_0->pushElem( value_0_0 );
+//     value_0->pushElem( value_0_1 );
+//     value_0->pushElem( value_0_2 );
 
-    ArrayValue * value_1 = new  ArrayValue();
-    value_1->pushElem( value_1_0 );
-    value_1->pushElem( value_1_1 );
-    value_1->pushElem( value_1_2 );
+//     ArrayValue * value_1 = new  ArrayValue();
+//     value_1->pushElem( value_1_0 );
+//     value_1->pushElem( value_1_1 );
+//     value_1->pushElem( value_1_2 );
 
-    ArrayValue * value = new  ArrayValue();
-    value->pushElem( value_0 );
-    value->pushElem( value_1 );
+//     ArrayValue * value = new  ArrayValue();
+//     value->pushElem( value_0 );
+//     value->pushElem( value_1 );
 
-    arrayTypeSpec->assignValue(A, value);
+//     arrayTypeSpec->assignValue(A, value);
 
-    EXPECT_EQ(1.2, (*A)[0][0][0]);
-    EXPECT_EQ(2.3, (*A)[0][0][1]);
-    EXPECT_EQ(3.4, (*A)[0][0][2]);
-    EXPECT_EQ(4.5, (*A)[0][0][3]);
+//     EXPECT_EQ(1.2, A[0][0][0]);
+//     EXPECT_EQ(2.3, A[0][0][1]);
+//     EXPECT_EQ(3.4, A[0][0][2]);
+//     EXPECT_EQ(4.5, A[0][0][3]);
 
-    EXPECT_EQ(5.6, (*A)[0][1][0]);
-    EXPECT_EQ(6.7, (*A)[0][1][1]);
-    EXPECT_EQ(7.8, (*A)[0][1][2]);
-    EXPECT_EQ(8.9, (*A)[0][1][3]);
+//     EXPECT_EQ(5.6, A[0][1][0]);
+//     EXPECT_EQ(6.7, A[0][1][1]);
+//     EXPECT_EQ(7.8, A[0][1][2]);
+//     EXPECT_EQ(8.9, A[0][1][3]);
 
-    EXPECT_EQ(9.0, (*A)[0][2][0]);
-    EXPECT_EQ(0.1, (*A)[0][2][1]);
-    EXPECT_EQ(1.2, (*A)[0][2][2]);
-    EXPECT_EQ(2.3, (*A)[0][2][3]);
+//     EXPECT_EQ(9.0, A[0][2][0]);
+//     EXPECT_EQ(0.1, A[0][2][1]);
+//     EXPECT_EQ(1.2, A[0][2][2]);
+//     EXPECT_EQ(2.3, A[0][2][3]);
 
-    EXPECT_EQ(3.4, (*A)[1][0][0]);
-    EXPECT_EQ(4.5, (*A)[1][0][1]);
-    EXPECT_EQ(5.6, (*A)[1][0][2]);
-    EXPECT_EQ(6.7, (*A)[1][0][3]);
+//     EXPECT_EQ(3.4, A[1][0][0]);
+//     EXPECT_EQ(4.5, A[1][0][1]);
+//     EXPECT_EQ(5.6, A[1][0][2]);
+//     EXPECT_EQ(6.7, A[1][0][3]);
 
-    EXPECT_EQ(7.8, (*A)[1][1][0]);
-    EXPECT_EQ(8.9, (*A)[1][1][1]);
-    EXPECT_EQ(9.0, (*A)[1][1][2]);
-    EXPECT_EQ(0.1, (*A)[1][1][3]);
+//     EXPECT_EQ(7.8, A[1][1][0]);
+//     EXPECT_EQ(8.9, A[1][1][1]);
+//     EXPECT_EQ(9.0, A[1][1][2]);
+//     EXPECT_EQ(0.1, A[1][1][3]);
 
-    EXPECT_EQ(1.2, (*A)[1][2][0]);
-    EXPECT_EQ(2.3, (*A)[1][2][1]);
-    EXPECT_EQ(3.4, (*A)[1][2][2]);
-    EXPECT_EQ(4.5, (*A)[1][2][3]);
-}
+//     EXPECT_EQ(1.2, A[1][2][0]);
+//     EXPECT_EQ(2.3, A[1][2][1]);
+//     EXPECT_EQ(3.4, A[1][2][2]);
+//     EXPECT_EQ(4.5, A[1][2][3]);
+// }
+
+// TEST_F( ArrayDataTypeTest , createInstance_and_assignValue ) {
+
+//     // Create a PointerDataType.
+//     int cdims[] = {2,3,4};
+//     ArrayDataType * arrayTypeSpec = new ArrayDataType( dataTypeInator, "double[3][4]", 2);
+
+//     arrayTypeSpec->validate(); // TODO: Test behavior when it isnt validated also.
+
+//     double (*A)[2][3][4] = (double(*)[2][3][4])arrayTypeSpec->createInstance(1);
+
+
+
+//     ArrayValue * value_0_0 = new  ArrayValue();
+//     value_0_0->pushElem( new FloatingPointValue(1.2));
+//     value_0_0->pushElem( new FloatingPointValue(2.3));
+//     value_0_0->pushElem( new FloatingPointValue(3.4));
+//     value_0_0->pushElem( new FloatingPointValue(4.5));
+
+//     ArrayValue * value_0_1 = new  ArrayValue();
+//     value_0_1->pushElem( new FloatingPointValue(5.6));
+//     value_0_1->pushElem( new FloatingPointValue(6.7));
+//     value_0_1->pushElem( new FloatingPointValue(7.8));
+//     value_0_1->pushElem( new FloatingPointValue(8.9));
+
+//     ArrayValue * value_0_2 = new  ArrayValue();
+//     value_0_2->pushElem( new FloatingPointValue(9.0));
+//     value_0_2->pushElem( new FloatingPointValue(0.1));
+//     value_0_2->pushElem( new FloatingPointValue(1.2));
+//     value_0_2->pushElem( new FloatingPointValue(2.3));
+
+//     ArrayValue * value_1_0 = new  ArrayValue();
+//     value_1_0->pushElem( new FloatingPointValue(3.4));
+//     value_1_0->pushElem( new FloatingPointValue(4.5));
+//     value_1_0->pushElem( new FloatingPointValue(5.6));
+//     value_1_0->pushElem( new FloatingPointValue(6.7));
+
+//     ArrayValue * value_1_1 = new  ArrayValue();
+//     value_1_1->pushElem( new FloatingPointValue(7.8));
+//     value_1_1->pushElem( new FloatingPointValue(8.9));
+//     value_1_1->pushElem( new FloatingPointValue(9.0));
+//     value_1_1->pushElem( new FloatingPointValue(0.1));
+
+//     ArrayValue * value_1_2 = new  ArrayValue();
+//     value_1_2->pushElem( new FloatingPointValue(1.2));
+//     value_1_2->pushElem( new FloatingPointValue(2.3));
+//     value_1_2->pushElem( new FloatingPointValue(3.4));
+//     value_1_2->pushElem( new FloatingPointValue(4.5));
+
+//     ArrayValue * value_0 = new  ArrayValue();
+//     value_0->pushElem( value_0_0 );
+//     value_0->pushElem( value_0_1 );
+//     value_0->pushElem( value_0_2 );
+
+//     ArrayValue * value_1 = new  ArrayValue();
+//     value_1->pushElem( value_1_0 );
+//     value_1->pushElem( value_1_1 );
+//     value_1->pushElem( value_1_2 );
+
+//     ArrayValue * value = new  ArrayValue();
+//     value->pushElem( value_0 );
+//     value->pushElem( value_1 );
+
+//     arrayTypeSpec->assignValue(A, value);
+
+//     EXPECT_EQ(1.2, (*A)[0][0][0]);
+//     EXPECT_EQ(2.3, (*A)[0][0][1]);
+//     EXPECT_EQ(3.4, (*A)[0][0][2]);
+//     EXPECT_EQ(4.5, (*A)[0][0][3]);
+
+//     EXPECT_EQ(5.6, (*A)[0][1][0]);
+//     EXPECT_EQ(6.7, (*A)[0][1][1]);
+//     EXPECT_EQ(7.8, (*A)[0][1][2]);
+//     EXPECT_EQ(8.9, (*A)[0][1][3]);
+
+//     EXPECT_EQ(9.0, (*A)[0][2][0]);
+//     EXPECT_EQ(0.1, (*A)[0][2][1]);
+//     EXPECT_EQ(1.2, (*A)[0][2][2]);
+//     EXPECT_EQ(2.3, (*A)[0][2][3]);
+
+//     EXPECT_EQ(3.4, (*A)[1][0][0]);
+//     EXPECT_EQ(4.5, (*A)[1][0][1]);
+//     EXPECT_EQ(5.6, (*A)[1][0][2]);
+//     EXPECT_EQ(6.7, (*A)[1][0][3]);
+
+//     EXPECT_EQ(7.8, (*A)[1][1][0]);
+//     EXPECT_EQ(8.9, (*A)[1][1][1]);
+//     EXPECT_EQ(9.0, (*A)[1][1][2]);
+//     EXPECT_EQ(0.1, (*A)[1][1][3]);
+
+//     EXPECT_EQ(1.2, (*A)[1][2][0]);
+//     EXPECT_EQ(2.3, (*A)[1][2][1]);
+//     EXPECT_EQ(3.4, (*A)[1][2][2]);
+//     EXPECT_EQ(4.5, (*A)[1][2][3]);
+// }
 
 TEST_F( ArrayDataTypeTest, validate_1 ) {
 

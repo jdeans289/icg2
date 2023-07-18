@@ -124,50 +124,18 @@ void ArrayDataType::deleteInstance(void* address) const {
     }
 }
 
-// MEMBER FUNCTION
-void ArrayDataType::clearValue(void * address) const {
-    if (is_valid) {
-        for (unsigned int ii=0; ii < elementCount ; ii++) {
-            void * elementAddress = (char*)address + (ii * subType->getSize());
-            subType->clearValue( elementAddress );
-        }
-    } else {
-        std::cerr << "ERROR: Type is not yet validated.";
-    }
-}
+// // MEMBER FUNCTION
+// void ArrayDataType::clearValue(void * address) const {
+//     if (is_valid) {
+//         for (unsigned int ii=0; ii < elementCount ; ii++) {
+//             void * elementAddress = (char*)address + (ii * subType->getSize());
+//             subType->clearValue( elementAddress );
+//         }
+//     } else {
+//         std::cerr << "ERROR: Type is not yet validated.";
+//     }
+// }
 
-// MEMBER FUNCTION
-void ArrayDataType::assignValue(void * address, Value*value) const {
-
-    if (is_valid) {
-        ArrayValue * array_value_p = dynamic_cast<ArrayValue*> (value);
-        if (array_value_p) {
-            if (array_value_p->getNumElems() != getElementCount()) {
-                std::cerr << "Dimension in ArrayValue (" << array_value_p->getNumElems() << ") does not match dimension of ArrayDataType(" << getElementCount() << ")" << std::endl;
-                return;
-            }
-
-            for (unsigned int i = 0; i < getElementCount(); i++) {
-                void * elemAddress = (char *) address + (i * subType->getSize());
-                subType->assignValue(elemAddress, (*array_value_p)[i]);
-            }
-        }
-    }
-}
-
-Value * ArrayDataType::getValue(void * address) const {
-    if (is_valid) {
-        ArrayValue * value = new ArrayValue();
-        for (unsigned int i = 0; i < getElementCount(); i++) {
-            void * elemAddress = (char *) address + (i * subType->getSize());
-            value->pushElem(subType->getValue(elemAddress));
-        }
-        return value;
-    } else {
-        std::cerr << "Attempt to getValue via an unvalidated data type." << std::endl;
-        return NULL;
-    }
-}
 
 // MEMBER FUNCTION
 std::string ArrayDataType::getTypeSpecName() const {

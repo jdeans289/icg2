@@ -1,7 +1,9 @@
 #include "Algorithm/FindLeaves.hpp"
 
 #include "Type/Types.hpp"
-#include "Type/TypedStructMember.hpp"
+#include "Type/NormalStructMember.hpp"
+
+#include "Algorithm/DataTypeAlgorithm.hpp"
 
 namespace FindLeaves {
 
@@ -16,44 +18,37 @@ namespace FindLeaves {
 
     bool FindLeavesVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
         // Add to the leaf stack
-        leaves.emplace_back(current_name_stack, node->getValue(address_stack.top()));
-
+        leaves.emplace_back(current_name_stack, DataTypeAlgorithm::getValue(node, address_stack.top()));
         return true;
     }
 
     bool FindLeavesVisitor::visitStringType(const StringDataType * node) {
         // Add to the leaf stack
-        leaves.emplace_back(current_name_stack, node->getValue(address_stack.top()));
+        leaves.emplace_back(current_name_stack, DataTypeAlgorithm::getValue(node, address_stack.top()));
 
         return true;
     }
 
     bool FindLeavesVisitor::visitCompositeType(const CompositeDataType * node) {
-        for (int i = 0; i < node->getMemberCount(); i++) {
-            StructMember * member = node->getStructMember(i);
+        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
+            NormalStructMember * member = *it;
             
-            // We need to figure out how to correctly handle the bitfields - that's a weird edge case
-            TypedStructMember * typed_member = dynamic_cast<TypedStructMember *> (member);
+            const DataType * member_subtype = member->getSubType();
+            // Push the member name on stack
+            
+            current_name_stack.pushName(member->getName());
+            address_stack.push(member->getAddress(address_stack.top()));
 
-            if (typed_member != NULL) {
-                const DataType * member_subtype = typed_member->getDataType();
-                // Push the member name on stack
-                
-                current_name_stack.pushName(member->getName());
-                address_stack.push(typed_member->getAddress(address_stack.top()));
+            // Go into member
+            member_subtype->accept(this);
 
-                // Go into member
-                member_subtype->accept(this);
-
-                // Remove member name from stack
-                current_name_stack.pop_back();
-                address_stack.pop();
-
-            } else {
-                // TODO: BITFIELD IS NOT IMPLEMENTED YET
-                std::cerr << "Found a bitfield member named " << member->getName() << " - skipping for now" << std::endl;
-            }
+            // Remove member name from stack
+            current_name_stack.pop_back();
+            address_stack.pop();
         }
+
+        // TODO: BITFIELD AND STATICS NOT IMPLEMENTED YET
+
 
         return true;
     }
@@ -81,7 +76,8 @@ namespace FindLeaves {
         // A pointer is a leaf type
         
         // Add this name to the leaf stack
-        leaves.emplace_back(current_name_stack, node->getValue(address_stack.top()), true, node->getSubType());
+        // Use the special constructor for a leaf that contains info to resolve a pointer
+        leaves.emplace_back(current_name_stack, DataTypeAlgorithm::getValue(node, address_stack.top()), true, node->getSubType());
 
         return true;
     }
@@ -90,7 +86,7 @@ namespace FindLeaves {
         // An enum is a leaf type
 
         // Add this name to the leaf stack
-        leaves.emplace_back(current_name_stack, node->getValue(address_stack.top()));
+        leaves.emplace_back(current_name_stack, DataTypeAlgorithm::getValue(node, address_stack.top()));
 
         return true;
     }

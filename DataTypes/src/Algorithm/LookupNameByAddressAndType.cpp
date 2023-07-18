@@ -49,41 +49,29 @@ namespace LookupNameByAddressAndType {
         }
 
         // Look for the correct member
-        for (int i = 0; i < node->getMemberCount(); i++) {
-            StructMember * member = node->getStructMember(i);
-            // std::cout << "Going into Member named " << member->getName() << std::endl;
+        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
+            const NormalStructMember * member = *it;
             
-            if (member->getMemberClass() == MemberClass::NORMAL) {
-                const NormalStructMember * normal_member = dynamic_cast<NormalStructMember *> (member);
-                assert(normal_member != NULL);
+            const DataType * member_subtype = member->getSubType();
+            assert(member_subtype != NULL);
 
-                const DataType * member_subtype = normal_member->getDataType();
-                assert(member_subtype != NULL);
+            int member_offset = member->getOffset();
+            int member_size = member_subtype->getSize();
 
-                int member_offset = normal_member->getOffset();
-                int member_size = member_subtype->getSize();
+            if (search_offset >= member_offset && search_offset < member_offset + member_size) {
+                // Found the correct member to go into!
 
-                if (search_offset >= member_offset && search_offset < member_offset + member_size) {
-                    // Found the correct member to go into!
+                // Push the member name on stack
+                name_stack.pushName(member->getName());
+                search_offset = search_offset - member_offset;
 
-                    // Push the member name on stack
-                    name_stack.pushName(member->getName());
-                    search_offset = search_offset - member_offset;
-
-                    // Go into member
-                    return member_subtype->accept(this);
-                }
-
-                // Otherwise, just keep looking
-
-            } else {
-                // TODO: BITFIELD AND STATIC IS NOT IMPLEMENTED YET
-                std::string member_class = member->getMemberClass() == MemberClass::BITFIELD ? "bitfield" : "static";
-                std::cerr << "Found a " << member_class << "member named " << member->getName() << " - skipping." << std::endl;
-
-                // just keep looking
+                // Go into member
+                return member_subtype->accept(this);
             }
+            // just keep looking
         }
+
+        // TODO: BITFIELD AND STATIC IS NOT IMPLEMENTED YET
 
         // Oh no!
         // If we didn't return already, we couldn't find the search offset

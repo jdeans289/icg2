@@ -81,8 +81,7 @@ namespace DataTypeAlgorithm {
 
         } catch (std::exception& e) {
             std::cerr << "LookupNameByAddressVisitor threw an exception: " << e.what() << std::endl;
-            LookupNameByAddressAndType::Result empty_result;
-            return empty_result;
+            return std::move(LookupNameByAddressAndType::Result());
         }
     }
 
@@ -93,4 +92,27 @@ namespace DataTypeAlgorithm {
         visitor.go(node);
     }
 
+    AssignValue::Result assignValue(const DataType * node, Value * val, void * address) {
+        checkType (node, __FUNCTION__);
+
+        AssignValue::AssignValueVisitor visitor(val, address);
+        return visitor.go(node);
+    }
+
+    GetValue::Result getValue(const DataType * node, void * address) {
+        checkType (node, __FUNCTION__);
+
+        GetValue::GetValueVisitor visitor(address);
+        visitor.go(node);
+
+        return visitor.getResult();
+    }
+
+    void clearValue(const DataType * node, void * address) {
+        checkType (node, __FUNCTION__);
+
+        ClearValue::ClearValueVisitor visitor(address);
+        visitor.go(node);
+    }   
+    
 }
