@@ -36,26 +36,6 @@ void StringDataType::deleteInstance(void* address) const {
     free(address);
 }
 
-void StringDataType::clearValue(void * address) const {
-   ((std::string * ) address)->clear();
-}
-
-void StringDataType::assignValue(void * address, Value * value) const {
-    StringValue * str_value = dynamic_cast <StringValue * > (value);
-
-    if (str_value == NULL) {
-        std::cerr << "ERROR: Attempt to assign non-string value to a string type.";
-        return;
-    }
-
-    * (std::string * ) address = str_value->getRawString();
-}
-
-
-Value * StringDataType::getValue(void *address) const {
-    return new StringValue(* (std::string * ) address);
-}
-
 // MEMBER FUNCTION
 std::string StringDataType::getTypeSpecName() const {
     return "std::string";

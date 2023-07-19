@@ -9,8 +9,6 @@ std::string io_src = std::string(R"(
 #include "DataTypeInator.hpp"
 #include "Type/EnumDictionary.hpp"
 #include "Type/CompositeDataType.hpp"
-#include "Value/CompositeValue.hpp"
-#include "Type/PrimitiveDataType.hpp"
 #include "Type/EnumDataType.hpp"
 
 #include "{{filename}}"

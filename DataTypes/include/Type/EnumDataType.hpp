@@ -4,7 +4,6 @@
 #include <stdexcept>
 
 #include "Type/BaseType.hpp"
-#include "Value/Value.hpp"
 
 #include "Enumerator.hpp"
 #include "Type/EnumDictionary.hpp"
@@ -12,8 +11,10 @@
 
 
 /**
- An EnumDataType represents an enumeration type.
-*/
+ * @brief Enum represents an Enumerated data type.
+ * @note since the underlying type can vary in size, it would possibly be cleaner to implement this in a similar way to the Primitive/SpecifiedPrimititive<T>
+ * hierarchy. However, I think since there are only 3 possible sizes, maybe this is ok.
+ */
 class EnumDataType : public BaseType {
 
 public:
@@ -65,14 +66,6 @@ public:
 
     /**
      */
-    void clearValue(void * address) const override;
-
-    void assignValue(void * address, Value * value) const override;
-
-    Value * getValue(void *address) const override;
-
-    /**
-     */
     std::string toString() const override;
 
     /**
@@ -88,13 +81,34 @@ public:
     /* ==================================================================== */
 
     /**
-     Add a regular, non-bitfield data member to the EnumDataType.
-     @param member_name Name of the data member.
-     @param offset The offset (in bytes) of the data-member from the beginning of
-     the struct, union or class.
-     @param type_decl TypeDeclaration of the data-member.
+     * @brief Set the instance of this type at the given address to 0.
+     * 
+     * @param address address of instance
      */
-    void addEnumerator( std::string member_name, int value);
+    void clearValue(void * address) const;
+
+    /**
+     * @brief Assign the value to the instance of this data member 
+     * 
+     * @param address Address to assign to
+     * @param value integer value to assign. Must be a pre-defined value for this type.
+     */
+    bool assignValue(void * address, int value) const;
+
+    /**
+     * @brief Get the Value of an instance of this type with the given address
+     * 
+     * @param address Address to pull the value from
+     * @return int numerical value of the enum instance
+     */
+    int getValue(void *address) const;
+
+    /**
+     @brief Add a name-value pair to this enum data type.
+     @param val_name literal name of this enum member
+     @param value integer value associated
+     */
+    void addEnumerator( std::string val_name, int value);
 
     /**
      * @brief Get the string name that corresponds to the integer for this type
@@ -103,6 +117,16 @@ public:
      * @return std::string name of this value for this type, or empty string if value is not named in this enum
      */
     std::string lookupEnumeratorName(int value) const;
+
+        /**
+     * @brief Determine if this enum type has something defined to this value
+     * 
+     * @param value integer value to find
+     * @return true if found, false otherwise
+     */
+    bool containsValue(int value) const;
+
+    static const std::string invalid_str;
 
 private:
     EnumDataType() {};

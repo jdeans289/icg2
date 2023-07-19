@@ -2,12 +2,11 @@
 
 #include <string>
 
-#include "Type/TypedStructMember.hpp"
-#include "DataTypeInator.hpp"
+#include "StructMember.hpp"
 
 /**
  */
-class StaticStructMember : public TypedStructMember {
+class StaticStructMember : public StructMember {
 
 public:
 
@@ -16,57 +15,29 @@ public:
      */
     StaticStructMember( std::string memberName,
                         void * memberAddress,
-                        DataTypeInator* dataTypeInator,
                         std::string typeSpecName );
 
-    /**
-     Copy Constructor.
-    */
-    StaticStructMember ( const StaticStructMember & original );
-
-    /**
-     Destructor.
-     */
-    ~StaticStructMember();
+    // Rule of 5 is default.
 
     /**
      Clone.
      */
-    StaticStructMember * clone () const override;
-
-
+    StaticStructMember * clone () const;
 
     /**
-    */
-    MemberClass::e getMemberClass() const override {
-        return MemberClass::STATIC;
-    }
-
-
-    /**
+     * @brief Get the address of the StructMember
+     * 
+     * @return void* 
      */
-    void* getAddress();
+    void * getAddress() const;
 
     /**
-     */
-    void clearValue(void *struct_address) const override;
-
-    /**
-     */
-    void assignValue(void *struct_address, Value *v) const override;
-
-
-    Value * getValue(void *struct_address) const override;
-
-
-    void * getAddress(void * struct_address) const override;
-
-    /**
-     Product a string representation of this StaticStructMember.
+     * @brief toString
+     * 
+     * @return std::string 
      */
     std::string toString() const override;
 
 private:
     void * memberAddress;
-
 };

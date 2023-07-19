@@ -75,25 +75,6 @@ void PointerDataType::deleteInstance(void* address) const {
     free(address);
 }
 
-// MEMBER FUNCTION
-void PointerDataType::clearValue(void * address) const {
-    *(void**)address =  (void*)NULL;
-}
-
-// MEMBER FUNCTION
-void PointerDataType::assignValue(void * address, Value*value) const {
-    PointerValue * pointer_value_p = dynamic_cast<PointerValue*>(value);
-    if (pointer_value_p) {
-        *(void**)address =  pointer_value_p->getPointer();
-    } else {
-        std::cerr << "ERROR: Attempt to assign non-pointer value to a pointer.";
-    }
-}
-
-Value * PointerDataType::getValue(void *address) const {
-    return new PointerValue(*(void**)address);
-}
-
 
 // MEMBER FUNCTION
 std::string PointerDataType::getTypeSpecName() const {
@@ -114,15 +95,3 @@ std::string PointerDataType::makeDeclaration(std::string declarator) const {
 bool PointerDataType::accept (DataTypeVisitor * visitor) const {
     return visitor->visitPointerType(this);
 }
-
-// bool PointerDataType::lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const {
-//     // This is a leaf. If offset isn't 0, there's no where else to go so bad luck
-//     if (offset != 0) {
-//         std::cerr << "Something went wrong - at leaf in search in " << __FILE__ <<  ":" <<  __FUNCTION__ << " but offset is not 0." << std::endl;
-//         return false;
-//     }
-
-//     // TODO: We need to compare expected type
-
-//     return true;
-// }

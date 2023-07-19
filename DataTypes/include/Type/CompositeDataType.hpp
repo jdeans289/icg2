@@ -5,8 +5,9 @@
 #include <stdexcept>
 
 #include "Type/DataType.hpp"
-#include "Type/StructMember.hpp"
-#include "Type/BitfieldStructMember.hpp"
+#include "Type/StaticStructMember.hpp"
+#include "Type/NormalStructMember.hpp"
+// #include "Type/BitfieldStructMember.hpp"
 
 #include "Value/Value.hpp"
 
@@ -70,19 +71,6 @@ public:
 
     /**
      */
-    void clearValue(void * address) const override;
-
-    /**
-     Assign a value to the variable at the given address.
-     @param address Base-address of the (possibly arrayed) variable.
-     @param value The Value to be assigned to the element.
-     */
-    void assignValue(void * address, Value * value) const override;
-
-    Value * getValue(void * address) const override;
-
-    /**
-     */
     std::string toString() const override;
 
     bool accept (DataTypeVisitor* visitor) const override;
@@ -131,33 +119,55 @@ public:
                                                T(*getter)(void* address),
                                                void(*setter)(void* address, T value) ) {
 
-        memberList.push_back( new BitfieldStructMember<T>(member_name, getter, setter));
+        // memberList.push_back( new BitfieldStructMember<T>(member_name, getter, setter));
 
     }
 
-
-
-    /**
-     */
-    int getMemberCount() const;
+    typedef std::vector<NormalStructMember *> NormalMemberList;
+    typedef std::vector<StaticStructMember *> StaticMemberList;
 
     /**
+     * @brief Get the number of normal members in this composite type
+     * 
+     * @return int normal member count
      */
-    StructMember* getStructMember (const int index) const;
+    int getNormalMemberCount() const;
 
     /**
+     * @brief Get the number of static members in this composite type
+     * 
+     * @return int static member count
      */
-    StructMember* getStructMember (std::string name) const;
+    int getStaticMemberCount() const;
 
+    inline NormalMemberList::iterator getNormalMemberListBegin() { return normalMemberList.begin(); }
+    inline NormalMemberList::iterator getNormalMemberListEnd() { return normalMemberList.end(); }
+
+    inline StaticMemberList::iterator getStaticMemberListBegin() { return staticMemberList.begin(); }
+    inline StaticMemberList::iterator getStaticMemberListEnd() { return staticMemberList.end(); }
+
+    inline NormalMemberList::const_iterator getNormalMemberListBegin() const { return normalMemberList.begin(); }
+    inline NormalMemberList::const_iterator getNormalMemberListEnd() const { return normalMemberList.end(); }
+
+    inline StaticMemberList::const_iterator getStaticMemberListBegin() const { return staticMemberList.begin(); }
+    inline StaticMemberList::const_iterator getStaticMemberListEnd() const { return staticMemberList.end(); }
 
 private:
     CompositeDataType();
 
+    // This is only intended to ensure we don't add two of the same members
+    bool hasMemberNamed(std::string name);
+
     bool is_valid;
-    std::vector<StructMember*> memberList;
+    NormalMemberList normalMemberList;
+    StaticMemberList staticMemberList;
+    // std::vector<BitfieldStructMember> BitfieldStructMember;
+
     std::string name;
-    size_t structSize; /** Sizeof the struct/or class represented by the CompositeDataType. */
+    size_t structSize;
+
     void* (*allocator)(int);
     void (*deAllocator)(void*);
+
     DataTypeInator* dataTypeInator;
 };

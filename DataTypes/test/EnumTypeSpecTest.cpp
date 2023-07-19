@@ -190,27 +190,6 @@ TEST_F (EnumDataTypeTest, delete_instance) {
     // I guess just make sure we don't segfault
 }
 
-TEST_F(EnumDataTypeTest, AssignValue ) {
-
-    EXPECT_EQ(true, addDayOfWeekEnumToTypeDictionary( typeDictionary, enumDictionary));
-
-    const DataType* dataType = typeDictionary->lookup("DayOfWeek");
-    ASSERT_TRUE(dataType != NULL) ;
-
-    DayOfWeek dayOfWeek = Sunday;
-
-    try {
-        int value = enumDictionary->getValue( "Wednesday" );
-        IntegerValue *integerValue = new IntegerValue( value );
-        dataType->assignValue( &dayOfWeek, integerValue );
-        delete integerValue;
-    } catch ( const std::logic_error& e ) {
-        std::cerr << e.what();
-    }
-
-    EXPECT_EQ(Wednesday, dayOfWeek);
-}
-
 template <typename T>
 void runAssignValueTest(EnumDictionary * enumDictionary) {
     // ARRANGE
@@ -228,13 +207,16 @@ void runAssignValueTest(EnumDictionary * enumDictionary) {
     e2.addEnumerator("Eggplant", 3);
 
     Veggie veg;
-    IntegerValue val (2);
 
     // ACT
-    e2.assignValue(&veg, &val);
+    e2.assignValue(&veg, 2);
 
     // ASSERT
     ASSERT_EQ(Carrot, veg);
+}
+
+TEST_F(EnumDataTypeTest, AssignValue_int ) {
+    runAssignValueTest<int>(enumDictionary);
 }
 
 TEST_F(EnumDataTypeTest, AssignValue_short ) {
@@ -243,6 +225,31 @@ TEST_F(EnumDataTypeTest, AssignValue_short ) {
 
 TEST_F(EnumDataTypeTest, AssignValue_char ) {
     runAssignValueTest<char>(enumDictionary);
+}
+
+TEST_F(EnumDataTypeTest, AssignValue_invalid ) {
+    // ARRANGE
+    enum Veggie  {
+        Broccoli = 0,
+        Asparagus = 1,
+        Carrot = 2,
+        Eggplant = 3
+    };
+
+    EnumDataType e2( enumDictionary, "Veggie", sizeof(Veggie) );
+    e2.addEnumerator("Broccoli", 0);
+    e2.addEnumerator("Asparagus", 1);
+    e2.addEnumerator("Carrot", 2);
+    e2.addEnumerator("Eggplant", 3);
+
+    Veggie veg = Broccoli;
+
+    // ACT
+    bool result = e2.assignValue(&veg, 100);
+
+    // ASSERT
+    ASSERT_EQ(false, result);
+    ASSERT_EQ(Broccoli, veg);
 }
 
 template <typename T>
@@ -264,14 +271,11 @@ void runGetValueTest(EnumDictionary * enumDictionary) {
     Veggie veg = Eggplant;
 
     // ACT
-    Value * v = e2.getValue(&veg);
+    int v = e2.getValue(&veg);
 
     // ASSERT
-    IntegerValue * int_val = dynamic_cast<IntegerValue *> (v);
-    ASSERT_TRUE(int_val != NULL);
-    ASSERT_EQ(Eggplant, int_val->getIntegerValue());
+    ASSERT_EQ(Eggplant, v);
 
-    delete int_val;
 }
 
 TEST_F(EnumDataTypeTest, GetValue) {
@@ -285,7 +289,6 @@ TEST_F(EnumDataTypeTest, GetValue_short) {
 TEST_F(EnumDataTypeTest, GetValue_char) {
     runGetValueTest<char>(enumDictionary);
 }
-
 
 template <typename T>
 void runClearValTest(EnumDictionary * enumDictionary) {
@@ -366,7 +369,7 @@ TEST_F(EnumDataTypeTest, LookupEnumNameNotFound ) {
     std::string name = dataType->lookupEnumeratorName(1000000);
 
     // ASSERT
-    std::string expected = "";
+    std::string expected = EnumDataType::invalid_str;
     ASSERT_EQ(expected, name);
 }
 

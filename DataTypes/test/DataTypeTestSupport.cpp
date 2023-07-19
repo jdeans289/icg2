@@ -4,8 +4,6 @@
 #include "Type/PrimitiveDataType.hpp"
 #include "Type/EnumDataType.hpp"
 
-#include "Value/CompositeValue.hpp"
-
 int ClassFive::count = 0;
 
 static short get_ClassFour__f1(void* addr) { return  ((ClassFour*)addr)->f1; }

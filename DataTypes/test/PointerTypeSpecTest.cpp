@@ -87,36 +87,36 @@ TEST_F( PointerDataTypeTest , getSize ) {
     EXPECT_EQ( sizeof(void*), ptrTypeSpec->getSize());
 }
 
-TEST_F( PointerDataTypeTest , assignValue ) {
+// TEST_F( PointerDataTypeTest , assignValue ) {
 
-    double d = 1.2345;
-    double * d_ptr;
+//     double d = 1.2345;
+//     double * d_ptr;
 
-    // Create a PointerDataType.
-    PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
+//     // Create a PointerDataType.
+//     PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
 
-    PointerValue * ptrValue = new PointerValue(&d);
-    ptrTypeSpec->assignValue(&d_ptr, ptrValue);
+//     PointerValue * ptrValue = new PointerValue(&d);
+//     ptrTypeSpec->assignValue(&d_ptr, ptrValue);
 
-    EXPECT_EQ(1.2345, *d_ptr);
-}
+//     EXPECT_EQ(1.2345, *d_ptr);
+// }
 
-TEST_F( PointerDataTypeTest , getValue ) {
+// TEST_F( PointerDataTypeTest , getValue ) {
 
-    // ARRANGE
-    double * d_ptr = (double*)0x12345678;
+//     // ARRANGE
+//     double * d_ptr = (double*)0x12345678;
 
-    // Create a PointerDataType.
-    PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
+//     // Create a PointerDataType.
+//     PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
 
-    // ACT
-    Value * value = ptrTypeSpec->getValue(&d_ptr);
+//     // ACT
+//     Value * value = ptrTypeSpec->getValue(&d_ptr);
 
-    // ASSERT
-    PointerValue * ptrValue = dynamic_cast<PointerValue *> (value);
-    ASSERT_TRUE(ptrValue != NULL);
-    ASSERT_EQ((double*)0x12345678, ptrValue->getPointer());
-}
+//     // ASSERT
+//     PointerValue * ptrValue = dynamic_cast<PointerValue *> (value);
+//     ASSERT_TRUE(ptrValue != NULL);
+//     ASSERT_EQ((double*)0x12345678, ptrValue->getPointer());
+// }
 
 TEST_F( PointerDataTypeTest , validate_1 ) {
 

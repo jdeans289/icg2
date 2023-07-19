@@ -1,17 +1,14 @@
 cmake_minimum_required(VERSION 3.1)
 
 set(DATATYPES_SRC
-    Value/CompositeValue.cpp
     Value/IntegerValue.cpp
     Value/FloatingPointValue.cpp
     Value/PointerValue.cpp
     Value/StringValue.cpp
-    Value/ArrayValue.cpp
     Type/StructMember.cpp
-    Type/TypedStructMember.cpp
     Type/NormalStructMember.cpp
     Type/StaticStructMember.cpp
-    Type/BitfieldStructMember.cpp
+    # Type/BitfieldStructMember.cpp
     Type/CompositeDataType.cpp
     Type/EnumDataType.cpp
     Type/ArrayDataType.cpp
@@ -28,10 +25,13 @@ set(DATATYPES_SRC
     Utils/ParsedDeclaration.cpp
     Utils/MutableDeclaration.cpp
     Utils/ParsedAssignment.cpp
+    Algorithm/AssignValue.cpp
+    Algorithm/ClearValue.cpp
     Algorithm/DataTypeAlgorithm.cpp
     Algorithm/DataTypeVisitor.cpp
     Algorithm/FindLeaves.cpp
     Algorithm/ContainsPointer.cpp
+    Algorithm/GetValue.cpp
     Algorithm/LookupAddressAndTypeByName.cpp
     Algorithm/LookupNameByAddressAndType.cpp
     Algorithm/PrintValue.cpp

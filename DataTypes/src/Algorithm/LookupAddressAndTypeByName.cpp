@@ -35,28 +35,31 @@ namespace LookupAddressAndTypeByName {
             return false;
         }
 
-        for (int i = 0; i < node->getMemberCount(); i++) {
-            StructMember * member = node->getStructMember(i);
+
+        // Find the next step
+        const DataType * next_type = NULL;
+        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
+            NormalStructMember * member = *it;
             if (member->getName() == next_elem) {
                 // Found the next step!
-                if (member->getMemberClass() != MemberClass::BITFIELD) {
-                    // This will handle static or normal members
-                    TypedStructMember * typed_member = dynamic_cast<TypedStructMember *> (member);
-
-                    // Find the address of the next member
-                    current_search_address = typed_member->getAddress(current_search_address);
-
-                    // Continue the visit!!
-                    const DataType * next_type = typed_member->getDataType();
-                    assert (next_type != NULL);
-                    return next_type->accept(this);
-
-                } else {
-                    // TODO: figure this out
-                    // bitfields are scary
-                    std::cerr << "Found a bitfield but I'm too scared to go any further" << std::endl;
-                }
+                // Find the address of the next member
+                current_search_address = member->getAddress(current_search_address);
+                next_type = member->getSubType();
             }
+        }
+
+        for (auto it = node->getStaticMemberListBegin(); it != node->getStaticMemberListEnd(); it++) {
+            StaticStructMember * member = *it;
+            if (member->getName() == next_elem) {
+                // Found the next step!
+                // Find the address of the next member
+                current_search_address = member->getAddress();
+                next_type = member->getSubType();
+            }
+        }
+
+        if (next_type != NULL) {
+            return next_type->accept(this);
         }
 
         std::cerr << "Could not find member named " << next_elem << " in type " << node->toString() << std::endl;

@@ -1,14 +1,11 @@
 #pragma once
 
 #include <string>
-
-#include "Type/TypedStructMember.hpp"
-#include "Type/DataType.hpp"
-#include "DataTypeInator.hpp"
+#include "Type/StructMember.hpp"
 
 /**
  */
-class NormalStructMember : public TypedStructMember {
+class NormalStructMember : public StructMember {
 
 public:
 
@@ -17,50 +14,23 @@ public:
      */
     NormalStructMember( std::string member_name,
                         int offset,
-                        DataTypeInator* dataTypeInator,
                         std::string typeSpecName );
-
-    /**
-     Copy Constructor.
-    */
-    NormalStructMember ( const NormalStructMember & original );
 
     /**
      Clone.
      */
-    StructMember * clone () const override;
-
-    /**
-     Destructor.
-     */
-    ~NormalStructMember();
-
-    /**
-    */
-    MemberClass::e getMemberClass() const override{
-        return MemberClass::NORMAL;
-    }
+    NormalStructMember * clone () const;
 
     /**
      */
     int getOffset() const;
-
-    /**
-     */
-    void clearValue(void *struct_address) const override;
-
-    /**
-     */
-    void assignValue(void *struct_address, Value *v) const override ;
-
-    Value * getValue(void *struct_address) const override;
     
-    void * getAddress(void * struct_address) const override;
+    void * getAddress(void * struct_address) const;
 
     /**
      Product a string representation of this NormalStructMember.
      */
-    std::string toString() const ;
+    std::string toString() const override;
 
 private:
     int byte_offset;

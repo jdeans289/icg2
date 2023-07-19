@@ -4,6 +4,7 @@
 #include "Type/Types.hpp"
 #include "MemoryManagement/AllocInfo.hpp"
 #include "Utils/MutableDeclaration.hpp"
+#include "Algorithm/DataTypeAlgorithm.hpp"
 
 
 
@@ -99,7 +100,7 @@ StorageClass::e AllocInfo::getStorageClass() const {
 
 // PUBLIC MEMBER FUNCTION
 void AllocInfo::clear() const {
-    dataType->clearValue(start);
+    DataTypeAlgorithm::clearValue(dataType, start);
 }
 
 // // PUBLIC MEMBER FUNCTION

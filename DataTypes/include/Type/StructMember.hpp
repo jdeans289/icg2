@@ -1,99 +1,60 @@
 #pragma once
 
 #include <string>
-#include <vector>
-
-#include "Value/Value.hpp"
 
 #include "DataTypeInator.hpp"
 
-// class DataTypeInator;
-class DataType;
-
-namespace MemberClass {
-    enum e {
-        NORMAL   = 0,
-        STATIC   = 1,
-        BITFIELD = 2
-    };
-};
-
 /**
- StructMember represents a data-member of a CompositeDeclaration.
  */
 class StructMember {
 
 public:
 
-    StructMember (std::string name);
-
-
     /**
-    Constructor for StructMember.
-    @warning This should ONLY be called by a constructor of a derived class.
-    */
-    StructMember (const StructMember & original);
-
-    /**
-    Clone.
-    */
-    virtual StructMember * clone () const = 0;
-
-    /**
-    Destructor.
-    */
-    virtual ~StructMember () { /* Nothing to do */ }
-
-    /**
-     Get the name of the member.
-     @return std::string containing the name of the member.
+     Constructor.
      */
-    std::string getName() const;
-
-
-    // /**
-    //   To check for circular reference only.
-    //  */
-    // virtual const DataType * getDataType() const = 0;
+    StructMember( std::string memberName, std::string typeSpecName );
 
     /**
-    */
-    virtual MemberClass::e getMemberClass() const = 0;
-
-    /**
+     * @brief Resolve the type
+     * 
+     * @return true success
+     * @return false failure
      */
-    virtual bool validate() = 0;
+    bool validate(DataTypeInator* dataTypeInator);
 
     /**
+     * @brief Return true if this member is valid
+     * 
+     * @return true if the type has been resolved
+     * @return false otherwise
      */
-    virtual void clearValue(void *struct_address) const = 0;
+    bool isValid() const;
 
     /**
-     Assign a value to the data-member, described by this StructMember,
-     that is within in an instance of the composite-type described by
-     the parent CompositeDeclaration.
-
-     @param struct_address Address of an instance of the composite type.
-     */
-    virtual void assignValue(void *struct_address,  Value *v) const = 0;
-
-    /**
-     Get the value to the data-member, described by this StructMember,
-     that is within in an instance of the composite-type described by
-     the parent CompositeDeclaration.
-
-     @param struct_address Address of an instance of the composite type.
-     */
-    virtual Value * getValue(void *struct_address) const = 0;
-
-
-    /**
-    Get a string representation of this StructMember.
+     * @brief toString
+     * 
+     * @return std::string 
      */
     virtual std::string toString() const = 0;
 
+    /**
+     * @brief Get the name of this struct
+     * 
+     * @return std::string 
+     */
+    std::string getName() const;
+
+    /**
+     * @brief Get the type of this member
+     * 
+     * @return const DataType* 
+     */
+    const DataType * getSubType() const;
 
 private:
+    bool is_valid;
     std::string name;
-
+    std::string typeSpecName;
+    const DataType * subType;
 };

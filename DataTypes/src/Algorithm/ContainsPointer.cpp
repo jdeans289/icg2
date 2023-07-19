@@ -1,7 +1,7 @@
 #include "Algorithm/ContainsPointer.hpp"
 
 #include "Type/Types.hpp"
-#include "Type/TypedStructMember.hpp"
+#include "Type/NormalStructMember.hpp"
 
 namespace ContainsPointer {
 
@@ -18,20 +18,13 @@ namespace ContainsPointer {
     bool ContainsPointerVisitor::visitCompositeType(const CompositeDataType * node) {
         bool result = false;
 
-        for (int i = 0; i < node->getMemberCount(); i++) {
-            StructMember * member = node->getStructMember(i);
-
-            // ugh
-            // We should figure out how to get rid of this
-            // The bitfields really do bad things to the design
-            TypedStructMember * typed_member = dynamic_cast<TypedStructMember *> (member);
-
-            if (typed_member != NULL) {
-                const DataType * member_subtype = typed_member->getDataType();
-                
-                // Go into member
-                result |= member_subtype->accept(this);
-            } 
+        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
+            NormalStructMember * member = *it;
+            const DataType * member_subtype = member->getSubType();
+            
+            // Go into member
+            result |= member_subtype->accept(this);
+            
         }
 
         return result;

@@ -8,7 +8,6 @@
 
 #include "Algorithm/DataTypeAlgorithm.hpp"
 
-
 const std::string J_CheckpointAgent::error_str = "<UNDEFINED>";
 
 J_CheckpointAgent::J_CheckpointAgent(const DataTypeInator * inator) : dataTypeInator(inator) {}
@@ -240,12 +239,12 @@ bool J_CheckpointAgent::restoreAssignment(std::string assignment_string, const s
         // There's a better design than this
         // But we gotta handle special cases one way or another
 
-
         StringValue * ptr_name_value = dynamic_cast<StringValue *> (this_value);
-        if (ptr_name_value == NULL) {
+        if (ptr_name_value == NULL ||  ptr_name_value->getRawString().size() < 2 ||  ptr_name_value->getRawString().at(0) != '&' ) {
             throw std::logic_error(full_varname + " is a pointer, but the value assigned is not compatible.");
         }
 
+        // Chop off the &
         std::string ptr_varname = ptr_name_value->getRawString().substr(1);
         void * raw_addr = lookupPointer(ptr_varname, additional_search_allocs);
         if (raw_addr == NULL) {
@@ -257,8 +256,14 @@ bool J_CheckpointAgent::restoreAssignment(std::string assignment_string, const s
     }
 
     // Assign!!!!
-    this_type->assignValue(this_addr, this_value);
+    bool assign_status = DataTypeAlgorithm::assignValue(this_type, this_value, this_addr);
 
+    // cleanup
     delete this_value;
+
+    if (!assign_status) {
+        throw std::logic_error("Mismatched types in assignment\"" + assignment_string + "\"");
+    }
+
     return true;
 }
