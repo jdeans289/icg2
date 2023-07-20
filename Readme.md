@@ -1,6 +1,7 @@
 
 ![Build Status](https://github.com/jdeans289/icg2/actions/workflows/run_tests.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/jdeans289/icg2/badge.svg?branch=main)](https://coveralls.io/github/jdeans289/icg2?branch=main)
+
 # ICG 2
 
 A revamped Interface Code Generator and associated type aware memory management library developed for the [Trick Simulation Environment](https://github.com/nasa/trick).
@@ -13,7 +14,7 @@ This project consists of 2 parts - the Interface Code Generator and the runtime 
 
 The Interface Code Generator reads header files and generates data type information about the class definitions in them. This data type information is in the form of DataType object instantiations in header files named io_<header_name>.hpp 
 
-ICG uses LibClang to understand the header files it is given. It implements a recursive AST traversal algorithm, similar to what is implemented by Clang's more sophisticated LibTooling and ASTMatchers. ICG only cares about class/struct definitions, class template definitions, and typedefs (or does it?). It gathers this information into an intermediate representation, and then uses that to create a header file io_<header_name>.hpp that instantiates DataType objects based on the information that was gathered by using LibClang. This file is generated using a custom built template engine, contained in `icg_template_engine/`. 
+ICG uses LibClang to understand the header files it is given. It implements a recursive AST traversal algorithm, similar to what is implemented by Clang's more sophisticated LibTooling and ASTMatchers. ICG only cares about class/struct definitions, class template definitions, and typedefs (or does it?). It gathers this information into an intermediate representation, and then uses that to create a header file io_<header_name>.hpp that instantiates DataType objects based on the information that was gathered by using LibClang. This file is generated using a custom built template engine, contained in `ICGTemplateEngine/`. 
 
 The choice to use LibClang comes from the Trick project's requirement to support many versions of Clang/LLVM. The previous ICG uses a mix of LLVM internals and LibTooling. It is littered with #ifdef statements to support various API changes in libclang, requiring constant maintenance. Part of the goal of this project is to eliminate that pain point for future generations of Trick developers and users. 
 
