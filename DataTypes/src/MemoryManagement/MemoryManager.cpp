@@ -13,12 +13,21 @@
 
 
 // Constructor
-MemoryManager::MemoryManager() : MemoryManager(new DataTypeInator()) {}
-
 MemoryManager::MemoryManager (DataTypeInator * dictionary) : dataTypeInator(dictionary) {
    debugLevel = 0;
 
    checkpointAgent = new J_CheckpointAgent(dataTypeInator);
+}
+
+MemoryManager::~MemoryManager () {
+    delete checkpointAgent;
+   
+   // Delete all the AllocInfos
+    for (auto it : allocInfoByAddressMap) {
+        delete it.second;
+    }
+
+    // Both maps have the same thing, just indexed in different ways, so we only need to delete out of one of them.
 }
 
 void* MemoryManager::do_declare_var(const std::string& abstract_declarator, 
@@ -61,36 +70,6 @@ void* MemoryManager::declare_var( const std::string& declaration,
     return do_declare_var( abstractDeclarator, variableName, suppliedAllocation );
 }
 
-// // MEMBER FUNCTION
-// void* MemoryManager::resize_var( void* address, size_t newElementCount) {
-//     void* newAddress;
-//     AllocInfo* allocInfo = getAllocInfoOf(address);
-//     if (allocInfo != NULL) {
-//         newAddress = allocInfo->resize( newElementCount );
-//     } else {
-//         std::cerr << __FUNCTION__ << " failed. Address (" << address << ") not in Trick managed memory." << std::endl;
-//         newAddress = NULL;
-//     }
-//     return newAddress;
-// }
-
-// // MEMBER FUNCTION
-// void* MemoryManager::resize_var( const std::string& name, size_t newElementCount) {
-//    void* newAddress;
-//    AllocInfo* allocInfo = getAllocInfoNamed(name);
-//     if (allocInfo != NULL) {
-//         newAddress = allocInfo->resize( newElementCount );
-//     } else {
-//         std::cerr << __FUNCTION__ << " failed. Name \"" << name << "\" not in Trick managed memory." << std::endl;
-//         newAddress = NULL;
-//     }
-//     return newAddress;
-// }
-
-// MEMBER FUNCTION
-//    void* resize_var( const char* name, int num);
-
-
 // MEMBER FUNCTION
 bool MemoryManager::var_exists( const std::string& variableName) {
 
@@ -110,12 +89,7 @@ void MemoryManager::clear_var( void* address) {
     if ((allocInfo = getAllocInfoOf( address)) != NULL) {
         allocInfo->clear();
     } else {
-        std::stringstream ss;
-        ss << "Cannot clear the variable at address ";
-        ss << address;
-        ss << " because memory manager knows nothing about it.";
-        ss << std::endl;
-        std::cerr << ss.str();
+        std::cerr << "Cannot clear the variable at address " << address << " because memory manager knows nothing about it." << std::endl;
     }
 }
 
@@ -126,12 +100,7 @@ void MemoryManager::clear_var( const std::string& variableName) {
     if (allocInfo != NULL) {
         allocInfo->clear();
     } else {
-        std::stringstream ss;
-        ss << "Cannot clear the variable named ";
-        ss << variableName;
-        ss << " because memory manager knows nothing about it.";
-        ss << std::endl;
-        std::cerr << ss.str();
+        std::cerr << "Cannot clear the variable named " << variableName << " because memory manager knows nothing about it." << std::endl;
     }
 }
 
@@ -140,6 +109,36 @@ void MemoryManager::clear_all_vars() {
     for (auto it : allocInfoByAddressMap) {
         it.second->clear();
     }
+}
+
+void MemoryManager::delete_var(void* address) {
+    AllocInfo* allocInfo = getAllocInfoAt( address);
+
+    if (allocInfo != NULL) {
+        delete_allocation(allocInfo);
+    } else {
+        std::cerr << "Cannot delete the variable at address " << address << " because memory manager knows nothing about it." << std::endl;
+    }
+}
+
+void MemoryManager::delete_var(std::string var_name) {
+    AllocInfo* allocInfo = getAllocInfoNamed( var_name);
+
+    if (allocInfo != NULL) {
+        delete_allocation(allocInfo);
+    } else {
+        std::cerr << "Cannot delete the variable named" << var_name << " because memory manager knows nothing about it." << std::endl;
+    }
+}
+
+void MemoryManager::delete_allocation(AllocInfo * allocInfo) {
+    pthread_mutex_lock(&allocInfoMapMutex);
+    allocInfoByAddressMap.erase(allocInfo->getStart());
+    allocInfoByNameMap.erase(allocInfo->getName());
+    pthread_mutex_unlock(&allocInfoMapMutex);
+
+    // This will properly handle the extern vs local deletion
+    delete allocInfo;
 }
 
 

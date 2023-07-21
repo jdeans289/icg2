@@ -20,16 +20,15 @@ class MemoryManager {
     public:
     /**
      * @brief Construct a new Memory Manager 
-     * @note This version of the constructor will create it's own DataTypeInator
-     */
-    MemoryManager();
-
-    /**
-     * @brief Construct a new Memory Manager 
      * 
      * @param dataTypeInator type resolver machine
      */
     MemoryManager (DataTypeInator * dataTypeInator);
+
+    ~MemoryManager ();
+
+    // no copying
+    MemoryManager(const MemoryManager& other) = delete;
     
     /**
      * @brief Declare a new allocation of given type with the memory manager
@@ -39,6 +38,8 @@ class MemoryManager {
      * @return void* address of the allocation (same as suppliedAllocation if one was given). NULL if something goes wrong
      */
     void* declare_var( const std::string& declaration, void* suppliedAllocation = NULL);
+
+
 
     /**
      * @brief Check if a variable is registered with the memory manager
@@ -156,6 +157,8 @@ class MemoryManager {
     void* do_declare_var(const std::string& abstract_declarator, 
                                 const std::string& variable_name,
                                 void * supplied_allocation);
+
+    void delete_allocation(AllocInfo * allocInfo);
 
     unsigned int debugLevel;
 

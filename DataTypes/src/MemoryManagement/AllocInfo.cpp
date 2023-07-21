@@ -46,10 +46,11 @@ AllocInfo::AllocInfo( const std::string& varName,
     initialize(varName, type, suppliedAllocation);
 }
 
-
-// DESTRUCTOR
 AllocInfo::~AllocInfo() {
-    // FIXME: what about the allocation?
+    // Only destroy the underlying allocation if it is was allocated by us.
+    if (storageClass == StorageClass::LOCAL) {
+        dataType->deleteInstance(start);
+    }
 }
 
 // PUBLIC MEMBER FUNCTION
@@ -103,43 +104,10 @@ void AllocInfo::clear() const {
     DataTypeAlgorithm::clearValue(dataType, start);
 }
 
-// // PUBLIC MEMBER FUNCTION
-// void* AllocInfo::resize( size_t newElementCount ) {
+void AllocInfo::destroy() const {
 
-//     // We should not attempt to resize memory objects that were supplied
-//     // to us. We should only attempt to resize objects that we created.
-//     if ( storageClass != StorageClass::LOCAL ) {
-//         // ERROR CONDITION
-//         return NULL;
-//     }
-//     ArrayDataType* oldType = ownDataType;
-//     void * oldMemoryObject = start;
-//     size_t oldByteCount = oldType->getSize();
+}
 
-//     ArrayDataType* newType = new ArrayDataType( *oldType, newElementCount );
-//     void * newMemoryObject = newType->createInstance(1);
-//     size_t newByteCount = newType->getSize();
-
-//     size_t minByteCount;
-//     if ( oldByteCount < newByteCount ) {
-//         minByteCount = oldByteCount;
-//     } else {
-//         minByteCount = newByteCount;
-//     }
-
-//     if (minByteCount > 0) {
-//         memcpy( newMemoryObject, oldMemoryObject, minByteCount);
-//     }
-
-//     delete oldType;
-//     oldType->deleteInstance( oldMemoryObject );
-//     start = newMemoryObject;
-//     end = (char*)start + newType->getSize();
-//     ownDataType = newType;
-//     dataType = newType;
-//     dimensions[0] = newElementCount;
-//     return start;
-// }
 
 // PUBLIC MEMBER FUNCTION
 bool AllocInfo::contains(void* address) const {
