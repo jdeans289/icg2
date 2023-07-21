@@ -102,11 +102,6 @@ class AllocInfo {
      */
     void clear() const;
 
-    /**
-     * @brief Delete the underlying allocation.
-     * 
-     */
-    void destroy() const;
 
     /**
      */
@@ -114,7 +109,6 @@ class AllocInfo {
 
     /**
      @return true, if the allocation contains the given address. Otherwise return false.
-     Tested in: FIXME
      */
     bool contains(void* address) const;
 

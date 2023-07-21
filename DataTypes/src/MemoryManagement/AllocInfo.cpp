@@ -104,9 +104,6 @@ void AllocInfo::clear() const {
     DataTypeAlgorithm::clearValue(dataType, start);
 }
 
-void AllocInfo::destroy() const {
-
-}
 
 
 // PUBLIC MEMBER FUNCTION

@@ -217,5 +217,22 @@ TEST_F(MemoryManagerTest, clear_all_values) {
     }  
     EXPECT_EQ(std::string(""), s);
     EXPECT_EQ(0.0, d);
+}
 
+class MyClass {
+    MyClass () {}
+    ~MyClass () {}
+};
+
+MyClass * MyClassAllocator() {
+
+};
+
+TEST_F(MemoryManagerTest, delete_var_local) {
+    // ARRANGE
+
+    // ACT
+
+    // ASSERT
+ 
 }
