@@ -13,13 +13,14 @@
 class ArrayDataType : public ModifierType {
 
     public:
+
     /**
-     Constructor for ArrayDataType.
-     @param typeSpecifierName Name of the type on with this type is based.
-     @param n_elems Number of elements.
+     * @brief Construct an ArrayDataType
+     * 
+     * @param typeSpecifierName string representation of fully qualified type
+     * @param n_elems Number of 
      */
-    ArrayDataType( const DataTypeInator* inator,
-                   std::string typeSpecifierName,
+    ArrayDataType( std::string typeSpecifierName,
                    unsigned int n_elems )  ;
 
     /**
@@ -60,7 +61,7 @@ class ArrayDataType : public ModifierType {
 
     /**
      */
-     bool validate() override;
+     bool validate(const DataTypeInator* dataTypeInator) override;
 
      bool isValid() const override;
 
@@ -122,8 +123,5 @@ class ArrayDataType : public ModifierType {
     unsigned int elementCount;
     bool is_valid;
     std::string typeSpecName;
-
-    const DataTypeInator* dataTypeInator;
-
 };
 

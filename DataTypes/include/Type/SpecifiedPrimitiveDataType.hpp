@@ -28,37 +28,35 @@ public:
     /*                          VIRTUAL INTERFACE                           */
     /* ==================================================================== */
 
-    /**
-     */
-    bool validate() { return true; }
+    bool validate(const DataTypeInator * dataTypeInator = NULL) override { return true; }
 
-    bool isValid() const { return true; }
+    bool isValid() const override { return true; }
     
     /**
      @return The size (in bytes) of an instance of the DataType
      */
-    size_t getSize() const {
+    size_t getSize() const override {
         return sizeof(T);
     }
 
 
     /**
      */
-    SpecifiedPrimitiveDataType<T> * clone () const {
+    DataType * clone () const override {
         return new SpecifiedPrimitiveDataType<T>();
     }
 
     /**
      @return an instance of the type that this PrimiitveDataType Class describes.
      */
-    void* createInstance(unsigned int num) const {
+    void* createInstance(unsigned int num) const override {
         T* temp = (T*)calloc(num, sizeof(T));
         return ((void *)temp);
     }
 
     /**
      */
-    void deleteInstance(void* address) const {
+    void deleteInstance(void* address) const override {
         delete (T*)address;
     }
 

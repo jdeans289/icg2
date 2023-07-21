@@ -1,11 +1,10 @@
 #pragma once
 
 #include <string>
-#include <vector>
 
-#include "Value/Value.hpp"
 #include "Algorithm/DataTypeVisitor.hpp"
-#include "Utils/MutableVariableName.hpp"
+
+class DataTypeInator;
 
 /** @brief Abstract base class for DataTypes. */
 class DataType {
@@ -19,9 +18,10 @@ class DataType {
     * subordinate DataTypes are resolvable to actual DataTypes in
     * the TypeDictionary.
     * 
-    * @return true if validation is successful, false otherwise 
+    * @param dataTypeInator - type resolver machine
+    * @return true if successful, false otherwise
     */
-    virtual bool validate() = 0;
+    virtual bool validate(const DataTypeInator* dataTypeInator) = 0;
 
     /**
      * @brief Determine whether this type has already been successfully validated.

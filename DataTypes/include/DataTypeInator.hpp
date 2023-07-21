@@ -57,9 +57,8 @@
 #include "Type/DataType.hpp"
 #include "Type/BaseType.hpp"
 
-#include "TypeDictionary.hpp"
-#include <map>
 
+class TypeDictionary;
 
 class DataTypeInator {
     public:

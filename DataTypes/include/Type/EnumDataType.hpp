@@ -20,8 +20,11 @@ class EnumDataType : public BaseType {
 public:
 
     /**
-     Constructor for EnumDataType.
-     @param sizeof_element Size, in bytes, of one eneumeration element.
+     * @brief Constructor for an Enumerated type object
+     * 
+     * @param enumDictionary global enum value dictionary
+     * @param name name of type
+     * @param sizeof_element size, in bytes, of this type
      */
     EnumDataType( EnumDictionary* enumDictionary,
                   std::string name,
@@ -47,7 +50,7 @@ public:
 
     /**
      */
-    bool validate() override;
+    bool validate(const DataTypeInator* dataTypeInator = NULL) override;
 
     bool isValid() const override;
 

@@ -31,7 +31,7 @@ TEST_F( ArrayDataTypeTest , constructor_exception ) {
     ArrayDataType * arrayTypeSpec;
     bool constructor_result = true;
     try {
-        arrayTypeSpec = new ArrayDataType(dataTypeInator, "double", 0);
+        arrayTypeSpec = new ArrayDataType( "double", 0);
     } catch ( const std::logic_error& e ) {
         std::cerr << e.what();
         constructor_result = false;
@@ -50,7 +50,7 @@ TEST_F( ArrayDataTypeTest, copy_constructor ) {
 
     try {
     // Create a ArrayDataType.
-    ArrayDataType* orig = new ArrayDataType( dataTypeInator, "float", 7);
+    ArrayDataType* orig = new ArrayDataType(  "float", 7);
 
     std::cout << orig->toString();
 
@@ -77,7 +77,7 @@ TEST_F( ArrayDataTypeTest, copy_constructor ) {
 TEST_F( ArrayDataTypeTest , assignment_operator ) {
 
     // Create an ArrayDataType.
-    ArrayDataType orig = ArrayDataType( dataTypeInator, "long", 7);
+    ArrayDataType orig = ArrayDataType(  "long", 7);
 
     std::cout << orig.toString();
 
@@ -94,7 +94,7 @@ TEST_F( ArrayDataTypeTest , clone ) {
 
     // Create a ArrayDataType.
     // int cdims[] = {3,4,5,-1,-1};
-    ArrayDataType* orig = new ArrayDataType(dataTypeInator, "int**[4][5]",3);
+    ArrayDataType* orig = new ArrayDataType( "int**[4][5]",3);
     // Clone it.
     DataType * copy = orig->clone();
 
@@ -113,8 +113,8 @@ TEST_F( ArrayDataTypeTest , clone ) {
 TEST_F( ArrayDataTypeTest , getSize ) {
 
     // Create a PointerDataType.
-    ArrayDataType* ptrTypeSpec = new ArrayDataType( dataTypeInator, "long[4][5]", 3);
-    ptrTypeSpec->validate();
+    ArrayDataType* ptrTypeSpec = new ArrayDataType(  "long[4][5]", 3);
+    ptrTypeSpec->validate(dataTypeInator);
 
     // Verify that getSize returns the size of the array.
     EXPECT_EQ( sizeof(long)*60 , ptrTypeSpec->getSize());
@@ -123,10 +123,10 @@ TEST_F( ArrayDataTypeTest , getSize ) {
 TEST_F( ArrayDataTypeTest, validate_1 ) {
 
     // Create a ArrayDataType.
-    ArrayDataType* arrayTypeSpec = new ArrayDataType( dataTypeInator, "double", 4);
+    ArrayDataType* arrayTypeSpec = new ArrayDataType(  "double", 4);
 
     // Validate the Type.
-    bool validation_result = arrayTypeSpec->validate();
+    bool validation_result = arrayTypeSpec->validate(dataTypeInator);
 
     // Verify that validation succeeded.
     ASSERT_EQ(true, validation_result);
@@ -138,10 +138,10 @@ TEST_F( ArrayDataTypeTest , validate_2 ) {
     std::cout << "===== Expecting error message. =====" << std::endl;
 
     // Create an ArrayDataType.
-    ArrayDataType* arrayTypeSpec = new ArrayDataType( dataTypeInator, "Undefined_Type", 4);
+    ArrayDataType* arrayTypeSpec = new ArrayDataType(  "Undefined_Type", 4);
 
     // Validate the Type.
-    bool validation_result = arrayTypeSpec->validate();
+    bool validation_result = arrayTypeSpec->validate(dataTypeInator);
 
     // Verify that validation failed.
     ASSERT_EQ(false, validation_result);
@@ -153,7 +153,7 @@ TEST_F( ArrayDataTypeTest , getSubType_1 ) {
     ArrayDataType * arrayTypeSpec;
     bool constructor_result = true;
     try {
-        arrayTypeSpec = new ArrayDataType( dataTypeInator, "double[3]", 2);
+        arrayTypeSpec = new ArrayDataType(  "double[3]", 2);
     } catch ( const std::logic_error& e ) {
         std::cerr << e.what();
         constructor_result = false;
@@ -161,7 +161,7 @@ TEST_F( ArrayDataTypeTest , getSubType_1 ) {
     ASSERT_EQ(true, constructor_result);
 
     // Validate the Type.
-    bool validation_result = arrayTypeSpec->validate();
+    bool validation_result = arrayTypeSpec->validate(dataTypeInator);
     ASSERT_EQ(true, validation_result);
 
     // Get the subType.
@@ -181,7 +181,7 @@ TEST_F( ArrayDataTypeTest , getSubType_2 ) {
     ArrayDataType * arrayTypeSpec;
     bool constructor_result = true;
     try {
-        arrayTypeSpec = new ArrayDataType( dataTypeInator, "double", 2);
+        arrayTypeSpec = new ArrayDataType(  "double", 2);
     } catch ( const std::logic_error& e ) {
         std::cerr << e.what();
         constructor_result = false;
@@ -189,7 +189,7 @@ TEST_F( ArrayDataTypeTest , getSubType_2 ) {
     ASSERT_EQ(true, constructor_result);
 
     // Validate the Type.
-    bool validation_result = arrayTypeSpec->validate();
+    bool validation_result = arrayTypeSpec->validate(dataTypeInator);
     ASSERT_EQ(true, validation_result);
 
     // Get the SubType.

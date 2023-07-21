@@ -15,7 +15,7 @@ DataType * StringDataType::clone () const {
     return new StringDataType( *this );
 }
 
-bool StringDataType::validate() {
+bool StringDataType::validate(const DataTypeInator * dataTypeInator) {
     return true;
 }
 

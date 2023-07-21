@@ -206,7 +206,7 @@ TEST_F(PrintValueTest, null_type) {
 
 TEST_F(PrintValueTest, unvalidated_type) {
     // ARRANGE
-    const DataType* type = new ArrayDataType(&dataTypeInator, std::string("no type with this name"), 100);
+    const DataType* type = new ArrayDataType( std::string("no type with this name"), 100);
     int val_to_print = 5;
     std::stringstream ss;
 

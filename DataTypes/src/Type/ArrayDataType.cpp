@@ -7,9 +7,8 @@
 #include "Utils/MutableDeclaration.hpp"
 
 // CONSTRUCTOR
-ArrayDataType:: ArrayDataType( const DataTypeInator* dataTypeInator, std::string typeSpecName, unsigned int n_elems ) : 
-                                                    typeSize(0), elementCount(n_elems), is_valid(false), typeSpecName(typeSpecName), 
-                                                    dataTypeInator(dataTypeInator) {
+ArrayDataType:: ArrayDataType( std::string typeSpecName, unsigned int n_elems ) : 
+                        typeSize(0), elementCount(n_elems), is_valid(false), typeSpecName(typeSpecName) {
     subType = NULL;
 
     if (elementCount == 0) {
@@ -25,7 +24,6 @@ ArrayDataType::ArrayDataType ( ArrayDataType const & original) {
     is_valid = original.is_valid;
     typeSpecName = original.typeSpecName;
     elementCount = original.elementCount;
-    dataTypeInator = original.dataTypeInator;
     if (original.subType != NULL) {
         subType = original.subType->clone();
     } else {
@@ -56,7 +54,6 @@ void swap(ArrayDataType& a, ArrayDataType& b)
     swap(a.is_valid, b.is_valid);
     swap(a.typeSpecName, b.typeSpecName);
     swap(a.elementCount, b.elementCount);
-    swap(a.dataTypeInator, b.dataTypeInator);
     swap(a.subType, b.subType);
 }
 
@@ -65,7 +62,7 @@ DataType * ArrayDataType::clone () const {
 }
 
 // MEMBER FUNCTION
-bool ArrayDataType::validate() {
+bool ArrayDataType::validate(const DataTypeInator * dataTypeInator) {
 
     if (!is_valid) {
 

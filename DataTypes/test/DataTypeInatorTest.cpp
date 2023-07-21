@@ -33,7 +33,7 @@ TEST_F(DataTypeInatorTest, Array) {
     
     // ACT
     DataType * result = const_cast<DataType *>(dataTypeInator->resolve("int[5]"));
-    result->validate();
+    result->validate(dataTypeInator);
 
     // ASSERT
     const ArrayDataType * array_result = dynamic_cast<const ArrayDataType*> (result);

@@ -136,16 +136,16 @@ void TypeDictionary::addTypeDefinition(std::deque<std::string> nameParts, BaseTy
 }
 
 // MEMBER FUNCTION
-bool TypeDictionary::validate() {
+bool TypeDictionary::validate(const DataTypeInator * dataTypeInator) {
 
     bool valid = true;
     for (auto it : typeDictionary) {
-        valid &= it.second->validate();
+        valid &= it.second->validate(dataTypeInator);
     }
 
     // Validate the nested TypeDictionaries in the namespace dictionary
     for (auto it : namespaceDictionary) {
-        valid &= it.second->validate();
+        valid &= it.second->validate(dataTypeInator);
     }
 
     return valid;

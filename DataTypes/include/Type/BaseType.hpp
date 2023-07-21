@@ -2,6 +2,8 @@
 
 #include "Type/DataType.hpp"
 
-class BaseType : public DataType {
-
-};
+/**
+ * @brief Abstract class to represent a class that can go in the TypeDictionary (aka not an array or pointer)
+ * 
+ */
+class BaseType : public DataType {};

@@ -90,7 +90,7 @@ TEST_F(ClearValueTest, string) {
 
 TEST_F(ClearValueTest, enumerated) {
     // ARRANGE
-    addDayOfWeekEnumToTypeDictionary(&dataTypeInator, &enumDictionary);
+    addDayOfWeekEnumToTypeDictionary( &dataTypeInator, &enumDictionary);
     const DataType* type = dataTypeInator.resolve("DayOfWeek");
     DayOfWeek var_to_clear = Friday;
 
@@ -129,10 +129,10 @@ class Foo {
 
 TEST_F(ClearValueTest, composite) {
     // ARRANGE
-    CompositeDataType type(&dataTypeInator, "Foo", sizeof(Foo), NULL, NULL);
+    CompositeDataType type( "Foo", sizeof(Foo), NULL, NULL);
     type.addRegularMember("x", offsetof(Foo, x), "int");
     type.addRegularMember("y", offsetof(Foo, y), "double[5]");
-    type.validate();
+    type.validate(&dataTypeInator);
 
     Foo var_to_clear;
     var_to_clear.x = 5;

@@ -4,7 +4,6 @@
 #include <string>
 #include <stdexcept>
 
-#include "DataTypeInator.hpp"
 #include "Type/BaseType.hpp"
 
 
@@ -16,7 +15,6 @@ class StringDataType : public BaseType {
 
     /**
      Constructor for ArrayDataType.
-     @param DataTypeInator The Type resolver machine
      */
     StringDataType( ) ;
 
@@ -33,8 +31,12 @@ class StringDataType : public BaseType {
     /* ==================================================================== */
 
     /**
+     * @brief A StringDataType is always valid
+     * 
+     * @param dataTypeInator unused parameter, defaults to null
+     * @return true always
      */
-     bool validate() override;
+    bool validate(const DataTypeInator * dataTypeInator = NULL) override;
 
     bool isValid() const override;
 

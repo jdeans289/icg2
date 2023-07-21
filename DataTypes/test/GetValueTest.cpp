@@ -142,8 +142,8 @@ class Foo {};
 
 TEST_F(GetValueTest, composite) {
     // ARRANGE
-    CompositeDataType type(&dataTypeInator, "Foo", sizeof(Foo), NULL, NULL);
-    type.validate();
+    CompositeDataType type( "Foo", sizeof(Foo), NULL, NULL);
+    type.validate(&dataTypeInator);
 
     double var_to_get[5] = {1, 2, 3, 4, 5};
 

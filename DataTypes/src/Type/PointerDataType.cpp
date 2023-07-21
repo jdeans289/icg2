@@ -12,14 +12,13 @@
 
 
 // CONSTRUCTOR
-PointerDataType::PointerDataType( const DataTypeInator * datatypeInator, std::string typeSpecifierName) : typeSpecName(typeSpecifierName), dataTypeInator(datatypeInator) {}
+PointerDataType::PointerDataType( std::string typeSpecifierName) : typeSpecName(typeSpecifierName) {}
 
 // COPY CONSTRUCTOR
 PointerDataType::PointerDataType ( PointerDataType const & original) {
 
     is_valid = original.is_valid;
     typeSpecName = original.typeSpecName;
-    dataTypeInator = original.dataTypeInator;
 
     if (original.subType == NULL) {
         subType = NULL;
@@ -42,7 +41,7 @@ DataType * PointerDataType::clone () const {
 }
 
 // MEMBER FUNCTION
-bool PointerDataType::validate() {
+bool PointerDataType::validate(const DataTypeInator * dataTypeInator) {
 
     if (!is_valid) {
         subType = dataTypeInator->resolve( typeSpecName );

@@ -61,7 +61,7 @@ DataType * EnumDataType::clone () const {
     return new EnumDataType( *this );
 }
 
-bool EnumDataType::validate() {
+bool EnumDataType::validate(const DataTypeInator * dataTypeInator) {
     return true;
 }
 

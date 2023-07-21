@@ -21,12 +21,12 @@ bool addClassOneToTypeDictionary(DataTypeInator* dataTypeInator) {
     bool result = false;
     try {
         CompositeDataType* classOneTypeSpec =
-            new CompositeDataType(dataTypeInator, "ClassOne", sizeof(ClassOne), &construct<ClassOne>, &destruct<ClassOne> );
+            new CompositeDataType( "ClassOne", sizeof(ClassOne), &construct<ClassOne>, &destruct<ClassOne> );
             classOneTypeSpec->addRegularMember( "a", offsetof(ClassOne, a), "int");
             classOneTypeSpec->addRegularMember( "b", offsetof(ClassOne, b), "double");
 
         dataTypeInator->addToDictionary("ClassOne", classOneTypeSpec);
-        result = classOneTypeSpec->validate();
+        result = classOneTypeSpec->validate(dataTypeInator);
     } catch( const std::logic_error& e ) {
         std::cerr << e.what();
         result = false;
@@ -39,14 +39,14 @@ bool addClassTwoToTypeDictionary(DataTypeInator* dataTypeInator) {
     bool result = false;
     try {
         CompositeDataType * classTwoTypeSpec =
-            new CompositeDataType(dataTypeInator, "ClassTwo", sizeof(ClassTwo), &construct<ClassTwo>, &destruct<ClassTwo>);
+            new CompositeDataType( "ClassTwo", sizeof(ClassTwo), &construct<ClassTwo>, &destruct<ClassTwo>);
             classTwoTypeSpec->addRegularMember( "x", offsetof(ClassTwo, x), "int");
             classTwoTypeSpec->addRegularMember( "y", offsetof(ClassTwo, y), "double");
             classTwoTypeSpec->addRegularMember( "c1", offsetof(ClassTwo, c1), "ClassOne");
 
         dataTypeInator->addToDictionary("ClassTwo", classTwoTypeSpec);
 
-        result = classTwoTypeSpec->validate();
+        result = classTwoTypeSpec->validate(dataTypeInator);
     } catch( const std::logic_error& e ) {
         std::cerr << e.what();
         result = false;
@@ -59,7 +59,7 @@ bool addClassThreeToTypeDictionary(DataTypeInator* dataTypeInator) {
     bool result = false;
     try {
         CompositeDataType * classThreeTypeSpec =
-            new CompositeDataType(dataTypeInator, "ClassThree", sizeof(ClassThree), &construct<ClassThree>, &destruct<ClassThree>);
+            new CompositeDataType( "ClassThree", sizeof(ClassThree), &construct<ClassThree>, &destruct<ClassThree>);
             // int x_dims[] = {2};
             classThreeTypeSpec->addRegularMember( "pos", offsetof(ClassThree, pos), "double[2]");
             // int y_dims[] = {2};
@@ -67,7 +67,7 @@ bool addClassThreeToTypeDictionary(DataTypeInator* dataTypeInator) {
 
         dataTypeInator->addToDictionary("ClassThree", classThreeTypeSpec);
 
-        result = classThreeTypeSpec->validate();
+        result = classThreeTypeSpec->validate(dataTypeInator);
     } catch( const std::logic_error& e ) {
         std::cerr << e.what();
         result = false;
@@ -80,7 +80,7 @@ bool addClassFourToTypeDictionary(DataTypeInator* dataTypeInator) {
     bool result = false;
     try {
         CompositeDataType * classFourTypeSpec =
-            new CompositeDataType(dataTypeInator, "ClassFour", sizeof(ClassFour), &construct<ClassFour>, &destruct<ClassFour>);
+            new CompositeDataType( "ClassFour", sizeof(ClassFour), &construct<ClassFour>, &destruct<ClassFour>);
             classFourTypeSpec->addRegularMember( "x", offsetof(ClassFour, x), "double[2]");
             classFourTypeSpec->addBitFieldMember( "f1", get_ClassFour__f1, set_ClassFour__f1);
             classFourTypeSpec->addBitFieldMember( "f2", get_ClassFour__f2, set_ClassFour__f2);
@@ -88,7 +88,7 @@ bool addClassFourToTypeDictionary(DataTypeInator* dataTypeInator) {
 
         dataTypeInator->addToDictionary("ClassFour", classFourTypeSpec);
 
-        result = classFourTypeSpec->validate();
+        result = classFourTypeSpec->validate(dataTypeInator);
     } catch( const std::logic_error& e ) {
         std::cerr << e.what();
         result = false;
@@ -101,13 +101,13 @@ bool addClassFiveToTypeDictionary(DataTypeInator* dataTypeInator) {
     bool result = false;
     try {
         CompositeDataType * classFiveTypeSpec =
-            new CompositeDataType(dataTypeInator, "ClassFive", sizeof(ClassFive), &construct<ClassFive>, &destruct<ClassFive>);
+            new CompositeDataType( "ClassFive", sizeof(ClassFive), &construct<ClassFive>, &destruct<ClassFive>);
             classFiveTypeSpec->addRegularMember( "x", offsetof(ClassFive, x), "double");
             classFiveTypeSpec->addStaticMember( "count", &ClassFive::count, "int" );
 
         dataTypeInator->addToDictionary("ClassFive", classFiveTypeSpec);
 
-        result = classFiveTypeSpec->validate();
+        result = classFiveTypeSpec->validate(dataTypeInator);
     } catch( const std::logic_error& e ) {
         std::cerr << e.what();
         result = false;
@@ -120,13 +120,13 @@ bool addClassSixToTypeDictionary(DataTypeInator* dataTypeInator) {
     bool result = false;
     try {
         CompositeDataType * classSixTypeSpec =
-            new CompositeDataType(dataTypeInator, "ClassSix", sizeof(ClassSix), &construct<ClassSix>, &destruct<ClassSix>);
+            new CompositeDataType( "ClassSix", sizeof(ClassSix), &construct<ClassSix>, &destruct<ClassSix>);
             classSixTypeSpec->addRegularMember( "char_ptr", offsetof(ClassSix, char_ptr), "char *");
             classSixTypeSpec->addRegularMember( "str", offsetof(ClassSix, str), "std::string");
 
         dataTypeInator->addToDictionary("ClassSix", classSixTypeSpec);
 
-        result = classSixTypeSpec->validate();
+        result = classSixTypeSpec->validate(dataTypeInator);
     } catch( const std::logic_error& e ) {
         std::cerr << e.what();
         result = false;
@@ -139,7 +139,7 @@ bool addPointerTestClassesToDictionary(DataTypeInator* dataTypeInator) {
     bool result = false;
 
     try {
-        CompositeDataType * ClassWithNoPointersType = new CompositeDataType (dataTypeInator, "ClassWithNoPointers", sizeof(ClassWithNoPointers),    
+        CompositeDataType * ClassWithNoPointersType = new CompositeDataType ( "ClassWithNoPointers", sizeof(ClassWithNoPointers),    
                                                                             &construct<ClassWithNoPointers>, &destruct<ClassWithNoPointers>);
 
         ClassWithNoPointersType->addRegularMember( "a", offsetof(ClassWithNoPointers, a), "int");
@@ -148,13 +148,13 @@ bool addPointerTestClassesToDictionary(DataTypeInator* dataTypeInator) {
 
         dataTypeInator->addToDictionary("ClassWithNoPointers", ClassWithNoPointersType);
 
-        CompositeDataType * ClassWithPointerType = new CompositeDataType (dataTypeInator, "ClassWithPointer", sizeof(ClassWithPointer),    
+        CompositeDataType * ClassWithPointerType = new CompositeDataType ( "ClassWithPointer", sizeof(ClassWithPointer),    
                                                                     &construct<ClassWithPointer>, &destruct<ClassWithPointer>);
         
         ClassWithPointerType->addRegularMember( "a", offsetof(ClassWithPointer, a), "void *");
         dataTypeInator->addToDictionary("ClassWithPointer", ClassWithPointerType);
 
-        CompositeDataType * ClassWithNestedClassesType = new CompositeDataType (dataTypeInator, "ClassWithNestedClasses", sizeof(ClassWithNestedClasses),    
+        CompositeDataType * ClassWithNestedClassesType = new CompositeDataType ( "ClassWithNestedClasses", sizeof(ClassWithNestedClasses),    
                                                                     &construct<ClassWithNestedClasses>, &destruct<ClassWithNestedClasses>);
         
         ClassWithNestedClassesType->addRegularMember( "a", offsetof(ClassWithNestedClasses, a), "ClassWithNoPointers");
@@ -162,9 +162,9 @@ bool addPointerTestClassesToDictionary(DataTypeInator* dataTypeInator) {
 
         dataTypeInator->addToDictionary("ClassWithNestedClasses", ClassWithNestedClassesType);
 
-        result = ClassWithNoPointersType->validate();
-        result &= ClassWithPointerType->validate();
-        result &= ClassWithNestedClassesType->validate();
+        result = ClassWithNoPointersType->validate(dataTypeInator);
+        result &= ClassWithPointerType->validate(dataTypeInator);
+        result &= ClassWithNestedClassesType->validate(dataTypeInator);
 
     } catch( const std::logic_error& e ) {
         std::cerr << e.what();
@@ -187,7 +187,7 @@ bool addDayOfWeekEnumToTypeDictionary(DataTypeInator* dataTypeInator,  EnumDicti
             dataType->addEnumerator( "Saturday", 7);
 
             dataTypeInator->addToDictionary( "DayOfWeek", dataType );
-            result = dataType->validate();
+            result = dataType->validate(dataTypeInator);
     } catch( const std::logic_error& e ) {
         std::cerr << e.what();
         result = false;

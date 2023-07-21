@@ -11,7 +11,7 @@ StructMember::StructMember(std::string memberName, std::string typeSpecName)
                         : name(memberName), typeSpecName(typeSpecName), is_valid(false), subType(NULL) {}
 
 
-bool StructMember::validate(DataTypeInator * dataTypeInator) {
+bool StructMember::validate(const DataTypeInator * dataTypeInator) {
     if (!is_valid) {
         subType = dataTypeInator->resolve(typeSpecName);
         if (subType != NULL) {
