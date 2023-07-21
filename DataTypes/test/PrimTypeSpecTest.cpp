@@ -527,6 +527,31 @@ TEST_F(SpecifiedPrimitiveDataTypeTest, createInstance_char) {
     EXPECT_EQ('A', *test_var);
 }
 
+TEST_F(SpecifiedPrimitiveDataTypeTest, deleteInstance) {
+    // ARRANGE
+    SpecifiedPrimitiveDataType<char> * primTypeSpec = new SpecifiedPrimitiveDataType<char>();
+    char* test_var = (char*)primTypeSpec->createInstance(1);    
+
+    // ACT
+    primTypeSpec->deleteInstance(test_var);
+
+    // ASSERT
+    // I guess just assert that it didn't segfault?
+    
+}
+
+TEST_F(SpecifiedPrimitiveDataTypeTest, clone) {
+    // ARRANGE
+    SpecifiedPrimitiveDataType<char> * primTypeSpec = new SpecifiedPrimitiveDataType<char>();
+
+    // ACT
+    DataType * cloned_type = primTypeSpec->clone();
+
+    // ASSERT
+    ASSERT_TRUE(cloned_type != primTypeSpec);    
+    ASSERT_EQ(cloned_type->toString(), primTypeSpec->toString());    
+}
+
 // -----------------------------------------------------------------------------------------
 //                                  GetValue Tests
 // -----------------------------------------------------------------------------------------

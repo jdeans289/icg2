@@ -3,8 +3,9 @@
 #include <map>
 #include <string>
 #include <stdexcept>
+#include <deque>
 #include "Type/BaseType.hpp"
-
+#include "DataTypeInator.hpp"
 
 /**
  Stores name / typespecifier pairs.
@@ -28,7 +29,7 @@ class TypeDictionary {
 
     /**
      */
-    bool validate();
+    bool validate(const DataTypeInator * dataTypeInator);
 
     /**
      Dump the entire TypeDictionary to a std::string.

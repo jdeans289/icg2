@@ -203,8 +203,8 @@ class Foo {};
 
 TEST_F(AssignValueTest, composite) {
     // ARRANGE
-    CompositeDataType type(&dataTypeInator, "Foo", sizeof(Foo), NULL, NULL);
-    type.validate();
+    CompositeDataType type( "Foo", sizeof(Foo), NULL, NULL);
+    type.validate(&dataTypeInator);
 
     Foo var_to_assign_to;
     StringValue val ("abc");

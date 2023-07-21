@@ -91,7 +91,7 @@ TEST_F(TypeDictionaryTest, addTypeDefinition_1) {
     DataTypeInator dataTypeInator(typeDictionary);
 
     try {
-         compTypeSpec = new CompositeDataType(&dataTypeInator, "ClassOne", sizeof(ClassOne), &construct<ClassOne>, &destruct<ClassOne>);
+         compTypeSpec = new CompositeDataType( "ClassOne", sizeof(ClassOne), &construct<ClassOne>, &destruct<ClassOne>);
          compTypeSpec->addRegularMember( "a", offsetof(ClassOne, a), "int");
          compTypeSpec->addRegularMember( "b", offsetof(ClassOne, b), "double");
 
@@ -106,7 +106,7 @@ TEST_F(TypeDictionaryTest, addTypeDefinition_1) {
     EXPECT_EQ( true, test_passed);
 
     // Verify that the types can be validated.
-    test_passed  = typeDictionary->validate();
+    test_passed  = typeDictionary->validate(&dataTypeInator);
     EXPECT_EQ( true, test_passed);
 
     // Verify that the correct DataType can be retrieved from the TypeDictionary by name.

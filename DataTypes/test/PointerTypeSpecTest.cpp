@@ -25,7 +25,7 @@ class PointerDataTypeTest : public ::testing::Test {
 TEST_F( PointerDataTypeTest, copy_constructor ) {
 
     // Create a PointerDataType.
-    PointerDataType* orig = new PointerDataType(dataTypeInator, "float**");
+    PointerDataType* orig = new PointerDataType("float**");
 
     // Duplicate it.
     PointerDataType* copy = new PointerDataType( *(const PointerDataType*)orig );
@@ -44,7 +44,7 @@ TEST_F( PointerDataTypeTest, copy_constructor ) {
 TEST_F( PointerDataTypeTest , operator_equal ) {
 
     // Create a PointerDataType.
-    PointerDataType* orig = new PointerDataType(dataTypeInator, "long*");
+    PointerDataType* orig = new PointerDataType( "long*");
 
     // Assign it to another PointerDataType.
     PointerDataType copy = *(const PointerDataType*)orig;
@@ -62,7 +62,7 @@ TEST_F( PointerDataTypeTest , operator_equal ) {
 TEST_F( PointerDataTypeTest , clone ) {
 
     // Create a PointerDataType.
-    PointerDataType* orig = new PointerDataType(dataTypeInator, "int*");
+    PointerDataType* orig = new PointerDataType( "int*");
 
     // Clone it.
     DataType * copy = orig->clone();
@@ -81,7 +81,7 @@ TEST_F( PointerDataTypeTest , clone ) {
 TEST_F( PointerDataTypeTest , getSize ) {
 
     // Create a PointerDataType.
-    PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "long**");
+    PointerDataType* ptrTypeSpec = new PointerDataType( "long**");
 
     // Verify that getSize returns the size of a pointer.
     EXPECT_EQ( sizeof(void*), ptrTypeSpec->getSize());
@@ -93,7 +93,7 @@ TEST_F( PointerDataTypeTest , getSize ) {
 //     double * d_ptr;
 
 //     // Create a PointerDataType.
-//     PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
+//     PointerDataType* ptrTypeSpec = new PointerDataType( "double");
 
 //     PointerValue * ptrValue = new PointerValue(&d);
 //     ptrTypeSpec->assignValue(&d_ptr, ptrValue);
@@ -107,7 +107,7 @@ TEST_F( PointerDataTypeTest , getSize ) {
 //     double * d_ptr = (double*)0x12345678;
 
 //     // Create a PointerDataType.
-//     PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
+//     PointerDataType* ptrTypeSpec = new PointerDataType( "double");
 
 //     // ACT
 //     Value * value = ptrTypeSpec->getValue(&d_ptr);
@@ -121,10 +121,10 @@ TEST_F( PointerDataTypeTest , getSize ) {
 TEST_F( PointerDataTypeTest , validate_1 ) {
 
     // Create a PointerDataType.
-    PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
+    PointerDataType* ptrTypeSpec = new PointerDataType( "double");
 
     // Validate the Type.
-    bool validation_result = ptrTypeSpec->validate();
+    bool validation_result = ptrTypeSpec->validate(dataTypeInator);
 
     // Verify that validation succeeded.
     ASSERT_EQ(true, validation_result);
@@ -136,10 +136,10 @@ TEST_F( PointerDataTypeTest , validate_2 ) {
     std::cout << "===== Expecting an error message about an undefined type. =====" << std::endl;
 
     // Create a PointerDataType.
-    PointerDataType* ptrTypeSpec = new PointerDataType(dataTypeInator, "Undefined_Type");
+    PointerDataType* ptrTypeSpec = new PointerDataType( "Undefined_Type");
 
     // Validate the Type.
-    bool validation_result = ptrTypeSpec->validate();
+    bool validation_result = ptrTypeSpec->validate(dataTypeInator);
 
     // Verify that validation failed.
     ASSERT_EQ(false, validation_result);
@@ -152,7 +152,7 @@ TEST_F( PointerDataTypeTest , getDereferencedType_1 ) {
     PointerDataType * ptrTypeSpec;
     bool constructor_result = true;
     try {
-        ptrTypeSpec = new PointerDataType(dataTypeInator, "double*");
+        ptrTypeSpec = new PointerDataType( "double*");
     } catch ( const std::logic_error& e ) {
         std::cerr << e.what();
         constructor_result = false;
@@ -160,7 +160,7 @@ TEST_F( PointerDataTypeTest , getDereferencedType_1 ) {
     ASSERT_EQ(true, constructor_result);
 
     // Validate the Type.
-    bool validation_result = ptrTypeSpec->validate();
+    bool validation_result = ptrTypeSpec->validate(dataTypeInator);
     ASSERT_EQ(true, validation_result);
 
     // Dereference the type.
@@ -189,7 +189,7 @@ TEST_F( PointerDataTypeTest , getDereferencedType_2 ) {
     PointerDataType * ptrTypeSpec;
     bool constructor_result = true;
     try {
-        ptrTypeSpec = new PointerDataType(dataTypeInator, "double");
+        ptrTypeSpec = new PointerDataType( "double");
     } catch ( const std::logic_error& e ) {
         std::cerr << e.what();
         constructor_result = false;
@@ -197,7 +197,7 @@ TEST_F( PointerDataTypeTest , getDereferencedType_2 ) {
     ASSERT_EQ(true, constructor_result);
 
     // Validate the Type.
-    bool validation_result = ptrTypeSpec->validate();
+    bool validation_result = ptrTypeSpec->validate(dataTypeInator);
     ASSERT_EQ(true, validation_result);
 
     // Dereference the type.

@@ -26,8 +26,7 @@ public:
      Constructor for CompositeDataType.
      @param sizeof_struct Size, in bytes, of the struct, class or union that this class represents.
      */
-    CompositeDataType( DataTypeInator* dataTypeInator,
-                       std::string name,
+    CompositeDataType( std::string name,
                        size_t sizeof_struct,
                        void *(*allocator)(int),
                        void (*deAllocator)(void*) );
@@ -52,7 +51,7 @@ public:
 
     /**
      */
-    bool validate() override;
+    bool validate(const DataTypeInator* dataTypeInator) override;
 
     bool isValid() const override;
 
@@ -84,36 +83,35 @@ public:
     /* ==================================================================== */
 
     /**
-     Add a regular, non-bitfield, non-static data member to the CompositeDataType.
-     @param memberName Name of the data member.
-     @param offset The offset (in bytes) of the data-member from the beginning of
-     the struct, union or class.
-     @param typeName
-     @param n_dims
-     @param dims
+     * @brief Add a nonstatic member variable to this type
+     * 
+     * @param memberName name of member
+     * @param offset offset within containing type
+     * @param typeName string representation of the fully qualified type of the member
      */
     void addRegularMember( std::string memberName,
                            int offset,
                            std::string typeName) ;
 
     /**
-     Add a static data member to the CompositeDataType.
-     @param memberName Name of the data member.
-     @param memberAddress The offset (in bytes) of the data-member from the beginning of
-     the struct, union or class.
-     @param typeName
-     @param n_dims
-     @param dims
+     * @brief Add a static member variable to this type
+     * 
+     * @param memberName name of member
+     * @param memberAddress address of member
+     * @param typeSpecName string representation of fully qualified type
      */
     void addStaticMember(std::string memberName,
                          void * memberAddress,
                          std::string typeSpecName ) ;
 
     /**
-     Add a bitfield data member to the CompositeDataType.
+     @brief Add a bitfield data member to the CompositeDataType.
+
+     @todo this doesn't actually work.
+
      @param member_name Name of the data member.
      @param getter Pointer to a function that returns the value of a bitfield in the addressed class/struct.
-     @param getter Pointer to a function that sets the value of a bitfield in the addressed class/struct.
+     @param setter Pointer to a function that sets the value of a bitfield in the addressed class/struct.
      */
     template <class T> void addBitFieldMember( std::string member_name,
                                                T(*getter)(void* address),
@@ -168,6 +166,4 @@ private:
 
     void* (*allocator)(int);
     void (*deAllocator)(void*);
-
-    DataTypeInator* dataTypeInator;
 };

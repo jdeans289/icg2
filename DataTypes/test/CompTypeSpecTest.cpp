@@ -138,8 +138,7 @@ TEST_F(CompositeDataTypeTest, getSize ) {
     /* Requirement: CompositeDataType::getSize() shall return the size passed in
        via the constructor. */
 
-    CompositeDataType * compTypeSpec = new CompositeDataType( dataTypeInator,
-                                                              "ClassOne",
+    CompositeDataType * compTypeSpec = new CompositeDataType( "ClassOne",
                                                               sizeof(ClassOne),
                                                               &construct<ClassOne>,
                                                               &destruct<ClassOne>);
@@ -153,8 +152,7 @@ TEST_F(CompositeDataTypeTest, getSize ) {
 
 TEST_F(CompositeDataTypeTest, assignment_operator ) {
     // ARRANGE
-    CompositeDataType  type_a(dataTypeInator,
-                                    "ClassOne",
+    CompositeDataType  type_a("ClassOne",
                                     sizeof(ClassOne),
                                     &construct<ClassOne>,
                                     &destruct<ClassOne>);
@@ -162,16 +160,15 @@ TEST_F(CompositeDataTypeTest, assignment_operator ) {
     type_a.addRegularMember( "a", offsetof(ClassOne, a), "int");
     type_a.addRegularMember( "b", offsetof(ClassOne, b), "double");
 
-    CompositeDataType  type_b(dataTypeInator,
-                                    "SomeOtherClass",
+    CompositeDataType  type_b("SomeOtherClass",
                                     4,
                                     NULL,
                                     NULL);
 
     type_b.addRegularMember( "somethingidk", 0, "int");
 
-    type_a.validate();
-    type_b.validate();
+    type_a.validate(dataTypeInator);
+    type_b.validate(dataTypeInator);
 
 
     // ACT

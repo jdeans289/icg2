@@ -21,7 +21,7 @@ public:
      * @return true success
      * @return false failure
      */
-    bool validate(DataTypeInator* dataTypeInator);
+    bool validate(const DataTypeInator* dataTypeInator);
 
     /**
      * @brief Return true if this member is valid

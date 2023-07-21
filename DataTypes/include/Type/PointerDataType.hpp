@@ -16,11 +16,10 @@ class PointerDataType : public ModifierType {
 
     /**
      Constructor for ArrayDataType.
-     @param DataTypeInator The Type resolver machine
+     @param dataTypeInator The Type resolver machine
      @param typeSpecifierName Name of the type on with this type is based.
      */
-    PointerDataType( const DataTypeInator * dataTypeInator,
-                     std::string typeSpecifierName ) ;
+    PointerDataType( std::string typeSpecifierName ) ;
 
     /* ================================================================================= */
     /*                         RULE OF THREE (and a half) INTERFACE                      */
@@ -38,7 +37,7 @@ class PointerDataType : public ModifierType {
 
     /**
      */
-     bool validate() override;
+    bool validate(const DataTypeInator * dataTypeInator) override;
 
     bool isValid() const override;
 

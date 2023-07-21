@@ -6,6 +6,7 @@
 std::string io_src = std::string(R"(
 #include <stddef.h>
 #include <stdlib.h>
+#include <iostream>
 #include "DataTypeInator.hpp"
 #include "Type/EnumDictionary.hpp"
 #include "Type/CompositeDataType.hpp"
@@ -48,7 +49,7 @@ bool add{{ClassName_mangled}}toDictionary(DataTypeInator* dataTypeInator) {
     bool result = false;
     try {
         CompositeDataType* {{ClassName_mangled}}TypeSpec =
-            new CompositeDataType(dataTypeInator, "{{ClassName}}", sizeof({{ClassName}}), &construct<{{ClassName}}>, &destruct<{{ClassName}}> );
+            new CompositeDataType("{{ClassName}}", sizeof({{ClassName}}), &construct<{{ClassName}}>, &destruct<{{ClassName}}> );
             {{list_field_decl}}
 
         dataTypeInator->addToDictionary("{{ClassName}}", {{ClassName_mangled}}TypeSpec);

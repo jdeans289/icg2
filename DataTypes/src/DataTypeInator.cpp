@@ -2,6 +2,7 @@
 #include "Type/ArrayDataType.hpp"
 #include "Type/PointerDataType.hpp"
 #include "Utils/MutableDeclaration.hpp"
+#include "TypeDictionary.hpp"
 
 DataTypeInator::DataTypeInator () : typeDictionary(new TypeDictionary) {
     // Probably shouldn't do this.
@@ -32,13 +33,13 @@ const DataType * DataTypeInator::resolve(std::string name) const {
 
         if (this_dim == -1) {
             // Pointer case
-            result = new PointerDataType(this, next_level_decl);            
+            result = new PointerDataType(next_level_decl);            
         } else {
             // Constrained dim case
-            result = new ArrayDataType(this, next_level_decl, this_dim);
+            result = new ArrayDataType(next_level_decl, this_dim);
         }
 
-        if (!result->validate()) {
+        if (!result->validate(this)) {
             std::cerr << "Validate failed for " << result->toString() << std::endl;
         }
         return result;
@@ -50,7 +51,7 @@ void DataTypeInator::addToDictionary(std::string name, BaseType * typeSpec) {
 }
 
 bool DataTypeInator::validateDictionary() {
-    return typeDictionary->validate();
+    return typeDictionary->validate(this);
 }
 
 

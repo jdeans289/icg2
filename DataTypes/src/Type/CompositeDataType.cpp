@@ -5,6 +5,7 @@
 #include "Type/StaticStructMember.hpp"
 
 #include <iostream>
+#include <sstream>
 
 CompositeDataType::CompositeDataType() {
 
@@ -13,8 +14,7 @@ CompositeDataType::CompositeDataType() {
 }
 
 // CONSTRUCTOR
-CompositeDataType::CompositeDataType( DataTypeInator* dataTypeInator,
-                                      std::string name,
+CompositeDataType::CompositeDataType( std::string name,
                                       size_t structSize,
                                       void* (*allocator)(int),
                                       void (*deAllocator)(void*) ) {
@@ -23,7 +23,6 @@ CompositeDataType::CompositeDataType( DataTypeInator* dataTypeInator,
     this->structSize = structSize;
     this->allocator = allocator;
     this->deAllocator = deAllocator;
-    this->dataTypeInator = dataTypeInator;
 }
 
 // CONSTRUCTOR
@@ -34,7 +33,6 @@ CompositeDataType::CompositeDataType ( const CompositeDataType & original ) {
     this->name = original.name;
     this->allocator = original.allocator;
     this->deAllocator = original.deAllocator;
-    this->dataTypeInator = original.dataTypeInator;
 
     for (auto member : original.normalMemberList) {
         this->normalMemberList.push_back( member->clone() );
@@ -71,7 +69,6 @@ void swap(CompositeDataType& a, CompositeDataType& b)
     swap(a.name, b.name);
     swap(a.allocator, b.allocator);
     swap(a.deAllocator, b.deAllocator);
-    swap(a.dataTypeInator, b.dataTypeInator);
     swap(a.normalMemberList , b.normalMemberList);
     swap(a.staticMemberList , b.staticMemberList);
     swap(a.structSize , b.structSize);
@@ -82,7 +79,7 @@ DataType * CompositeDataType::clone() const {
 }
 
 
-bool CompositeDataType::validate() {
+bool CompositeDataType::validate(const DataTypeInator * dataTypeInator) {
 
     // (from John) FIXME: Check for circular dependencies.
     // Also need a to check that this->subType (ptr) is not equal
