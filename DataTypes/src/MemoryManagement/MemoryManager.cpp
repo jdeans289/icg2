@@ -17,6 +17,7 @@ MemoryManager::MemoryManager (DataTypeInator * dictionary) : dataTypeInator(dict
    debugLevel = 0;
 
    checkpointAgent = new J_CheckpointAgent(dataTypeInator);
+   pthread_mutex_init(&allocInfoMapMutex, NULL);
 }
 
 MemoryManager::~MemoryManager () {
@@ -127,7 +128,7 @@ void MemoryManager::delete_var(std::string var_name) {
     if (allocInfo != NULL) {
         delete_allocation(allocInfo);
     } else {
-        std::cerr << "Cannot delete the variable named" << var_name << " because memory manager knows nothing about it." << std::endl;
+        std::cerr << "Cannot delete the variable named " << var_name << " because memory manager knows nothing about it." << std::endl;
     }
 }
 

@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 
+#include "Type/CompositeDataType.hpp"
+
 // Class Under Test 
 #include "MemoryManagement/MemoryManager.hpp"
 
@@ -219,20 +221,145 @@ TEST_F(MemoryManagerTest, clear_all_values) {
     EXPECT_EQ(0.0, d);
 }
 
-class MyClass {
-    MyClass () {}
-    ~MyClass () {}
-};
-
-MyClass * MyClassAllocator() {
-
-};
-
-TEST_F(MemoryManagerTest, delete_var_local) {
+TEST_F(MemoryManagerTest, delete_var_by_name) {
     // ARRANGE
+    double * val = (double *) memoryManager.declare_var("double val");
+    ASSERT_EQ(true, memoryManager.var_exists("val"));
 
     // ACT
+    memoryManager.delete_var("val");
 
     // ASSERT
- 
+    ASSERT_EQ(false, memoryManager.var_exists("val")); 
 }
+
+TEST_F(MemoryManagerTest, delete_var_by_name_not_found) {
+    // ARRANGE
+    double * val = (double *) memoryManager.declare_var("double val");
+    ASSERT_EQ(true, memoryManager.var_exists("val"));
+
+    // ACT
+    memoryManager.delete_var("no_such_var");
+
+    // ASSERT
+    ASSERT_EQ(true, memoryManager.var_exists("val")); 
+}
+
+TEST_F(MemoryManagerTest, delete_var_by_addr) {
+    // ARRANGE
+    double * val = (double *) memoryManager.declare_var("double val");
+    ASSERT_EQ(true, memoryManager.var_exists("val"));
+
+    // ACT
+    memoryManager.delete_var(val);
+
+    // ASSERT
+    ASSERT_EQ(false, memoryManager.var_exists("val")); 
+}
+
+TEST_F(MemoryManagerTest, delete_var_by_addr_not_found) {
+    // ARRANGE
+    double * val = (double *) memoryManager.declare_var("double val");
+    ASSERT_EQ(true, memoryManager.var_exists("val"));
+
+    // ACT
+    memoryManager.delete_var((void *) 0xdeadbeef);
+
+    // ASSERT
+    ASSERT_EQ(true, memoryManager.var_exists("val")); 
+}
+
+bool constructor_called = false;
+bool destructor_called = false;
+
+class MyClass {
+    public:
+        MyClass () { constructor_called = true; }
+        ~MyClass () { destructor_called = true; }
+};
+
+void * MyClassAllocator (int n) {
+    return new MyClass;
+}
+
+void MyClassDeallocator (void * addr) {
+    MyClass * temp = (MyClass *) addr;
+    delete temp;
+}
+
+TEST_F (MemoryManagerTest, declare_calls_constructor_of_local) {
+    // ARRANGE
+    constructor_called = false;
+    destructor_called = false;
+
+    CompositeDataType * type = new CompositeDataType("MyClass", sizeof(MyClass), MyClassAllocator, MyClassDeallocator);
+    type->validate(&dataTypeInator);
+
+    dataTypeInator.addToDictionary("MyClass", type);
+
+    // ACT
+    MyClass * my_class_instance = (MyClass *) memoryManager.declare_var("MyClass my_class_instance");
+
+    // ASSERT
+    ASSERT_EQ(true, constructor_called);
+    ASSERT_EQ(true, memoryManager.var_exists("my_class_instance"));
+}   
+
+TEST_F (MemoryManagerTest, declare_does_not_call_constructor_of_extern) {
+    // ARRANGE
+    CompositeDataType * type = new CompositeDataType("MyClass", sizeof(MyClass), MyClassAllocator, MyClassDeallocator);
+    dataTypeInator.addToDictionary("MyClass", type);
+
+    MyClass my_class_instance;
+
+    constructor_called = false;
+    destructor_called = false;
+
+    // ACT
+    memoryManager.declare_var("MyClass my_class_instance", &my_class_instance);
+
+    // ASSERT
+    ASSERT_EQ(false, constructor_called);
+    ASSERT_EQ(true, memoryManager.var_exists("my_class_instance"));
+
+}   
+
+
+TEST_F (MemoryManagerTest, delete_calls_destructor_of_local) {
+    // ARRANGE
+    constructor_called = false;
+    destructor_called = false;
+
+    CompositeDataType * type = new CompositeDataType("MyClass", sizeof(MyClass), MyClassAllocator, MyClassDeallocator);
+    dataTypeInator.addToDictionary("MyClass", type);
+
+    MyClass * my_class_instance = (MyClass *) memoryManager.declare_var("MyClass my_class_instance");
+
+    // ACT
+    memoryManager.delete_var("my_class_instance");
+
+    // ASSERT
+    ASSERT_EQ(true, destructor_called);
+    ASSERT_EQ(false, memoryManager.var_exists("my_class_instance"));
+
+}   
+
+TEST_F (MemoryManagerTest, delete_does_not_call_destructor_of_extern) {
+    // ARRANGE
+    constructor_called = false;
+    destructor_called = false;
+
+    CompositeDataType * type = new CompositeDataType("MyClass", sizeof(MyClass), MyClassAllocator, MyClassDeallocator);
+    dataTypeInator.addToDictionary("MyClass", type);
+
+    MyClass my_class_instance;
+    memoryManager.declare_var("MyClass my_class_instance", &my_class_instance);
+
+    // ACT
+    memoryManager.delete_var("my_class_instance");
+
+    // ASSERT
+    ASSERT_EQ(false, destructor_called);
+    ASSERT_EQ(false, memoryManager.var_exists("my_class_instance"));
+
+}   
