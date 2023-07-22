@@ -11,110 +11,163 @@
 
 #include "CheckpointAgent/NewCheckpointAgentBase.hpp"
 
-
+/**
+ * @brief Keep track of allocations and their type.
+ * 
+ */
 class MemoryManager {
 
     public:
-    MemoryManager();
-    MemoryManager (DataTypeInator * dictionary);
+    /**
+     * @brief Construct a new Memory Manager 
+     * 
+     * @param dataTypeInator type resolver machine
+     */
+    MemoryManager (DataTypeInator * dataTypeInator);
+
+    ~MemoryManager ();
+
+    // no copying
+    MemoryManager(const MemoryManager& other) = delete;
     
-    void* declare_var( const std::string& typeSpecName, const std::string& varName, unsigned int DimensionsCount, int *Dimensions, void* suppliedAllocation = 0);
-    void* declare_var( const std::string& declaration, void* suppliedAllocation = 0);
-    void* declare_var( const std::string& typeSpecName, int n, void* suppliedAllocation = 0);
-    void* declare_var( const std::string& typeSpecName, const std::string& varName, int n, void* suppliedAllocation = 0);
+    /**
+     * @brief Declare a new allocation of given type with the memory manager
+     * 
+     * @param declaration string representation of the type of this allocation
+     * @param suppliedAllocation pre-existing allocation. If not given, the memory manager will allocate one
+     * @return void* address of the allocation (same as suppliedAllocation if one was given). NULL if something goes wrong
+     */
+    void* declare_var( const std::string& declaration, void* suppliedAllocation = NULL);
 
-//    void* declare_extern_var( void* address, const char * declaration);
-//    void* declare_extern_var( void* address, const char *element_definition, int n_elems);
-//    void* declare_extern_var( void* address, TRICK_TYPE type, std::string class_name, int n_stars, std::string var_name, int n_cdims, int *cdims);
 
-    void* resize_var( void* address, size_t newElementCount);
-    void* resize_var( const std::string& name, size_t newElementCount);
 
-//    char* mm_strdup( const char* s);
-
+    /**
+     * @brief Check if a variable is registered with the memory manager
+     * 
+     * @param var_name variable to look for
+     * @return true if var exists, false otherwise
+     */
     bool var_exists( const std::string& var_name);
-//    size_t sizeof_type( const char* declaration);
-//    int is_alloced( void* address);
-//    void set_debug_level( int level);
-//    void set_reduced_checkpoint(bool flag);
-//    void set_hexfloat_checkpoint(bool flag);
+
+    /**
+     * @brief Clear the value at the given address, if it is registered with the memorymanager
+     * 
+     * @param address address of variable to clear
+     */
     void clear_var( void* address);
+
+    /**
+     * @brief Clear the variable with the given name, if it is registered with the memorymanager
+     * 
+     * @param var_name name of variable to clear
+     */
     void clear_var( const std::string& var_name);
+
+    /**
+     * @brief Clear all variables registered with the memory manager.
+     * 
+     */
     void clear_all_vars();
 
-//    int delete_var(void* address, bool destroy = true);
-//    int delete_var(const char* var_name);
-//    int delete_extern_var(void* address);
-//    int delete_extern_var(const char* var_name);
+    /**
+     * @brief Delete the variable 
+     * 
+     * @param address address of variable to delete
+     */
+    void delete_var(void* address);
 
-//    void write_var( std::ostream& out_s, const char* var_name );
-//    void write_var( std::ostream& out_s, void* address );
+    /**
+     * @brief Delete the variable
+     * 
+     * @param var_name name of variable to delete
+     */
+    void delete_var(std::string var_name);
 
-    // Various entry points
+    /**
+     * @brief Write checkpoint to an output stream
+     * 
+     * @param out_s stream to write to
+     */
     void write_checkpoint( std::ostream& out_s);
+
+    /**
+     * @brief Open a file and then write a checkpoint to it
+     * 
+     * @param filename name of file to write to
+     */
     void write_checkpoint( const std::string& filename);
-    void write_checkpoint( std::ostream& out_s, const std::string& variableName );
-    void write_checkpoint( const std::string& filename, const std::string& variableName);
-    void write_checkpoint( std::ostream& out_s, std::vector<const char*>& variableNameList);
-    void write_checkpoint( const std::string& filename, std::vector<const char*>& variableNameList);
 
-    // The actual checkpoint
-    void write_checkpoint(std::ostream& outStream, std::vector<AllocInfo*>& dependencies);
-
-
-    // Various entry points
+    /**
+     * @brief Restore a checkpoint from file with given name
+     * 
+     * @param filename name of file to read from
+     */
     void restore_checkpoint(const std::string& filename);
-    // The actual checkpoint
+
+    /**
+     * @brief Restore a checkpoint from the given input stream
+     * 
+     * @param in_s stream to restore from
+     */
     void restore_checkpoint( std::istream& in_s);
 
-//    int init_from_checkpoint( const char* filename);
-
-//    void reset_memory();
-
-//    int add_attr_info(std::string& type_name , ATTRIBUTES* attr , const char * file_name = "None" , unsigned int line_num = 0 ) ;
-//    int add_template_name_trans(std::string template_name , std::string attr_name) ;
-//    void* add_var( TRICK_TYPE   type, const char*  class_name, VAR_DECLARE* var_declare, char* units);
-//    int add_vars( TRICK_TYPE  type, const char* class_name, VAR_LIST*   var_list, char*       units);
-//    int ref_allocate( REF2* R, int num ) ;
-//    REF2 *ref_attributes( const char* name);
-//    int ref_assignment( REF2* R, V_TREE* V);
-//    int ref_var( REF2* R, char* name);
-//    int ref_dim( REF2* R, V_DATA* V);
-//    int ref_name(REF2 * R, char *name);
-//    int get_enumerated(const char* name, V_DATA* v_data); (see Type/EnumDictionary.hpp)
-//    int get_size(char *ptr);
-//    int get_truncated_size(char *ptr);
-//    int io_get_fixed_truncated_size(char *ptr, ATTRIBUTES * A, char *str, int dims, ATTRIBUTES * left_type);
+    /**
+     * @brief Get the AllocInfo that contains the given address
+     * 
+     * @param address address to search for
+     * @return AllocInfo* Alloc info that contains this address, or NULL if not found
+     */
     AllocInfo* getAllocInfoOf( void* address );
+
+    /**
+     * @brief Get the AllocInfo that starts at the given address
+     * 
+     * @param address address to search for
+     * @return AllocInfo* Alloc info that starts at this address, or NULL if not found
+     */
     AllocInfo* getAllocInfoAt( void* address );
+
+    /**
+     * @brief Get the AllocInfo with the given name
+     * 
+     * @param name name to search for
+     * @return AllocInfo* AllocInfo with the given name, or NULL if not found
+     */
     AllocInfo* getAllocInfoNamed( const std::string& name );
-    const DataType* getDataType(std::string typeName);
-//    int add_shared_library_symbols( const char * file_name );
-    CheckpointAgentBase * get_CheckPointAgent();
-    void set_CheckPointAgent( CheckpointAgentBase* agent);
-//    void reset_CheckPointAgent();
-//    void write_class( std::ostream& out_s, char *address, ATTRIBUTES * A);
-//    void write_arrayed_class( std::ostream& out_s, char* address, ATTRIBUTES* A, int curr_dim, int offset);
-//    size_t io_src_sizeof_user_type(const char* user_type_name);
+
+    /**
+     * @brief Get the DataType of the given variable
+     * 
+     * @param name variable name to search for
+     * @return const DataType* type of variable, or NULL if not found
+     */
+    const DataType* getDataTypeOf(const std::string& name);
+
+    /**
+     * @brief Set the CheckPointAgent 
+     * 
+     * @param agent new CheckpointAgent object to use
+     */
+    void setCheckPointAgent( CheckpointAgentBase* agent);
 
     private:
+
+    void do_write_checkpoint(std::ostream& outStream, std::vector<AllocInfo*>& dependencies);
     
     void* do_declare_var(const std::string& abstract_declarator, 
                                 const std::string& variable_name,
                                 void * supplied_allocation);
 
+    void delete_allocation(AllocInfo * allocInfo);
+
     unsigned int debugLevel;
 
-    // CheckpointAgent* currentCheckPointAgent;
-    // ClassicChkPtAgent* defaultCheckPointAgent;
     CheckpointAgentBase * checkpointAgent;
-
-    // bool reducedCheckpoint;
-    // bool hexfloatCheckpoint;
-    // bool compactArraysCheckpoint;
 
     DataTypeInator* dataTypeInator;
 
+    // TODO: Let's think about this.
+    // I would like to switch to c++ threading instead using pthreads directly
     pthread_mutex_t allocInfoMapMutex;
 
     std::map<void*, AllocInfo*> allocInfoByAddressMap;

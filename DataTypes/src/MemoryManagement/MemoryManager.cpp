@@ -13,67 +13,51 @@
 
 
 // Constructor
-MemoryManager::MemoryManager() : MemoryManager(new DataTypeInator()) {}
-
 MemoryManager::MemoryManager (DataTypeInator * dictionary) : dataTypeInator(dictionary) {
    debugLevel = 0;
 
    checkpointAgent = new J_CheckpointAgent(dataTypeInator);
+   pthread_mutex_init(&allocInfoMapMutex, NULL);
+}
+
+MemoryManager::~MemoryManager () {
+    delete checkpointAgent;
+   
+   // Delete all the AllocInfos
+    for (auto it : allocInfoByAddressMap) {
+        delete it.second;
+    }
+
+    // Both maps have the same thing, just indexed in different ways, so we only need to delete out of one of them.
 }
 
 void* MemoryManager::do_declare_var(const std::string& abstract_declarator, 
                              const std::string& variable_name,
                              void * supplied_allocation) {
 
+    // Don't redeclare
     if ( var_exists( variable_name )) {
         std::cerr << "ERROR: Variable " << variable_name << " already declared." << std::endl;
         return ((void*)NULL);
     }
 
-    AllocInfo* newAllocInfo;
-    void* actualAllocation;
-    try {
-        // FIXME: MUTEX LOCK to protect AllocInfo static variables
-        const DataType * type = dataTypeInator->resolve(abstract_declarator);
-        if (type == NULL) {
-            std::cerr << "ERROR: Unable to resolve type string \"" << abstract_declarator << "\" for variable \"" << variable_name << "\", cannot declare." << std::endl;
-            return ((void*)NULL);
-        }
-
-        newAllocInfo = new AllocInfo(variable_name, type, supplied_allocation);
-
-        // Set the address and insert in the maps
-        actualAllocation = newAllocInfo->getStart();
-
-        allocInfoByAddressMap[actualAllocation] = newAllocInfo;
-        allocInfoByNameMap[variable_name] = newAllocInfo;
-
-    } catch ( std::logic_error& e ) {
-        // FIXME: MUTEX UNLOCK
-        std::cerr << e.what();
-        newAllocInfo = (AllocInfo*)NULL;
-        actualAllocation = (void*)NULL;
+    // Look up the type
+    const DataType * type = dataTypeInator->resolve(abstract_declarator);
+    if (type == NULL) {
+        std::cerr << "ERROR: Unable to resolve type string \"" << abstract_declarator << "\" for variable \"" << variable_name << "\", cannot declare." << std::endl;
+        return ((void*)NULL);
     }
-    if ( debugLevel ) {
-        if ( newAllocInfo == (AllocInfo*)NULL ) {
-            std::cout << "Allocation Failed." << std::endl;
-        } else {
-            std::cout << newAllocInfo->toString() << std::endl;
-        }
-    }
+
+    // Make the AllocInfo
+    AllocInfo* newAllocInfo = new AllocInfo(variable_name, type, supplied_allocation);
+
+    // Set the address and insert in the maps
+    void * actualAllocation = newAllocInfo->getStart();
+
+    allocInfoByAddressMap[actualAllocation] = newAllocInfo;
+    allocInfoByNameMap[variable_name] = newAllocInfo;
+
     return( actualAllocation );
-}
-
-// MEMBER FUNCTION
-void* MemoryManager::declare_var( const std::string& typeSpecifier,
-                           const std::string& variableName,
-                           unsigned int       dimensionsCount,
-                           int*               dimensions,
-                           void*              suppliedAllocation ) {
-
-    std::vector<int> dims(dimensions, dimensions + dimensionsCount);
-    MutableDeclaration decl (typeSpecifier, dims);
-    return do_declare_var(decl.getAbstractDeclarator(), variableName, suppliedAllocation);
 }
 
 // MEMBER FUNCTION
@@ -86,64 +70,6 @@ void* MemoryManager::declare_var( const std::string& declaration,
 
     return do_declare_var( abstractDeclarator, variableName, suppliedAllocation );
 }
-
-// MEMBER FUNCTION
-void* MemoryManager::declare_var( const std::string& typeSpecName,
-                           const std::string& variableName,
-                           int                n,
-                           void*              suppliedAllocation) {
-
-    MutableDeclaration decl =  MutableDeclaration( typeSpecName);
-    decl.pushDimension(n);
-
-    std::string abstractDeclarator = decl.getAbstractDeclarator();
-
-    return do_declare_var( abstractDeclarator, variableName, suppliedAllocation );   
-}
-
-// MEMBER FUNCTION
-void* MemoryManager::declare_var( const std::string& typeSpecName,
-                           int                n,
-                           void*              suppliedAllocation ) {
-
-    MutableDeclaration decl =  MutableDeclaration( typeSpecName);
-    decl.pushDimension(n);
-
-    std::string abstractDeclarator = decl.getAbstractDeclarator();
-    std::string variableName = decl.getVariableName();
-
-    return do_declare_var( abstractDeclarator, variableName, suppliedAllocation );   
-}
-
-// // MEMBER FUNCTION
-// void* MemoryManager::resize_var( void* address, size_t newElementCount) {
-//     void* newAddress;
-//     AllocInfo* allocInfo = getAllocInfoOf(address);
-//     if (allocInfo != NULL) {
-//         newAddress = allocInfo->resize( newElementCount );
-//     } else {
-//         std::cerr << __FUNCTION__ << " failed. Address (" << address << ") not in Trick managed memory." << std::endl;
-//         newAddress = NULL;
-//     }
-//     return newAddress;
-// }
-
-// // MEMBER FUNCTION
-// void* MemoryManager::resize_var( const std::string& name, size_t newElementCount) {
-//    void* newAddress;
-//    AllocInfo* allocInfo = getAllocInfoNamed(name);
-//     if (allocInfo != NULL) {
-//         newAddress = allocInfo->resize( newElementCount );
-//     } else {
-//         std::cerr << __FUNCTION__ << " failed. Name \"" << name << "\" not in Trick managed memory." << std::endl;
-//         newAddress = NULL;
-//     }
-//     return newAddress;
-// }
-
-// MEMBER FUNCTION
-//    void* resize_var( const char* name, int num);
-
 
 // MEMBER FUNCTION
 bool MemoryManager::var_exists( const std::string& variableName) {
@@ -164,52 +90,58 @@ void MemoryManager::clear_var( void* address) {
     if ((allocInfo = getAllocInfoOf( address)) != NULL) {
         allocInfo->clear();
     } else {
-        std::stringstream ss;
-        ss << "Cannot clear the variable at address ";
-        ss << address;
-        ss << " because memory manager knows nothing about it.";
-        ss << std::endl;
-        std::cerr << ss.str();
+        std::cerr << "Cannot clear the variable at address " << address << " because memory manager knows nothing about it." << std::endl;
     }
 }
 
 // MEMBER FUNCTION
 void MemoryManager::clear_var( const std::string& variableName) {
 
-    AllocInfo* allocInfo;
-    if ((allocInfo = getAllocInfoNamed( variableName )) != NULL) {
+    AllocInfo* allocInfo = getAllocInfoNamed( variableName );
+    if (allocInfo != NULL) {
         allocInfo->clear();
     } else {
-        std::stringstream ss;
-        ss << "Cannot clear the variable named ";
-        ss << variableName;
-        ss << " because memory manager knows nothing about it.";
-        ss << std::endl;
-        std::cerr << ss.str();
+        std::cerr << "Cannot clear the variable named " << variableName << " because memory manager knows nothing about it." << std::endl;
     }
 }
 
 // MEMBER FUNCTION
 void MemoryManager::clear_all_vars() {
-}
-
-// MEMBER FUNCTION
-void MemoryManager::write_checkpoint( std::ostream& out_s) {
-
-    AllocInfo* allocInfo;
-    std::vector<AllocInfo*> allocInfoList;
-    std::map<void*, AllocInfo*>::iterator pos;
-
-    pthread_mutex_lock(&allocInfoMapMutex);
-
-    for ( pos = allocInfoByAddressMap.begin() ; pos != allocInfoByAddressMap.end() ; pos++ ) {
-        allocInfo = pos->second;
-        allocInfoList.push_back(allocInfo);
+    for (auto it : allocInfoByAddressMap) {
+        it.second->clear();
     }
-    write_checkpoint( out_s, allocInfoList);
-
-    pthread_mutex_unlock(&allocInfoMapMutex);
 }
+
+void MemoryManager::delete_var(void* address) {
+    AllocInfo* allocInfo = getAllocInfoAt( address);
+
+    if (allocInfo != NULL) {
+        delete_allocation(allocInfo);
+    } else {
+        std::cerr << "Cannot delete the variable at address " << address << " because memory manager knows nothing about it." << std::endl;
+    }
+}
+
+void MemoryManager::delete_var(std::string var_name) {
+    AllocInfo* allocInfo = getAllocInfoNamed( var_name);
+
+    if (allocInfo != NULL) {
+        delete_allocation(allocInfo);
+    } else {
+        std::cerr << "Cannot delete the variable named " << var_name << " because memory manager knows nothing about it." << std::endl;
+    }
+}
+
+void MemoryManager::delete_allocation(AllocInfo * allocInfo) {
+    pthread_mutex_lock(&allocInfoMapMutex);
+    allocInfoByAddressMap.erase(allocInfo->getStart());
+    allocInfoByNameMap.erase(allocInfo->getName());
+    pthread_mutex_unlock(&allocInfoMapMutex);
+
+    // This will properly handle the extern vs local deletion
+    delete allocInfo;
+}
+
 
 // MEMBER FUNCTION
 void MemoryManager::write_checkpoint( const std::string& filename) {
@@ -224,81 +156,25 @@ void MemoryManager::write_checkpoint( const std::string& filename) {
 }
 
 // MEMBER FUNCTION
-void MemoryManager::write_checkpoint( std::ostream& out_s, const std::string& variableName) {
+void MemoryManager::write_checkpoint( std::ostream& out_s) {
 
-    std::vector<AllocInfo*> dependencies;
+    AllocInfo* allocInfo;
+    std::vector<AllocInfo*> allocInfoList;
+
     pthread_mutex_lock(&allocInfoMapMutex);
-    AllocInfo * allocInfo = getAllocInfoNamed( variableName );
-    // if ( allocInfo != NULL ) {
-    //     allocInfo->appendDependencies( this, dependencies );
-    // }
+
+    for ( auto pos = allocInfoByAddressMap.begin() ; pos != allocInfoByAddressMap.end() ; pos++ ) {
+        allocInfo = pos->second;
+        allocInfoList.push_back(allocInfo);
+    }
+    do_write_checkpoint( out_s, allocInfoList);
+
     pthread_mutex_unlock(&allocInfoMapMutex);
-    write_checkpoint( out_s, dependencies);
 }
 
-// MEMBER FUNCTION
-void MemoryManager::write_checkpoint(const std::string& filename, const std::string& variableName) {
-
-    std::ofstream out_s( filename.c_str(), std::ios::out);
-    if (out_s.is_open()) {
-        write_checkpoint( out_s, variableName);
-    } else {
-        std::cerr << "ERROR: Couldn't open \""<< filename <<"\"." << std::endl;
-        std::cerr.flush();
-    }
-}
-
-// MEMBER FUNCTION
-void MemoryManager::write_checkpoint( std::ostream& out_s, std::vector<const char*>& variableNameList) {
-
-    std::vector<AllocInfo*> dependencies;
-    const char* variableName;
-    int nameCount;
-    nameCount = variableNameList.size();
-    for (int ii=0; ii< nameCount; ii++) {
-        variableName = variableNameList[ii];
-        pthread_mutex_lock(&allocInfoMapMutex);
-        // AllocInfo* allocInfo = getAllocInfoNamed( variableName );
-        // if ( allocInfo != NULL ) {
-        //     allocInfo->appendDependencies( this, dependencies );
-        // }
-        pthread_mutex_unlock(&allocInfoMapMutex);
-    }
-    write_checkpoint( out_s, dependencies);
-}
-
-// MEMBER FUNCTION
-void MemoryManager::write_checkpoint(const std::string& filename, std::vector<const char*>& variableNameList) {
-
-    std::ofstream out_s( filename.c_str(), std::ios::out);
-    if (out_s.is_open()) {
-        write_checkpoint( out_s, variableNameList );
-    } else {
-        std::cerr << "ERROR: Couldn't open \""<< filename <<"\"." << std::endl;
-        std::cerr.flush();
-    }
-}
-
-// STATIC FUNCTION
-static bool allocInfoCompare( AllocInfo* lhs, AllocInfo* rhs ) {
-    bool result;
-    StorageClass::e lhsStorageClass = lhs->getStorageClass();
-    StorageClass::e rhsStorageClass = rhs->getStorageClass();
-    unsigned int lhsSerialNumber = lhs->getSerialNumber();
-    unsigned int rhsSerialNumber = rhs->getSerialNumber();
-
-    if ( lhsStorageClass == rhsStorageClass ) {
-        result = ( lhsSerialNumber < rhsSerialNumber );
-    } else if ( lhsStorageClass == StorageClass:: EXTERN ) {
-        result = true;
-    } else {
-        result = false;
-    }
-    return result;
-}
 
 // PRIVATE MEMBER FUNCTION
-void MemoryManager::write_checkpoint(std::ostream& outStream, std::vector<AllocInfo*>& allocInfoList) {
+void MemoryManager::do_write_checkpoint(std::ostream& outStream, std::vector<AllocInfo*>& allocInfoList) {
     checkpointAgent->dump(outStream, allocInfoList);
 }
 
@@ -346,11 +222,8 @@ void MemoryManager::restore_checkpoint( std::istream& in_s) {
     // We did it!
 }
 
-CheckpointAgentBase * MemoryManager::get_CheckPointAgent() {
-    return checkpointAgent;
-}
 
-void MemoryManager::set_CheckPointAgent( CheckpointAgentBase* agent) {
+void MemoryManager::setCheckPointAgent( CheckpointAgentBase* agent) {
     delete checkpointAgent;
     checkpointAgent = agent;
 }
@@ -392,22 +265,11 @@ AllocInfo* MemoryManager::getAllocInfoNamed( const std::string& name ) {
 
 
 // MEMBER FUNCTION
-const DataType* MemoryManager::getDataType( std::string typeName ) {
-    return dataTypeInator->resolve(typeName);
-}
-
-#if NEWSTUFF
-void * MemoryManager::getVarAccessInfo( const std::string& variableName, VarAccessInfo& varAccessInfo ) {
-
-    std::string varName = variableName;
-    // Get identifier at beginnning of the string and the remiander.
-    // Find the AllocInfoByName ( identifier );
-
-    AllocInfo* allocInfo = getAllocInfoNamed (variableName);
-    if (allocInfo != NULL) {
+const DataType* MemoryManager::getDataTypeOf( const std::string& varname ) {
+    AllocInfo * allocInfo = getAllocInfoNamed(varname);
+    if (allocInfo == NULL) {
+        return NULL;
     }
-    returnAddress = alloc->getVarAccessInfo( varName, varAccessInfo );
 
-    return returnAddress;
+    return allocInfo->getDataType();
 }
-#endif

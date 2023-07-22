@@ -34,10 +34,14 @@ class AllocInfo {
     public:
     AllocInfo( const std::string& varName,
             const DataType * type,
-            void*              suppliedAllocation = 0)  ;
+            void*            suppliedAllocation = 0)  ;
+
+    // Delete the copy constructor.
+    AllocInfo(const AllocInfo& other) = delete;
 
     /**
       AllocInfo destructor.
+      @note This also deletes the underlying allocation if it was allocated locally.
      */
 
     ~AllocInfo();
@@ -84,21 +88,20 @@ class AllocInfo {
 
     /**
      @return the DataType for the allocation.
-     Tested in: AllocInfoTest::getters1, AllocInfoTest::getters2.
      */
     const DataType * getDataType() const;
 
     /**
-     @return the size of the nth dimension.
-     Tested in: AllocInfoTest::getters1, AllocInfoTest::getters2.
+     @return Get 
      */
     StorageClass::e getStorageClass() const;
 
     /**
-     Clear the every element of the allocation to 0.
+     @brief Clear the every element of the allocation to 0.
      Tested in: AllocInfoTest::clear.
      */
     void clear() const;
+
 
     /**
      */
@@ -106,7 +109,6 @@ class AllocInfo {
 
     /**
      @return true, if the allocation contains the given address. Otherwise return false.
-     Tested in: FIXME
      */
     bool contains(void* address) const;
 
