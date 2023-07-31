@@ -22,8 +22,8 @@ int main(int argc, char ** argv) {
         exit(-1);
     }
 
-    const int ARG_NUM = 1;
-    char const * command_line_args[ARG_NUM] = {"-fparse-all-comments"};
+    const int ARG_NUM = 3;
+    char const * command_line_args[ARG_NUM] = {"-fparse-all-comments", "-isysroot", "/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk"};
     const char * filename = argv[1];
 
     CXIndex index = clang_createIndex(0, 0);
