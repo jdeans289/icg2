@@ -130,8 +130,35 @@ TEST(ParsedDeclaration, arbitrary_namespace) {
     EXPECT_EQ(expected, qualifiedList);
 }
 
-TEST(ParsedDeclaration, DISABLED_template_basic) {
+TEST(ParsedDeclaration, template_basic) {
 
     ParsedDeclaration parsedDeclaration("MyClass<int> var");
+
+    std::string typeSpecString = parsedDeclaration.getTypeSpecifier();
+    EXPECT_EQ( "MyClass<int>", typeSpecString );
+
+    std::string varName = parsedDeclaration.getVariableName();
+    EXPECT_EQ( "var", varName );
 }
 
+TEST(ParsedDeclaration, stl_vector) {
+
+    ParsedDeclaration parsedDeclaration("std::vector<int> var");
+
+    std::string typeSpecString = parsedDeclaration.getTypeSpecifier();
+    EXPECT_EQ( "std::vector<int>", typeSpecString );
+
+    std::string varName = parsedDeclaration.getVariableName();
+    EXPECT_EQ( "var", varName );
+}
+
+TEST(ParsedDeclaration, stl_nested) {
+
+    ParsedDeclaration parsedDeclaration("std::vector<std::stack<int>> var");
+
+    std::string typeSpecString = parsedDeclaration.getTypeSpecifier();
+    EXPECT_EQ( "std::vector<std::stack<int>>", typeSpecString );
+
+    std::string varName = parsedDeclaration.getVariableName();
+    EXPECT_EQ( "var", varName );
+}

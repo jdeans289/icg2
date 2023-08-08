@@ -28,7 +28,8 @@ class ParsedDeclaration {
     bool parseDeclarator();
     bool parseDirectDeclarator();
     bool parseQualifiedIdentifier();
-
+    bool parseIdentifier();
+    
     bool match(Token::e expected_token);
 
     Token::e nextToken;

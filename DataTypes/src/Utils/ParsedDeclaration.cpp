@@ -274,14 +274,19 @@ bool ParsedDeclaration::parseQualifiedIdentifier() {
         // This is an error condition
         return true;
     }
-    // Add the token to the typespec and the qualifiedNameParts list
-    std::string identifier = lexer.getText();
-    qualifiedTypeNameParts.push_back(identifier);
-    typeSpec += identifier;
+    // // Add the token to the typespec and the qualifiedNameParts list
+    // std::string identifier = lexer.getText();
+    // qualifiedTypeNameParts.push_back(identifier);
+    // typeSpec += identifier;
     
+    if (parseIdentifier()) {
+        // Error condition
+        return false;
+    }
+
     // Next two tokens must be ::
     // Or something completely different
-    token = lexer.matchToken(Token::Identifier);
+    token = lexer.getToken();
     if (token != Token::Colon) {
         // Reached the end of the identifier, move on
         return false;
@@ -302,6 +307,42 @@ bool ParsedDeclaration::parseQualifiedIdentifier() {
     lexer.matchToken(Token::Colon);
 
     return parseQualifiedIdentifier();
+}
+
+// ==============================================================
+// identifier   : class-name
+//              | template-name < template-argument-list >
+// ==============================================================
+bool ParsedDeclaration::parseIdentifier () {
+    // Just throw everything into the identifier for now
+
+    std::string identifier = lexer.getText();
+
+    Token::e token = lexer.matchToken(Token::Identifier);
+    if (token == Token::LeftAngle) {
+        // Just keep pulling everything into the name until we find the right closing bracket
+        identifier += lexer.getText();
+
+        int angle_bracket_depth = 1;
+        while (angle_bracket_depth != 0) {
+            token = lexer.matchToken(token);
+
+            if (token == Token::LeftAngle) {
+                angle_bracket_depth++;
+            } else if (token == Token::RightAngle) {
+                angle_bracket_depth--;
+            }
+
+            identifier += lexer.getText();
+        }
+            
+        token = lexer.matchToken(token);
+    }
+
+    qualifiedTypeNameParts.push_back(identifier);
+    typeSpec += identifier;
+
+    return false;
 }
 
 std::string ParsedDeclaration::getTypeSpecifier() const {
