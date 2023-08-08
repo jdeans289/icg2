@@ -20,8 +20,10 @@
 */
 
 ParsedDeclaration::ParsedDeclaration(std::string declaration_str) : typeSpec("") {
+    LexicalAnalyzer lexer;
+
     lexer.load(declaration_str);
-    parseDeclaration();
+    parseDeclaration(lexer);
 }
 
 
@@ -30,17 +32,17 @@ ParsedDeclaration::ParsedDeclaration(std::string declaration_str) : typeSpec("")
 //          | type-specifier declarator
 //          ;
 // ===============================================
-bool ParsedDeclaration::parseDeclaration() {
+bool ParsedDeclaration::parseDeclaration(LexicalAnalyzer& lexer) {
 
     // std::cout << __FUNCTION__ << std::endl;
-    bool errorCondition = parseTypeSpecifier();
+    bool errorCondition = parseTypeSpecifier(lexer);
     if ( !errorCondition ) {
         Token::e token = lexer.getToken();
         if ((token == Token::Asterisk) ||
             (token == Token::Identifier ) ||
             (token == Token::LeftParen ) ||
             (token == Token::LeftBracket)) {
-            errorCondition = parseDeclarator();
+            errorCondition = parseDeclarator(lexer);
         }
         if (lexer.matchToken(Token::EndOfFile) == Token::Error) {
             errorCondition = true;
@@ -57,7 +59,7 @@ bool ParsedDeclaration::parseDeclaration() {
 //
 // NOTE: a pointer is one or more asterisks.
 // ==============================================================
-bool ParsedDeclaration::parseDeclarator() {
+bool ParsedDeclaration::parseDeclarator(LexicalAnalyzer& lexer) {
    
 //    std::cout << __FUNCTION__ << std::endl;
    bool errorCondition = false;
@@ -69,7 +71,7 @@ bool ParsedDeclaration::parseDeclarator() {
        asteriskCount ++;
    }
    if ((token == Token::LeftParen) || (token == Token::LeftBracket) || (token == Token::Identifier)) {
-       errorCondition |= parseDirectDeclarator();
+       errorCondition |= parseDirectDeclarator(lexer);
    }
 
    if (asteriskCount != 0) {
@@ -87,7 +89,7 @@ bool ParsedDeclaration::parseDeclarator() {
 //                  | direct-declarator [ integer ]
 //                  ;
 // ==============================================================
-bool ParsedDeclaration::parseDirectDeclarator() {
+bool ParsedDeclaration::parseDirectDeclarator(LexicalAnalyzer& lexer) {
    bool errorCondition = false;
 
    Token::e token = lexer.getToken();
@@ -96,7 +98,7 @@ bool ParsedDeclaration::parseDirectDeclarator() {
        token = lexer.matchToken( Token::Identifier );
    } else if (token == Token::LeftParen) {
        token = lexer.matchToken( Token::LeftParen );
-       errorCondition |= parseDeclarator();
+       errorCondition |= parseDeclarator(lexer);
        if ( !errorCondition ) {
            if ((token = lexer.matchToken( Token::RightParen )) == Token::Error) {
            errorCondition = true;
@@ -145,7 +147,7 @@ bool ParsedDeclaration::parseDirectDeclarator() {
 // am I actually allowed to have <NOTHING> in a bnf grammar?
 // probably not
 
-bool ParsedDeclaration::parseTypeSpecifier() {
+bool ParsedDeclaration::parseTypeSpecifier(LexicalAnalyzer& lexer) {
 
     // std::cout << __FUNCTION__ << std::endl;
     bool errorCondition = false;
@@ -252,7 +254,7 @@ bool ParsedDeclaration::parseTypeSpecifier() {
             typeSpec = "double";
         } break;
         case Token::Identifier : {
-            errorCondition |= parseQualifiedIdentifier();
+            errorCondition |= parseQualifiedIdentifier(lexer);
         } break;
         default : {
             errorCondition = true;
@@ -266,7 +268,7 @@ bool ParsedDeclaration::parseTypeSpecifier() {
 // qualified-identifier   : identifier
 //                        | identifier::qualified-identifier
 // ==============================================================
-bool ParsedDeclaration::parseQualifiedIdentifier() {
+bool ParsedDeclaration::parseQualifiedIdentifier(LexicalAnalyzer& lexer) {
 
     // We should see an identifier first
     Token::e token = lexer.getToken();
@@ -274,12 +276,9 @@ bool ParsedDeclaration::parseQualifiedIdentifier() {
         // This is an error condition
         return true;
     }
-    // // Add the token to the typespec and the qualifiedNameParts list
-    // std::string identifier = lexer.getText();
-    // qualifiedTypeNameParts.push_back(identifier);
-    // typeSpec += identifier;
-    
-    if (parseIdentifier()) {
+
+    // Parse the identifier
+    if (parseIdentifier(lexer)) {
         // Error condition
         return false;
     }
@@ -306,14 +305,19 @@ bool ParsedDeclaration::parseQualifiedIdentifier() {
     typeSpec += lexer.getText();
     lexer.matchToken(Token::Colon);
 
-    return parseQualifiedIdentifier();
+    return parseQualifiedIdentifier(lexer);
 }
+
+
+// class-name is a leaf
+// template-name is a leaf
+// template-argument-list contains Declarations that we must parse (they arent full declarations, just a typespec/anon, but we can still use the same code.)
 
 // ==============================================================
 // identifier   : class-name
 //              | template-name < template-argument-list >
 // ==============================================================
-bool ParsedDeclaration::parseIdentifier () {
+bool ParsedDeclaration::parseIdentifier (LexicalAnalyzer& lexer) {
     // Just throw everything into the identifier for now
 
     std::string identifier = lexer.getText();
@@ -322,23 +326,34 @@ bool ParsedDeclaration::parseIdentifier () {
     if (token == Token::LeftAngle) {
         // Just keep pulling everything into the name until we find the right closing bracket
         identifier += lexer.getText();
+        std::string current_param = "";
 
         int angle_bracket_depth = 1;
         while (angle_bracket_depth != 0) {
             token = lexer.matchToken(token);
 
-            if (token == Token::LeftAngle) {
+            if (token == Token::Comma && angle_bracket_depth == 1) {
+                templateParams.emplace_back(current_param);
+                current_param = "";
+            } else if (token == Token::LeftAngle) {
                 angle_bracket_depth++;
+                current_param += lexer.getText();
             } else if (token == Token::RightAngle) {
                 angle_bracket_depth--;
+                if (angle_bracket_depth != 0) {
+                    current_param += lexer.getText();
+                }
+            } else {
+                current_param += lexer.getText();
             }
 
             identifier += lexer.getText();
         }
-            
+
+        templateParams.emplace_back(current_param);
         token = lexer.matchToken(token);
     }
-
+    
     qualifiedTypeNameParts.push_back(identifier);
     typeSpec += identifier;
 
@@ -360,4 +375,8 @@ std::string ParsedDeclaration::getVariableName() const {
 
 std::vector<int> ParsedDeclaration::getDims() const {
     return dims;
+}
+
+std::vector<ParsedDeclaration> ParsedDeclaration::getTemplateParams() const {
+    return templateParams;
 }
