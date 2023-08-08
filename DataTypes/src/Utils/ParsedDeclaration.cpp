@@ -280,7 +280,7 @@ bool ParsedDeclaration::parseQualifiedIdentifier(LexicalAnalyzer& lexer) {
     // Parse the identifier
     if (parseIdentifier(lexer)) {
         // Error condition
-        return false;
+        return true;
     }
 
     // Next two tokens must be ::
