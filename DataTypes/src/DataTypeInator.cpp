@@ -9,8 +9,7 @@ DataTypeInator::DataTypeInator () : typeDictionary(new TypeDictionary) {
     typeDictionary->addBuiltinTypes();
 }
 
-DataTypeInator::DataTypeInator (TypeDictionary * dict) : typeDictionary(dict) {
-}
+DataTypeInator::DataTypeInator (TypeDictionary * dict) : typeDictionary(dict) {}
 
 const DataType * DataTypeInator::resolve(std::string name) const {
 
@@ -18,7 +17,17 @@ const DataType * DataTypeInator::resolve(std::string name) const {
 
     if (decl.getNumberOfDimensions() == 0) {
         // This is technically a base case
-        return typeDictionary->lookup(decl.getTypeSpecifier());
+        const DataType * ret_type = typeDictionary->lookup(decl.getTypeSpecifier());
+        if (ret_type != NULL) {
+            DataType * result = ret_type->clone();
+            if (!result->validate(this)) {
+                std::cerr << "Validate failed for " << name << std::endl;
+                return NULL;
+            }
+            return result;
+        }
+
+        return NULL;
 
     } else {
         // Pop off the last dimension, make an array/pointer, let the nested recursive structure do the rest

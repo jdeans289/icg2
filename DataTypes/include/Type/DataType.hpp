@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 #include "Algorithm/DataTypeVisitor.hpp"
 
@@ -11,7 +12,7 @@ class DataType {
 
     public:
 
-    virtual ~DataType() {}
+    virtual ~DataType() { std::cout << "Destroying datatype with address " << this << std::endl; }
 
    /**
     * @brief Verify that all of the types that are named by this DataType or

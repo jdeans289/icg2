@@ -30,7 +30,7 @@ PointerDataType::PointerDataType ( PointerDataType const & original) {
 // DESTRUCTOR
 PointerDataType::~PointerDataType () {
 
-    if ( typeSpecName.empty()) {
+    if ( subType != NULL ) {
         delete subType;
     }
 }
