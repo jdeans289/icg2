@@ -15,6 +15,12 @@ public:
      */
     StructMember( std::string memberName, std::string typeSpecName );
 
+    // Rule of 3 - we own the datatype, gotta manage it
+    StructMember( const StructMember& other );
+    ~StructMember();
+    // StructMember& operator= (StructMember other);
+    // friend void swap (StructMember& a, StructMember& b);
+
     /**
      * @brief Resolve the type
      * 

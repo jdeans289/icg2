@@ -35,7 +35,7 @@ ArrayDataType::ArrayDataType ( ArrayDataType const & original) {
 
 // DESTRUCTOR
 ArrayDataType::~ArrayDataType () {
-    if ( typeSpecName.empty()) {
+    if ( subType != NULL) {
         delete subType;
     }
 }
