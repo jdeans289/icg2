@@ -68,6 +68,14 @@ double
 
 See the issue board for in progress work.
 
+## Clone
+
+Use a recursive clone to include the repository's submodules
+
+```
+git clone --recursive git://github.com/jdeans289/icg2.git
+```
+
 ## Build
 
 Use the normal CMake process to build.
