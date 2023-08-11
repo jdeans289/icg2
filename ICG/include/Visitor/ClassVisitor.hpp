@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_set>
+
 #include "Visitor/BaseVisitor.hpp"
 #include "IntermediateRepresentation/ClassInfo.hpp"
 #include "Visitor/FieldVisitor.hpp"
@@ -19,8 +21,17 @@ class ClassVisitor : public BaseVisitor {
 
     // Info for possible nested classes
     std::vector<ClassInfo> nestedClasses;
-    
-    std::vector<ClassInfo> getResult();
+    std::unordered_set<std::string> stlDecls;
+
+    // Result struct
+    struct Result {
+        std::vector<ClassInfo> classes;
+        std::unordered_set<std::string> stlDecls;
+    };
+
+    Result getResult();
+
+    void absorbResult(const Result& r);
 
     void go (CXCursor c) override;
     CXChildVisitResult traverse(CXCursor c, CXCursor parent) override;

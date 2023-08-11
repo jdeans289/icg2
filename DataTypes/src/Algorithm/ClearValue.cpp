@@ -1,6 +1,6 @@
 #include "Algorithm/ClearValue.hpp"
 
-#include "Type/Types.hpp"
+#include "Type/VisitableTypes.hpp"
 #include "Type/NormalStructMember.hpp"
 #include "Value/Value.hpp"
 #include "Value/IntegerValue.hpp"
@@ -81,6 +81,20 @@ namespace ClearValue {
     bool ClearValueVisitor::visitEnumeratedType(const EnumDataType * node) {
         node->clearValue(address_stack.top());
         return true;
+    }
+
+    bool ClearValueVisitor::visitSequenceType (const SequenceDataType * node) {
+        const DataType * subType = node->getSubType();
+        
+        auto elem_addresses = node->getElementAddresses(address_stack.top());
+
+        for (int i = 0; i < elem_addresses.size(); i++) {
+            address_stack.push( elem_addresses[i] );
+            subType->accept( this );
+            address_stack.pop();
+        }
+
+        return true;    
     }
 
 }

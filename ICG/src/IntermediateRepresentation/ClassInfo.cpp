@@ -18,12 +18,14 @@ ICGTemplateEngine::Dictionary ClassInfo::toDictionary() const {
 }
 
 // Push the fields
-std::vector<const ICGTemplateEngine::recursable *> ClassInfo::nextLevel() const {
-    std::vector<const ICGTemplateEngine::recursable *> my_fields;
+ICGTemplateEngine::ListTokenItems ClassInfo::nextLevel() const {
+    ICGTemplateEngine::ListTokenItems my_fields_dictionary;
+    std::string field_key = "fields";
+
     for (const auto& field : fields) {
-        my_fields.push_back(&field);
+        my_fields_dictionary[field_key].push_back(&field);
     }
-    return my_fields;
+    return my_fields_dictionary;
 }
 
 // std::ostream& operator<< (std::ostream& stream, const ClassInfo& class_info) {

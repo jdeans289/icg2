@@ -53,10 +53,14 @@ int main(int argc, char ** argv) {
     clang_disposeIndex(index);
 
     // Pull the results that we found out of the visitor
-    std::vector<const ICGTemplateEngine::recursable *> top_level_objects_list;
-    for (const auto& class_info : visitor.classes) {
-        top_level_objects_list.push_back(&class_info);
-    }
+    ICGTemplateEngine::ListTokenItems top_level_objects_list;
+
+    std::string classes_key = "classes";
+    top_level_objects_list[classes_key] = visitor.getClassInfo();
+
+    std::string stl_key = "stls";
+    top_level_objects_list[stl_key] = visitor.getSTLDeclInfo();
+
 
     // Write the io_<headerfile> file
     std::ofstream outfile;

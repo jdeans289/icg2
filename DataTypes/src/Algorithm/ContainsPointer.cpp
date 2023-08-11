@@ -1,6 +1,6 @@
 #include "Algorithm/ContainsPointer.hpp"
 
-#include "Type/Types.hpp"
+#include "Type/VisitableTypes.hpp"
 #include "Type/NormalStructMember.hpp"
 
 namespace ContainsPointer {
@@ -42,6 +42,10 @@ namespace ContainsPointer {
 
     bool ContainsPointerVisitor::visitEnumeratedType(const EnumDataType * node) {
         return false;
+    }
+
+    bool ContainsPointerVisitor::visitSequenceType (const SequenceDataType * node) {
+        throw std::logic_error("Sequence type not implemented in ContainsPointerVisitor");
     }
 
 }

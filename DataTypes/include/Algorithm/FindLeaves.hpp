@@ -13,12 +13,15 @@ namespace FindLeaves {
     // Struct for returning results
     struct Leaf {
         Leaf(MutableVariableName n, Value * v) : Leaf(n, v, false, NULL) {}
-        Leaf(MutableVariableName n, Value * v, bool is_ptr, const DataType * ptr_sub) : name_stack(n), value(v), is_pointer(is_ptr), pointer_subtype(ptr_sub) {}
+        Leaf(MutableVariableName n, Value * v, bool is_ptr, const DataType * ptr_sub) : 
+            name_stack(n), value(v), is_pointer(is_ptr), pointer_subtype(ptr_sub), is_stl(false), stl_size(0) {}
 
         MutableVariableName name_stack;
         Value * value;
         bool is_pointer;
         const DataType * pointer_subtype;
+        bool is_stl;
+        int stl_size;
     };
 
     typedef std::vector<Leaf> Result;
@@ -37,6 +40,7 @@ namespace FindLeaves {
             virtual bool visitPointerType(const PointerDataType * node) override;
             virtual bool visitEnumeratedType(const EnumDataType * node) override;
             virtual bool visitStringType (const StringDataType * node) override;
+            virtual bool visitSequenceType (const SequenceDataType * node) override;
 
             // FindLeavesVisitor Specific Interface
             Result getResult();

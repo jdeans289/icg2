@@ -1,6 +1,6 @@
 #include "Algorithm/FindLeaves.hpp"
 
-#include "Type/Types.hpp"
+#include "Type/VisitableTypes.hpp"
 #include "Type/NormalStructMember.hpp"
 
 #include "Algorithm/DataTypeAlgorithm.hpp"
@@ -87,6 +87,35 @@ namespace FindLeaves {
 
         // Add this name to the leaf stack
         leaves.emplace_back(current_name_stack, DataTypeAlgorithm::getValue(node, address_stack.top()));
+
+        return true;
+    }
+
+    bool FindLeavesVisitor::visitSequenceType (const SequenceDataType * node) {
+        // A sequence must register its size as a leaf!
+        current_name_stack.pushName("size");
+        int stl_size = node->getNumElements(address_stack.top());
+        Leaf size_leaf (current_name_stack, new IntegerValue(stl_size));
+        current_name_stack.pop_back();
+
+        size_leaf.is_stl = true;
+        size_leaf.stl_size = stl_size;
+
+        leaves.push_back(size_leaf);
+
+        // Continue traversal
+        const DataType * subType = node->getSubType();
+        auto elem_addresses = node->getElementAddresses(address_stack.top());
+
+        for (int i = 0; i < elem_addresses.size(); i++) {
+            current_name_stack.pushIndex(i);
+            address_stack.push( elem_addresses[i] );
+
+            subType->accept( this );
+            
+            address_stack.pop();
+            current_name_stack.pop_back();
+        }
 
         return true;
     }

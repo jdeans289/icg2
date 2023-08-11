@@ -1,6 +1,6 @@
 #include "Algorithm/GetValue.hpp"
 
-#include "Type/Types.hpp"
+#include "Type/VisitableTypes.hpp"
 #include "Type/NormalStructMember.hpp"
 #include "Value/Value.hpp"
 #include "Value/IntegerValue.hpp"
@@ -58,6 +58,11 @@ namespace GetValue {
     bool GetValueVisitor::visitEnumeratedType(const EnumDataType * node) {
         result = new IntegerValue(node->getValue(address));
         return true;
+    }
+
+    bool GetValueVisitor::visitSequenceType (const SequenceDataType * node) {
+        std::cerr << "Must get a leaf type" << std::endl;
+        return false;    
     }
 
     Result GetValueVisitor::getResult () {

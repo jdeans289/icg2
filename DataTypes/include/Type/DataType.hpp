@@ -12,7 +12,7 @@ class DataType {
 
     public:
 
-    virtual ~DataType() { std::cout << "Destroying datatype with address " << this << std::endl; }
+    virtual ~DataType() {}
 
    /**
     * @brief Verify that all of the types that are named by this DataType or

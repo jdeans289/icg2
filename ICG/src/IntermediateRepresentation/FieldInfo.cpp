@@ -19,8 +19,8 @@ ICGTemplateEngine::Dictionary FieldInfo::toDictionary() const {
 }
 
 // Nothing to recurse into
-std::vector<const ICGTemplateEngine::recursable *> FieldInfo::nextLevel() const {
-    std::vector<const ICGTemplateEngine::recursable *> empty_list;
+ICGTemplateEngine::ListTokenItems FieldInfo::nextLevel() const {
+    ICGTemplateEngine::ListTokenItems empty_list;
     return empty_list;
 }
 

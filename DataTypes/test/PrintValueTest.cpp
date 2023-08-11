@@ -1,8 +1,7 @@
 #include "Type/EnumDictionary.hpp"
-#include "Type/SpecifiedPrimitiveDataType.hpp"
 #include "Type/NormalStructMember.hpp"
 #include "DataTypeTestSupport.hpp"
-#include "Type/Types.hpp"
+#include "Type/AllTypes.hpp"
 
 #include "gtest/gtest.h"
 
@@ -93,14 +92,14 @@ TEST_F( PrintValueTest, array ) {
     DataTypeAlgorithm::printValue(type, ss, &val_to_print);
 
     // ASSERT
-    std::string expected = "{{{1.2,2.3,3.4,4.5},"
-        "{5.6,6.7,7.8,8.9},"
-        "{9,0.1,1.2,2.3}},"
-        "{{3.4,4.5,5.6,6.7},"
-        "{7.8,8.9,9,0.1},"
-        "{1.2,2.3,3.4,4.5}}}"
+    std::string expected = "[[[1.2, 2.3, 3.4, 4.5], "
+        "[5.6, 6.7, 7.8, 8.9], "
+        "[9, 0.1, 1.2, 2.3]], "
+        "[[3.4, 4.5, 5.6, 6.7], "
+        "[7.8, 8.9, 9, 0.1], "
+        "[1.2, 2.3, 3.4, 4.5]]]"
         ;
-    ASSERT_EQ(expected, ss.str());
+    ASSERT_EQ(expected,  ss.str());
 
 
     // cleanup
@@ -221,6 +220,104 @@ TEST_F(PrintValueTest, unvalidated_type) {
         // Just assert that there is an error message
         ASSERT_TRUE(strlen(e.what()) > 0);
     }
+}
+
+TEST_F(PrintValueTest, vector) {
+    // ARRANGE
+    std::vector<int> val_to_print({1, 2, 3, 4, 5});
+
+    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "std::vector<int>");
+    type->validate(&dataTypeInator);
+
+    std::stringstream ss;
+
+    // ACT
+    DataTypeAlgorithm::printValue(type, ss, &val_to_print);
+
+    // ASSERT
+    std::string expected = "[1, 2, 3, 4, 5]";
+    ASSERT_EQ(expected, ss.str());
+
+    // cleanup
+    delete type;
+}
+
+TEST_F(PrintValueTest, VectorOfClasses) {
+    // ARRANGE
+    std::vector<ClassTwo> val_to_print;
+
+    // ARRANGE
+    ClassTwo val1 = {.x = 100, .y = 5.5, .c1 = {.a = 5, .b = 1.5}};
+    ClassTwo val2 = {.x = 200, .y = 5.6, .c1 = {.a = 6, .b = 2.5}};
+    ClassTwo val3 = {.x = 300, .y = 5.7, .c1 = {.a = 7, .b = 3.5}};
+    val_to_print.push_back(val1);
+    val_to_print.push_back(val2);
+    val_to_print.push_back(val3);
+
+    addClassOneToTypeDictionary( &dataTypeInator );
+    addClassTwoToTypeDictionary( &dataTypeInator );
+    std::stringstream ss;
+
+    SequenceDataType * vec_type = new SpecifiedSequenceDataType<std::vector<ClassTwo>>(  "std::vector<ClassTwo>");
+    vec_type->validate(&dataTypeInator);
+
+
+    // ACT
+    DataTypeAlgorithm::printValue(vec_type, ss, &val_to_print);
+
+    // ASSERT
+    std::string expected = "[{100, 5.5, {5, 1.5}}, {200, 5.6, {6, 2.5}}, {300, 5.7, {7, 3.5}}]";
+    ASSERT_EQ(expected, ss.str());
+
+    // cleanup
+    delete vec_type;
+}
+
+class VecClass {
+    public:
+    std::vector<int> v;
+};
+
+void addVecClassToDataTypeInator(DataTypeInator& dataTypeInator) {
+
+    SequenceDataType * vecType = new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>");
+    vecType->validate(&dataTypeInator);
+    dataTypeInator.addToDictionary("std::vector<int>", vecType);
+
+    CompositeDataType * vecClassSpec =
+        new CompositeDataType( "VecClass", sizeof(VecClass), &construct<VecClass>, &destruct<VecClass>);
+        vecClassSpec->addRegularMember( "v", offsetof(VecClass, v), "std::vector<int>");
+
+    dataTypeInator.addToDictionary("VecClass", vecClassSpec);
+
+    vecClassSpec->validate(&dataTypeInator);
+}
+
+TEST_F(PrintValueTest, VectorOfClassWithVector) {
+    // ARRANGE
+    addVecClassToDataTypeInator(dataTypeInator);
+    
+    auto vec_type = new SpecifiedSequenceDataType<std::vector<VecClass>>("std::vector<VecClass>");
+    vec_type->validate(&dataTypeInator);
+    dataTypeInator.addToDictionary("std::vector<VecClass>", vec_type);
+
+    std::vector<VecClass> val_to_print;
+    VecClass c1;
+    c1.v = {1, 2, 3};
+    VecClass c2;
+    c2.v = {4, 5, 6};
+
+    val_to_print.push_back(c1);
+    val_to_print.push_back(c2);
+
+    std::stringstream ss;
+
+    // ACT
+    DataTypeAlgorithm::printValue(vec_type, ss, &val_to_print);
+
+    // ASSERT
+    std::string expected = "[{[1, 2, 3]}, {[4, 5, 6]}]";
+    ASSERT_EQ(expected, ss.str());
 }
 
 }

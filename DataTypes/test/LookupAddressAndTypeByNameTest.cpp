@@ -1,5 +1,6 @@
 #include "Type/EnumDictionary.hpp"
 #include "Type/SpecifiedPrimitiveDataType.hpp"
+#include "Type/SpecifiedSequenceDataType.hpp"
 #include "Type/NormalStructMember.hpp"
 #include "DataTypeTestSupport.hpp"
 
@@ -13,13 +14,9 @@ class LookupAddressAndTypeByNameTest : public ::testing::Test {
     DataTypeInator dataTypeInator;
     EnumDictionary enumDictionary;
 
-    LookupAddressAndTypeByNameTest() {
+    LookupAddressAndTypeByNameTest() {}
+    ~LookupAddressAndTypeByNameTest() {}
 
-    }
-
-    ~LookupAddressAndTypeByNameTest() {
-
-    }
     void SetUp() {}
     void TearDown() {}
 };
@@ -229,8 +226,45 @@ TEST_F(LookupAddressAndTypeByNameTest, composite_array) {
     auto result = visitor.getResult();
 
     EXPECT_EQ(&var_to_search[3].c1.b, result.address);
-    SpecifiedPrimitiveDataType<double> int_type;
-    EXPECT_EQ(int_type.toString(), result.type->toString());
+
+    DoubleDataType double_type;
+    EXPECT_EQ(double_type.toString(), result.type->toString());
+}
+
+TEST_F(LookupAddressAndTypeByNameTest, vector_elem) {
+    // ARRANGE
+    std::vector<int> var_to_search({1, 2, 3, 4, 5});
+
+    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "std::vector<int>");
+    type->validate(&dataTypeInator);
+
+    // ACT
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "[3]");
+    bool status = visitor.go(type);
+    
+    // ASSERT
+    ASSERT_TRUE(status);
+    auto result = visitor.getResult();
+
+    EXPECT_EQ(&var_to_search[3], result.address);
+
+    IntDataType result_type;
+    EXPECT_EQ(result_type.toString(), result.type->toString());
+}
+
+TEST_F(LookupAddressAndTypeByNameTest, vector_elem_out_of_bounds) {
+    // ARRANGE
+    std::vector<int> var_to_search({1, 2, 3, 4, 5});
+
+    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "std::vector<int>");
+    type->validate(&dataTypeInator);
+
+    // ACT
+    LookupAddressAndTypeByNameVisitor visitor(&var_to_search, "[100]");
+    bool status = visitor.go(type);
+    
+    // ASSERT
+    ASSERT_FALSE(status);
 }
 
 }

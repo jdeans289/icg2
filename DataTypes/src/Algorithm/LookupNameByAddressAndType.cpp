@@ -138,6 +138,9 @@ namespace LookupNameByAddressAndType {
         return visitLeaf(node);
     }
 
+    bool LookupNameByAddressVisitor::visitSequenceType (const SequenceDataType * node) {
+        throw std::logic_error("Sequence type not implemented in LookupNameByAddressVisitor");
+    }
 
     bool LookupNameByAddressVisitor::visitLeaf(const DataType * node) {
         if (search_offset != 0) {

@@ -6,11 +6,21 @@
 ClassVisitor::ClassVisitor() {}
 
 
-std::vector<ClassInfo> ClassVisitor::getResult() {
-    std::vector<ClassInfo> result = { classInfo };
-    result.insert(result.end(), nestedClasses.begin(), nestedClasses.end());
+ClassVisitor::Result ClassVisitor::getResult() {
+    ClassVisitor::Result result;
+    result.classes = { classInfo };
+    result.classes.insert(result.classes.end(), nestedClasses.begin(), nestedClasses.end());
+
+    result.stlDecls = stlDecls;
+
     return result;
 }
+
+void ClassVisitor::absorbResult(const ClassVisitor::Result& result) {
+    nestedClasses.insert(nestedClasses.end(), result.classes.begin(), result.classes.end());
+    stlDecls.insert(result.stlDecls.begin(), result.stlDecls.end());
+}
+
 
 void ClassVisitor::go (CXCursor c) {
     // Pull in the class name
@@ -37,6 +47,11 @@ CXChildVisitResult ClassVisitor::traverse(CXCursor c, CXCursor parent) {
             // Get the info out
             classInfo.fields.emplace_back(fieldVisitor.field);
 
+            // Did we find an stl type?
+            if (ICGUtils::isStlContainer(fieldVisitor.field.type)) {
+                stlDecls.insert(fieldVisitor.field.type);
+            }
+
             // Continue at sibling nodes
             return CXChildVisit_Continue;
         }
@@ -50,9 +65,8 @@ CXChildVisitResult ClassVisitor::traverse(CXCursor c, CXCursor parent) {
             nestedClassVisitor.go(c);
             
             // Pull out the info that we need from it
-            auto result = nestedClassVisitor.getResult();
-            nestedClasses.insert(nestedClasses.end(), result.begin(), result.end());
-
+            absorbResult(nestedClassVisitor.getResult());
+            
             // Continue at sibling nodes
             return CXChildVisit_Continue;
         }

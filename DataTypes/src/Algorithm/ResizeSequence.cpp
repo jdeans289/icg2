@@ -1,30 +1,22 @@
 #include <cassert>
 
-#include "Algorithm/LookupAddressAndTypeByName.hpp"
+#include "Algorithm/ResizeSequence.hpp"
 
 #include "Type/VisitableTypes.hpp"
 #include "Type/NormalStructMember.hpp"
 
-namespace LookupAddressAndTypeByName {
+namespace ResizeSequence {
 
-    LookupAddressAndTypeByNameVisitor::LookupAddressAndTypeByNameVisitor(void * starting_address, std::string full_name) 
-            : current_search_address(starting_address), name_elems(full_name) {}
-
-    LookupAddressAndTypeByNameVisitor::LookupAddressAndTypeByNameVisitor(void * starting_address, MutableVariableName name_elems) 
-            : current_search_address(starting_address), name_elems(name_elems) {}
+    ResizeSequenceVisitor::ResizeSequenceVisitor(void * starting_address, std::string full_name, int num_elems) 
+            : current_search_address(starting_address), name_elems(full_name), num_elems(num_elems) {}
 
     // Look for the matching address
 
-    bool LookupAddressAndTypeByNameVisitor::visitCompositeType(const CompositeDataType * node) {
+    bool ResizeSequenceVisitor::visitCompositeType(const CompositeDataType * node) {
         if (name_elems.empty()) {
-            // Yay we found our result!
-
-            // Put the current address and type into the result
-            result.success = true;
-            result.type = node;
-            result.address = current_search_address;
-            
-            return true;
+            // Got to the end of the name, but we're at not at a sequence :/            
+            std::cerr << "Tried to use ResizeSequence on something that is not a sequence." << std::endl;
+            return false;
         }
 
         std::string next_elem = name_elems.pop_front();
@@ -45,16 +37,22 @@ namespace LookupAddressAndTypeByName {
                 // Find the address of the next member
                 current_search_address = member->getAddress(current_search_address);
                 next_type = member->getSubType();
+                break;
             }
         }
 
-        for (auto it = node->getStaticMemberListBegin(); it != node->getStaticMemberListEnd(); it++) {
-            StaticStructMember * member = *it;
-            if (member->getName() == next_elem) {
-                // Found the next step!
-                // Find the address of the next member
-                current_search_address = member->getAddress();
-                next_type = member->getSubType();
+        // Only search the statics if we haven't found matching name yet
+        if (next_type == NULL) {
+            for (auto it = node->getStaticMemberListBegin(); it != node->getStaticMemberListEnd(); it++) {
+                StaticStructMember * member = *it;
+                if (member->getName() == next_elem) {
+                    // Found the next step!
+                    // Find the address of the next member
+                    current_search_address = member->getAddress();
+                    next_type = member->getSubType();
+
+                    break;
+                }
             }
         }
 
@@ -66,17 +64,13 @@ namespace LookupAddressAndTypeByName {
         return false;
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitArrayType(const ArrayDataType * node) {
+    bool ResizeSequenceVisitor::visitArrayType(const ArrayDataType * node) {
         if (name_elems.empty()) {
-            // Yay we found our result!
-
-            // Put the current address and type into the result
-            result.success = true;
-            result.type = node;
-            result.address = current_search_address;
-            
-            return true;
+            // Got to the end of the name, but we're at not at a sequence :/            
+            std::cerr << "Tried to use ResizeSequence on something that is not a sequence." << std::endl;
+            return false;
         }
+
 
         std::string next_elem = name_elems.pop_front();
 
@@ -101,42 +95,31 @@ namespace LookupAddressAndTypeByName {
         return subType->accept(this);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitPointerType(const PointerDataType * node) {
+    bool ResizeSequenceVisitor::visitPointerType(const PointerDataType * node) {
         // We're at a leaf, so if there's anything left in the name queue something has gone wrong
-        // what even is a pointer anyway
-
-        if (visitLeaf(node)) {
-            result.isPointer = true;
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    bool LookupAddressAndTypeByNameVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
         return visitLeaf(node);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitEnumeratedType(const EnumDataType * node) {
+    bool ResizeSequenceVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
         return visitLeaf(node);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitStringType(const StringDataType * node) {
+    bool ResizeSequenceVisitor::visitEnumeratedType(const EnumDataType * node) {
         return visitLeaf(node);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitSequenceType (const SequenceDataType * node) {
-        if (name_elems.empty()) {
+    bool ResizeSequenceVisitor::visitStringType(const StringDataType * node) {
+        return visitLeaf(node);
+    }
+
+    bool ResizeSequenceVisitor::visitSequenceType (const SequenceDataType * node) {
+        if (name_elems.empty() || (name_elems.size() == 1 && name_elems.front() == "size")) {
             // Yay we found our result!
 
-            // Put the current address and type into the result
-            result.success = true;
-            result.type = node;
-            result.address = current_search_address;
-            
-            return true;
+            return node->resize(current_search_address, num_elems);
         }
+
+        // Otherwise we could be referring to a nested sequence, keep looking
 
         std::string next_elem = name_elems.pop_front();
 
@@ -162,25 +145,17 @@ namespace LookupAddressAndTypeByName {
         return subType->accept(this);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitLeaf(const DataType * node) {
-        // We're at a leaf, so if there's anything left in the name queue something has gone wrong
-        if (!name_elems.empty()) {
+    bool ResizeSequenceVisitor::visitLeaf(const DataType * node) {
+        // We're at a leaf. We should basically just not be here at all.
+
+        if (name_elems.empty()) {
+            // Got to the end of the name, but we're at not at a sequence :/            
+            std::cerr << "Tried to use ResizeSequence on something that is not a sequence." << std::endl;
+        } else {
             std::cerr << "At a leaf type, but there are still name elements left to find." << std::endl;
-            return false;
         }
 
-        // Yay we found our result!
+        return false;
 
-        // Put the current address and type into the result
-        result.success = true;
-        result.type = node;
-        result.address = current_search_address;
-        
-        return true;
     }
-
-    LookupAddressAndTypeByName::Result LookupAddressAndTypeByNameVisitor::getResult() {
-        return result;
-    }
-
 }

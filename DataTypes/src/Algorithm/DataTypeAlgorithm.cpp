@@ -114,5 +114,13 @@ namespace DataTypeAlgorithm {
         ClearValue::ClearValueVisitor visitor(address);
         visitor.go(node);
     }   
+
+
+    bool resizeSequence(const DataType * node, void * starting_address, std::string full_name, int num_elems) {
+        checkType (node, __FUNCTION__);
+
+        ResizeSequence::ResizeSequenceVisitor visitor(starting_address, full_name, num_elems);
+        return visitor.go(node);   
+    }
     
 }
