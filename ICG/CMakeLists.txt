@@ -6,6 +6,7 @@ set(ICG_SRC
     ICGTemplateEngine/ICGTemplateEngine.cpp
     IntermediateRepresentation/ClassInfo.cpp
     IntermediateRepresentation/FieldInfo.cpp
+    IntermediateRepresentation/STLDeclInfo.cpp
     IntermediateRepresentation/ClassTemplateInfo.cpp
     Visitor/BaseVisitor.cpp
     Visitor/ASTVisitor.cpp

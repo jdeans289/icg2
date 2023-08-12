@@ -89,16 +89,10 @@ class ArrayDataType : public ModifierType {
 
     bool accept(DataTypeVisitor * visitor) const override;
 
-    // virtual bool lookupVariableNameByOffset(MutableVariableName& nameStack, unsigned int offset, const DataType * expectedType) const;
-
 
     /* ==================================================================== */
     /*                       CLASS SPECIFIC INTERFACE                       */
     /* ==================================================================== */
-
-    /**
-     */
-    // bool getElementInfo( LexicalAnalyzer* lexer, void* baseAddress, VarAccessInfo& varAccessInfo);
 
     /**
      @return The number of arrayed Type-specifier elements of the DataType.
@@ -109,11 +103,6 @@ class ArrayDataType : public ModifierType {
      @return Returns number of elements in this level of the array
      */
     unsigned int getElementCount() const;
-
-    // /**
-    //  */
-    // const DataType * getSubType() const;
-
 
     private:
     bool initArrayDataType( const DataTypeInator* dataTypeInator, std::string typeSpecName, unsigned int n_elems );

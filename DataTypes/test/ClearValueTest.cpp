@@ -1,9 +1,7 @@
 #include "Type/EnumDictionary.hpp"
-#include "Type/SpecifiedPrimitiveDataType.hpp"
-#include "Type/CompositeDataType.hpp"
 #include "Type/NormalStructMember.hpp"
 #include "DataTypeTestSupport.hpp"
-#include "Type/Types.hpp"
+#include "Type/AllTypes.hpp"
 #include "Value/PointerValue.hpp"
 #include "Value/IntegerValue.hpp"
 #include "Value/StringValue.hpp"
@@ -148,6 +146,21 @@ TEST_F(ClearValueTest, composite) {
     for (int i = 0; i < 5; i++) {
         ASSERT_EQ(0, var_to_clear.y[i]);
     }
+}
+
+TEST_F(ClearValueTest, vector) {
+    // ARRANGE
+    SpecifiedSequenceDataType<std::vector<int>> type( "std::vector<int>");
+    type.validate(&dataTypeInator);
+
+    std::vector<int> var_to_clear({1, 2, 3});
+    
+
+    // ACT
+    DataTypeAlgorithm::clearValue(&type, &var_to_clear);
+
+    // ASSERT
+    ASSERT_EQ(0, var_to_clear.size());
 }
 
 

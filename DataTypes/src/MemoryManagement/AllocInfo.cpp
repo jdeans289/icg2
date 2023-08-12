@@ -1,7 +1,7 @@
 #include <sstream>
 #include <string.h> // for memcpy
 
-#include "Type/Types.hpp"
+#include "Type/VisitableTypes.hpp"
 #include "MemoryManagement/AllocInfo.hpp"
 #include "Utils/MutableDeclaration.hpp"
 #include "Algorithm/DataTypeAlgorithm.hpp"
@@ -51,6 +51,8 @@ AllocInfo::~AllocInfo() {
     if (storageClass == StorageClass::LOCAL) {
         dataType->deleteInstance(start);
     }
+
+    delete dataType;
 }
 
 // PUBLIC MEMBER FUNCTION

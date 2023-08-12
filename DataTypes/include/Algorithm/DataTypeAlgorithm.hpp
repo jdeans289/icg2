@@ -9,6 +9,7 @@
 #include "AssignValue.hpp"
 #include "GetValue.hpp"
 #include "ClearValue.hpp"
+#include "ResizeSequence.hpp"
 
 namespace DataTypeAlgorithm {
 
@@ -86,7 +87,7 @@ namespace DataTypeAlgorithm {
      * @brief Get the value of a leaf type (string, pointer, primitive, enum)
      * 
      * @param node Type to get from 
-     * @param address instance of type to assign to
+     * @param address instance of type to get value of
      * @return GetValue::Result Value * representing the value
      */
     GetValue::Result getValue(const DataType * node, void * address);
@@ -98,4 +99,21 @@ namespace DataTypeAlgorithm {
      * @param address instance of type to clear
      */
     void clearValue(const DataType * node, void * address);
+
+    /**
+     * @brief Resize a sequence to the given size.
+     * 
+     * @param node Starting type
+     * @param address Starting address of allocation
+     */
+
+    /**
+     * @brief Resize a sequence to the given size.
+     * 
+     * @param node Starting type
+     * @param address Starting address of allocation
+     * @param full_name Name of the sequence variable to search for within this allocation
+     * @param num_elems new size
+     */
+    bool resizeSequence(const DataType * node, void * starting_address, std::string full_name, int num_elems);
 }

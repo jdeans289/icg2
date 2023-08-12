@@ -1,14 +1,19 @@
-#include <iostream>
-#include <stack>
+#pragma once
 
 #include "Algorithm/DataTypeVisitor.hpp"
+#include "Value/Value.hpp"
+#include "Utils/MutableVariableName.hpp"
 
-namespace PrintValue {
+#include <vector>
+#include <stack>
 
-    class PrintValueVisitor : public DataTypeVisitor {
+
+namespace ResizeSequence {
+            
+    class ResizeSequenceVisitor : public DataTypeVisitor {
 
         public:
-            PrintValueVisitor(std::ostream &s, void *address);
+            ResizeSequenceVisitor(void * address, std::string variable_name, int num_elems);
 
             // Visitor Interface 
 
@@ -21,8 +26,12 @@ namespace PrintValue {
             virtual bool visitSequenceType (const SequenceDataType * node) override;
 
         private:
-            // Visitor State
-            std::ostream& s;
-            std::stack<void *> address_stack;
+
+            bool visitLeaf(const DataType * node);
+
+            // Visitor Intermediate State
+            void * current_search_address;
+            MutableVariableName name_elems;
+            int num_elems;
     };
 }

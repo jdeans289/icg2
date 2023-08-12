@@ -34,4 +34,7 @@ namespace ICGUtils {
     enum AccessLevel getAccessLevel (CXCursor c);
 
     std::string makeIOHeaderName (std::string header_name);
+
+    bool isStlContainer (std::string some_typename);
+
 }

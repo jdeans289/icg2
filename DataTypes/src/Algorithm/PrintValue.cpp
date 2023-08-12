@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include "Algorithm/PrintValue.hpp"
-#include "Type/Types.hpp"
+#include "Type/VisitableTypes.hpp"
 #include "Type/NormalStructMember.hpp"
 
 namespace PrintValue {
@@ -16,11 +16,8 @@ namespace PrintValue {
     }
 
     bool PrintValueVisitor::visitCompositeType(const CompositeDataType * node) {
-        // MEMBER FUNCTION
         s << "{";
         int counter = 0;
-
-        // Static members
 
         // Normal members
         for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++, counter++) {
@@ -44,11 +41,11 @@ namespace PrintValue {
     }
 
     bool PrintValueVisitor::visitArrayType(const ArrayDataType * node) {
-        s << "{";
+        s << "[";
 
         for (unsigned int i=0; i < node->getElementCount() ; i++) {
             if (i) {
-                s << ",";
+                s << ", ";
             }
 
             const DataType * subType = node->getSubType();
@@ -57,7 +54,7 @@ namespace PrintValue {
             subType->accept( this );
             address_stack.pop();
         }
-        s << "}";
+        s << "]";
 
         return true;
     }
@@ -81,5 +78,25 @@ namespace PrintValue {
         return true;
     }
 
+    bool PrintValueVisitor::visitSequenceType (const SequenceDataType * node) {
+        const DataType * subType = node->getSubType();
+        auto elem_addresses = node->getElementAddresses(address_stack.top());
+
+        s << "[";
+
+        for (int i = 0; i < elem_addresses.size(); i++) {
+            if (i != 0) {
+                s << ", ";
+            }
+
+            address_stack.push( elem_addresses[i] );
+            subType->accept( this );
+            address_stack.pop();
+        }
+
+        s << "]";
+
+        return true;
+    }
 
 }

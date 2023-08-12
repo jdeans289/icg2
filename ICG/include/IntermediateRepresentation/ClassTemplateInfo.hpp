@@ -22,5 +22,5 @@ public:
     std::vector<FieldInfo> templated_fields;
 
     ICGTemplateEngine::Dictionary toDictionary() const override;
-    std::vector<const ICGTemplateEngine::recursable *> nextLevel() const override;
+    ICGTemplateEngine::ListTokenItems nextLevel() const override;
 }

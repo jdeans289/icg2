@@ -1,5 +1,7 @@
 #include "utils.hpp"
 
+#include <unordered_set> 
+
 namespace ICGUtils {
 
 
@@ -93,6 +95,31 @@ namespace ICGUtils {
 
     std::string makeIOHeaderName (std::string header_name) {
         return "io_" + header_name;
+    }
+
+    bool isStlContainer (std::string some_typename) {
+        static std::unordered_set<std::string> container_names = {
+            "std::vector",
+            "std::list",
+            "std::deque",
+            "std::array",
+            "std::forward_list",
+            "std::queue",
+            "std::priority_queue",
+            "std::stack",
+            "std::map",
+            "std::set",
+            "std::unordered_map",
+            "std::unordered_set",
+            "std::pair"
+        };
+
+        int template_index = some_typename.find("<");
+        if (template_index != std::string::npos) {
+            some_typename = some_typename.substr(0, template_index);
+        }
+
+        return container_names.find(some_typename) != container_names.end();
     }
 
 }

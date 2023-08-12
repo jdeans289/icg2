@@ -1,6 +1,7 @@
 #include "Algorithm/AssignValue.hpp"
 
-#include "Type/Types.hpp"
+#include "Type/VisitableTypes.hpp"
+
 #include "Type/NormalStructMember.hpp"
 #include "Value/Value.hpp"
 #include "Value/IntegerValue.hpp"
@@ -35,6 +36,7 @@ namespace AssignValue {
     }
 
     bool AssignValueVisitor::visitStringType(const StringDataType * node) {
+        // TODO: implement double dispatch visitors for the Value hierarchy.... maybe
         StringValue * str_value = dynamic_cast <StringValue * > (value_to_assign);
 
         if (str_value == NULL) {
@@ -76,6 +78,11 @@ namespace AssignValue {
             std::cerr << "ERROR: Attempt to assign non-integral value to an enum." << std::endl;
             return false;
         }
+    }
+
+    bool AssignValueVisitor::visitSequenceType (const SequenceDataType * node) {
+        std::cerr << "Must assign to leaf type" << std::endl;
+        return false;
     }
 
 }

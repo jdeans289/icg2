@@ -25,6 +25,7 @@ namespace GetValue {
             virtual bool visitPointerType(const PointerDataType * node) override;
             virtual bool visitEnumeratedType(const EnumDataType * node) override;
             virtual bool visitStringType (const StringDataType * node) override;
+            virtual bool visitSequenceType (const SequenceDataType * node) override;
 
             Result getResult();
 

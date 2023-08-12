@@ -1,6 +1,8 @@
 #include "Visitor/ASTVisitor.hpp"
 #include "Visitor/ClassVisitor.hpp"
 
+#include "IntermediateRepresentation/STLDeclInfo.hpp"
+
 #include "utils.hpp"
 
 // Entry point
@@ -8,6 +10,24 @@
 // This version is the top level so we aren't gonna do anything else here
 void AstVisitor::go (CXCursor c) {
     clang_visitChildren(c, forwarding_traverse, this);
+}
+
+std::vector<const ICGTemplateEngine::recursable *> AstVisitor::getClassInfo() {
+    std::vector<const ICGTemplateEngine::recursable *> result;
+    for (const auto& class_info : classes) {
+        result.push_back(&class_info);
+    }
+
+    return result;
+}
+
+std::vector<const ICGTemplateEngine::recursable *> AstVisitor::getSTLDeclInfo() {
+    std::vector<const ICGTemplateEngine::recursable *> stl_recursables;
+    for (const auto& stl_name : stlDecls) {
+        stl_recursables.push_back (new STLDeclInfo(stl_name));
+    }
+
+    return stl_recursables;
 }
 
 
@@ -37,7 +57,8 @@ CXChildVisitResult AstVisitor::traverse(CXCursor c, CXCursor parent) {
                 classVisitor.go(c);
                 // Pull out the info that we need from it
                 auto result = classVisitor.getResult();
-                classes.insert(classes.end(), result.begin(), result.end());
+                classes.insert(classes.end(), result.classes.begin(), result.classes.end());
+                stlDecls.insert(result.stlDecls.begin(), result.stlDecls.end());
 
                 // Go to the next sibling node of this tree
                 return CXChildVisit_Continue; 

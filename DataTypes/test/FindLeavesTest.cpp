@@ -1,5 +1,7 @@
 #include "Type/EnumDictionary.hpp"
 #include "Type/SpecifiedPrimitiveDataType.hpp"
+#include "Type/SpecifiedSequenceDataType.hpp"
+
 #include "Algorithm/FindLeaves.hpp"
 
 #include "DataTypeTestSupport.hpp"
@@ -72,6 +74,30 @@ TEST_F(FindLeavesTest, array) {
     for (int i = 0; i < 5; i++) {
         std::string var_name = "var_to_checkpoint[" + std::to_string(i) + "]";
         verifyIntValue(results[i], var_name, var_to_checkpoint[i]);
+    }
+}
+
+TEST_F(FindLeavesTest, vector) {
+    // ARRANGE
+    std::vector<int> var_to_checkpoint = {1, 2, 3, 4, 5};
+    DataType * data_type = new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>");
+    data_type->validate(&dataTypeInator);
+
+    // ACT
+    FindLeavesVisitor visitor("var_to_checkpoint", &var_to_checkpoint);
+    visitor.go(data_type);
+
+    // ASSERT
+    auto results = visitor.getResult();
+    ASSERT_EQ(results.size(), 6);
+    
+    EXPECT_EQ(true, results[0].is_stl);
+    EXPECT_EQ(var_to_checkpoint.size(), results[0].stl_size);
+    EXPECT_EQ(std::string("var_to_checkpoint.size"), results[0].name_stack.toString());
+
+    for (int i = 1; i < results.size(); i++) {
+        std::string var_name = "var_to_checkpoint[" + std::to_string(i-1) + "]";
+        verifyIntValue(results[i], var_name, var_to_checkpoint[i-1]);
     }
 }
 
