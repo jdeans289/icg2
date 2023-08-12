@@ -84,17 +84,7 @@ namespace ClearValue {
     }
 
     bool ClearValueVisitor::visitSequenceType (const SequenceDataType * node) {
-        const DataType * subType = node->getSubType();
-        
-        auto elem_addresses = node->getElementAddresses(address_stack.top());
-
-        for (int i = 0; i < elem_addresses.size(); i++) {
-            address_stack.push( elem_addresses[i] );
-            subType->accept( this );
-            address_stack.pop();
-        }
-
-        return true;    
+        return node->clear(address_stack.top());
     }
 
 }

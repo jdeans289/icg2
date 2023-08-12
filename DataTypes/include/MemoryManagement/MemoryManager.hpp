@@ -163,7 +163,6 @@ class MemoryManager {
     unsigned int debugLevel;
 
     CheckpointAgentBase * checkpointAgent;
-
     DataTypeInator* dataTypeInator;
 
     // TODO: Let's think about this.

@@ -51,6 +51,8 @@ AllocInfo::~AllocInfo() {
     if (storageClass == StorageClass::LOCAL) {
         dataType->deleteInstance(start);
     }
+
+    delete dataType;
 }
 
 // PUBLIC MEMBER FUNCTION

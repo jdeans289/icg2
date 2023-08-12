@@ -18,6 +18,8 @@ SequenceDataType::SequenceDataType ( SequenceDataType const & original) {
     is_valid = original.is_valid;
     typeSpecName = original.typeSpecName;
     elemTypeName = original.elemTypeName;
+    allocator = original.allocator;
+    deAllocator = original.deAllocator;
 
     if (original.subType != NULL) {
         subType = original.subType->clone();
@@ -25,8 +27,6 @@ SequenceDataType::SequenceDataType ( SequenceDataType const & original) {
         subType = NULL;
     }
 }
-
-
 
 // DESTRUCTOR
 SequenceDataType::~SequenceDataType () {

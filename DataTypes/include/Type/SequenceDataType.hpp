@@ -107,9 +107,18 @@ class SequenceDataType : public BaseType {
      * @brief resize the underlying container
      * 
      * @param address address of sequence object to resize
-     * @return int num elements to resize to
+     * @param n_elems int num elements to resize to
+     * @return bool whether the resize was successful
      */
     virtual bool resize (void * address, int n_elems) const = 0;
+
+    /**
+     * @brief clear the underlying container
+     * 
+     * @param address address of sequence object to clear
+     * @return int num elements to resize to
+     */
+    virtual bool clear (void * address) const = 0;
 
 
     private:

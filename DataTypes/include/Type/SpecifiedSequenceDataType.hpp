@@ -24,6 +24,20 @@ class SpecifiedSequenceDataType : public SequenceDataType {
 
     SpecifiedSequenceDataType( std::string typeSpecifierName) : SequenceDataType(typeSpecifierName, sizeof(T), sequence_construct<T>, sequence_destruct<T>) {}
 
+    // Rule of 3
+    ~SpecifiedSequenceDataType() = default;
+    SpecifiedSequenceDataType(const SpecifiedSequenceDataType<T>& other) = default;
+    SpecifiedSequenceDataType& operator= (SpecifiedSequenceDataType<T> rhs) {
+        swap(*this, rhs);
+        return *this;
+    }
+
+    friend void swap(SpecifiedSequenceDataType<T>& a, SpecifiedSequenceDataType<T>& b) {
+        using std::swap;
+        swap (static_cast<SequenceDataType&>(a), static_cast<SequenceDataType&>(b));
+    }
+
+
     DataType * clone () const override {
         return new SpecifiedSequenceDataType<T>( *this );
     }
@@ -54,6 +68,13 @@ class SpecifiedSequenceDataType : public SequenceDataType {
     int getNumElements (void * address) const override {
         T * container = static_cast<T *> (address);
         return container->size();
+    }
+
+    // TODO: Specialize for std::array
+    bool clear (void * address) const override {
+        T * container = static_cast<T *> (address);
+        container->clear();
+        return true;
     }
 
 };

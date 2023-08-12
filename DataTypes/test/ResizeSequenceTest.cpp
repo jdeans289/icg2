@@ -1,7 +1,5 @@
 #include "Algorithm/DataTypeAlgorithm.hpp"
-#include "Type/SpecifiedPrimitiveDataType.hpp"
-#include "Type/SpecifiedSequenceDataType.hpp"
-#include "Type/CompositeDataType.hpp"
+#include "Type/AllTypes.hpp"
 
 #include "DataTypeInator.hpp"
 #include "DataTypeTestSupport.hpp"
@@ -90,169 +88,142 @@ TEST_F( ResizeSequenceTest , nested_sequence ) {
     EXPECT_EQ(10, var[3].size());
 }
 
+class VecClass_static {
+    public:
+    static std::vector<int> v;
+};
 
-// TEST_F(ResizeSequenceTest, primitive) {
-//     // ARRANGE
-//     DataType * type = new DoubleDataType();
+std::vector<int> VecClass_static::v;
 
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
+void addVecClass_staticToDataTypeInator(DataTypeInator& dataTypeInator) {
 
-//     // ASSERT
-//     ASSERT_EQ(false, result);
+    dataTypeInator.addToDictionary("std::vector<int>", new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>"));
 
-    
-//     delete type;
-// }
+    CompositeDataType * vecClassSpec =
+        new CompositeDataType( "VecClass_static", sizeof(VecClass_static), &construct<VecClass_static>, &destruct<VecClass_static>);
+        vecClassSpec->addStaticMember( "v", &VecClass_static::v, "std::vector<int>");
 
-// TEST_F(ResizeSequenceTest, array) {
-//     // ARRANGE
-//     const DataType * type = dataTypeInator.resolve("double[5]");
+    dataTypeInator.addToDictionary("VecClass_static", vecClassSpec);
 
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
+    vecClassSpec->validate(&dataTypeInator);
+}
 
-//     // ASSERT
-//     ASSERT_EQ(false, result);
+TEST_F( ResizeSequenceTest , static_sequence_class ) {
+    // ARRANGE    
+    addVecClass_staticToDataTypeInator(dataTypeInator);
 
-//     delete type;
-// }
+    VecClass_static var;
+    const DataType * type = dataTypeInator.resolve("VecClass_static");
+    ASSERT_TRUE(type != NULL);
 
-// TEST_F(ResizeSequenceTest, multidim_array) {
-//     // ARRANGE
-//     const DataType * type = dataTypeInator.resolve("long[5][4][2][1]");
+    // ACT
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "v.size", 10);
 
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
+    // ASSERT
+    ASSERT_TRUE(result);
+    EXPECT_EQ(10, var.v.size());
+}
 
-//     // ASSERT
-//     ASSERT_EQ(false, result);
+TEST_F(ResizeSequenceTest, primitive) {
+    // ARRANGE
+    DataType * type = new DoubleDataType();
+    int var;
 
-//     delete type;
-// }
+    // ACT
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "", 10);
 
-// TEST_F(ResizeSequenceTest, string) {
-//     // ARRANGE
-//     const DataType * type = dataTypeInator.resolve("std::string");
+    // ASSERT
+    ASSERT_EQ(false, result);
 
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
+    delete type;
+}
 
-//     // ASSERT
-//     ASSERT_EQ(false, result);
+TEST_F(ResizeSequenceTest, string) {
+    // ARRANGE
+    DataType * type = new StringDataType();
+    std::string var;
 
-//     delete type;
-// }
+    // ACT
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "size", 10);
 
-// TEST_F(ResizeSequenceTest, bare_pointer) {
-//     // ARRANGE
-//     const DataType * type = dataTypeInator.resolve("int *");
+    // ASSERT
+    ASSERT_EQ(false, result);
 
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
+    delete type;
+}
 
-//     // ASSERT
-//     ASSERT_EQ(true, result);
-
-//     delete type;
-// }
-
-// TEST_F(ResizeSequenceTest, void_pointer) {
-//     // ARRANGE
-//     const DataType * type = dataTypeInator.resolve("void *");
-
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
-
-//     // ASSERT
-//     ASSERT_EQ(true, result);
-
-//     delete type;
-// }
-
-// TEST_F(ResizeSequenceTest, array_of_pointers) {
-//     // ARRANGE
-//     const DataType * type = dataTypeInator.resolve("int *[6]");
-
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
-
-//     // ASSERT
-//     ASSERT_EQ(true, result);
-
-//     delete type;
-// }
-
-// TEST_F(ResizeSequenceTest, pointer_to_array) {
-//     // ARRANGE
-//     const DataType * type = dataTypeInator.resolve("int (*)[6]");
-
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
-
-//     // ASSERT
-//     ASSERT_EQ(true, result);
-
-//     delete type;
-// }
-
-// TEST_F(ResizeSequenceTest, class_with_no_pointers) {
-//     // ARRANGE
-//     addPointerTestClassesToDictionary(&dataTypeInator);
-//     const DataType * type = dataTypeInator.resolve("ClassWithNoPointers");
-
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
-
-//     // ASSERT
-//     ASSERT_EQ(false, result);
-
-//     delete type;
-// }
-
-// TEST_F(ResizeSequenceTest, class_with_pointers) {
-//     // ARRANGE
-//     addPointerTestClassesToDictionary(&dataTypeInator);
-
-//     const DataType * type = dataTypeInator.resolve("ClassWithPointer");
-
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
-
-//     // ASSERT
-//     ASSERT_EQ(true, result);
-
-//     delete type;
-// }
-
-// TEST_F(ResizeSequenceTest, class_with_nested_pointers) {
-//     // ARRANGE
-//     addPointerTestClassesToDictionary(&dataTypeInator);
-
-//     const DataType * type = dataTypeInator.resolve("ClassWithNestedClasses");
-
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
-
-//     // ASSERT
-//     ASSERT_EQ(true, result);
-
-//     delete type;
-// }
+TEST_F(ResizeSequenceTest, array) {
+    // ARRANGE
+    const DataType * type = dataTypeInator.resolve("double[5]");
+    double var[5];
 
 
-// TEST_F(ResizeSequenceTest, enum) {
-//     // ARRANGE
-//     EnumDictionary enumDictionary;
-//     addDayOfWeekEnumToTypeDictionary(&dataTypeInator, &enumDictionary);
+    // ACT
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "[2].size", 10);
 
-//     const DataType * type = dataTypeInator.resolve("DayOfWeek");
+    // ASSERT
+    ASSERT_EQ(false, result);
 
-//     // ACT
-//     bool result = DataTypeAlgorithm::resizeSequence(type);
+    delete type;
+}
 
-//     // ASSERT
-//     ASSERT_EQ(false, result);
+TEST_F(ResizeSequenceTest, array_bad_index) {
+    // ARRANGE
+    const DataType * type = dataTypeInator.resolve("double[5]");
+    double var[5];
 
-//     delete type;
-// }
+
+    // ACT
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "not_an_index", 10);
+
+    // ASSERT
+    ASSERT_EQ(false, result);
+
+    delete type;
+}
+
+TEST_F(ResizeSequenceTest, array_out_of_bounds) {
+    // ARRANGE
+    const DataType * type = dataTypeInator.resolve("double[5]");
+    double var[5];
+
+
+    // ACT
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "[100]", 10);
+
+    // ASSERT
+    ASSERT_EQ(false, result);
+
+    delete type;
+}
+
+
+TEST_F(ResizeSequenceTest, bare_pointer) {
+    // ARRANGE
+    const DataType * type = dataTypeInator.resolve("int *");
+    int * var;
+
+    // ACT
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "", 10);
+
+    // ASSERT
+    ASSERT_EQ(false, result);
+
+    delete type;
+}
+
+TEST_F(ResizeSequenceTest, enum) {
+    // ARRANGE
+    EnumDictionary enumDictionary;
+    addDayOfWeekEnumToTypeDictionary(&dataTypeInator, &enumDictionary);
+    DayOfWeek var = Monday;
+    const DataType * type = dataTypeInator.resolve("DayOfWeek");
+
+    // ACT
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "", 10);
+
+    // ASSERT
+    ASSERT_EQ(false, result);
+
+    delete type;
+}

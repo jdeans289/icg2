@@ -16,11 +16,8 @@ namespace PrintValue {
     }
 
     bool PrintValueVisitor::visitCompositeType(const CompositeDataType * node) {
-        // MEMBER FUNCTION
         s << "{";
         int counter = 0;
-
-        // Static members
 
         // Normal members
         for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++, counter++) {

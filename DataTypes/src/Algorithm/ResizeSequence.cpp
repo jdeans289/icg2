@@ -96,7 +96,6 @@ namespace ResizeSequence {
     }
 
     bool ResizeSequenceVisitor::visitPointerType(const PointerDataType * node) {
-        // We're at a leaf, so if there's anything left in the name queue something has gone wrong
         return visitLeaf(node);
     }
 

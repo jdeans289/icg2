@@ -148,5 +148,28 @@ TEST_F(ClearValueTest, composite) {
     }
 }
 
+TEST_F(ClearValueTest, composite) {
+    // ARRANGE
+    CompositeDataType type( "Foo", sizeof(Foo), NULL, NULL);
+    type.addRegularMember("x", offsetof(Foo, x), "int");
+    type.addRegularMember("y", offsetof(Foo, y), "double[5]");
+    type.validate(&dataTypeInator);
+
+    Foo var_to_clear;
+    var_to_clear.x = 5;
+    for (int i = 0; i < 5; i++) {
+        var_to_clear.y[i] = i+5;
+    }
+
+    // ACT
+    DataTypeAlgorithm::clearValue(&type,   &var_to_clear);
+
+    // ASSERT
+    ASSERT_EQ(0, var_to_clear.x);
+    for (int i = 0; i < 5; i++) {
+        ASSERT_EQ(0, var_to_clear.y[i]);
+    }
+}
+
 
 }

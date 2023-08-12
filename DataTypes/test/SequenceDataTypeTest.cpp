@@ -22,10 +22,22 @@ class SequenceDataTypeTest : public ::testing::Test {
    ================================================================================
 */
 
-TEST_F( SequenceDataTypeTest, validate_1 ) {
+TEST_F( SequenceDataTypeTest, assignment_operator) {
+    // ARRANGE
+    SpecifiedSequenceDataType<std::vector<int>> type1("fakename");
+    SpecifiedSequenceDataType<std::vector<int>> type2("fakename_to_override");
+
+    // ACT
+    type2 = type1;
+
+    // ASSERT
+    ASSERT_EQ(type1.getTypeSpecName(), type2.getTypeSpecName());
+}
+
+TEST_F( SequenceDataTypeTest, validate ) {
 
     // ARRANGE
-    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "std::vector<int>");
+    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "std::vector<int>" );
 
     // ACT
     bool validation_result = type->validate(dataTypeInator);
@@ -34,6 +46,52 @@ TEST_F( SequenceDataTypeTest, validate_1 ) {
     ASSERT_EQ(true, validation_result);
 }
 
+TEST_F( SequenceDataTypeTest, validate_fails ) {
+
+    // ARRANGE
+    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "not_an_stl" );
+
+    // ACT
+    bool validation_result = type->validate(dataTypeInator);
+
+    // ASSERT
+    ASSERT_EQ(false, validation_result);
+}
+
+TEST_F( SequenceDataTypeTest, validate_fails2 ) {
+
+    // ARRANGE
+    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "std::vector<no_such_type>" );
+
+    // ACT
+    bool validation_result = type->validate(dataTypeInator);
+
+    // ASSERT
+    ASSERT_EQ(false, validation_result);
+}
+
+TEST_F( SequenceDataTypeTest, allocate ) {
+
+    // ARRANGE
+    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "std::vector<int>");
+
+    bool validation_result = type->validate(dataTypeInator);
+    ASSERT_EQ(true, validation_result);
+
+    // ACT
+    std::vector<int> * v = (std::vector<int> *) type->createInstance(1);
+
+    // ASSERT
+    // just make sure it doesn't segfault? not really sure
+    for (int i = 0; i < 10; i++) {
+        v->push_back(i);
+    }
+
+    ASSERT_EQ(10, v->size());
+
+    type->deleteInstance(v);
+    delete type;
+}
 
 TEST_F( SequenceDataTypeTest, getSubType ) {
 
@@ -180,4 +238,19 @@ TEST_F( SequenceDataTypeTest , resize_smaller ) {
     for (int i = 0; i < 3; i++) {
         EXPECT_EQ(i+1, *(int*)elems[i]);
     }
+}
+
+TEST_F( SequenceDataTypeTest , clear ) {
+
+    // ARRANGE    
+    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "std::vector<int>");
+    type->validate(dataTypeInator);
+
+    std::vector<int> vec ({1, 2, 3, 4, 5});
+
+    // ACT
+    type->clear(&vec);
+
+    // ASSERT
+    EXPECT_EQ(vec.size(), 0);
 }

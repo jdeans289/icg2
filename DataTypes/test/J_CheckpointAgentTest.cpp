@@ -48,10 +48,6 @@ TEST_F (J_CheckpointAgentTest, whole_format_basic_local) {
 int my_int ;
 
 
-// Clear all allocations to 0.
-clear_all_vars();
-
-
 // Variable Assignments.
 my_int = 42 ;
 )");
@@ -77,10 +73,6 @@ TEST_F (J_CheckpointAgentTest, whole_format_basic_extern) {
     // std::cout << ss.str() << std::endl;
 
 std::string expected(R"(// Variable Declarations.
-
-
-// Clear all allocations to 0.
-clear_all_vars();
 
 
 // Variable Assignments.
@@ -192,10 +184,6 @@ TEST_F (J_CheckpointAgentTest, dump_string) {
 std::string str_to_checkpoint ;
 
 
-// Clear all allocations to 0.
-clear_all_vars();
-
-
 // Variable Assignments.
 str_to_checkpoint = "Ra Ra Rasputin" ;
 )");
@@ -260,10 +248,6 @@ TEST_F (J_CheckpointAgentTest, whole_format_pointers_galore) {
     std::string expected(R"(// Variable Declarations.
 
 
-// Clear all allocations to 0.
-clear_all_vars();
-
-
 // Variable Assignments.
 var_to_checkpoint.x = 100 ;
 var_to_checkpoint.y = 5.5 ;
@@ -294,9 +278,6 @@ TEST_F (J_CheckpointAgentTest, restore_basic_local) {
     std::string checkpoint_str(R"(// Variable Declarations.
 int my_int ;
 
-
-// Clear all allocations to 0.
-clear_all_vars();
 
 
 // Variable Assignments.
@@ -431,10 +412,6 @@ TEST_F (J_CheckpointAgentTest, whole_restore_pointers_galore) {
     addClassTwoToTypeDictionary(&dataTypeInator);
 
     std::string checkpoint_str(R"(// Variable Declarations.
-
-
-// Clear all allocations to 0.
-clear_all_vars();
 
 
 // Variable Assignments.

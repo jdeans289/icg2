@@ -45,11 +45,7 @@ int J_CheckpointAgent::dump ( std::ostream& checkpoint_out, std::vector<AllocInf
         }
     }
 
-    // 3) Write a "clear_all_vars" command.
-    checkpoint_out << std::endl << std::endl << "// Clear all allocations to 0." << std::endl;
-    checkpoint_out << "clear_all_vars();" << std::endl;
-
-    // 4) Dump the contents of each of the local and extern allocations.
+    // Dump the contents of each of the local and extern allocations.
     checkpoint_out << std::endl << std::endl << "// Variable Assignments." << std::endl;
     checkpoint_out.flush();
 
@@ -285,8 +281,6 @@ void J_CheckpointAgent::handleResizeCommand (std::string command_str, const std:
         int assignment_start = cmd_position + resize_command.size();
         command_str = command_str.substr(assignment_start);
     }
-
-    std::cout << "Got assignment: " << command_str << std::endl;
 
     ParsedAssignment assignment(command_str);
 
