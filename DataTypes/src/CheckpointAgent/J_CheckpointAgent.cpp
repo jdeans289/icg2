@@ -90,6 +90,9 @@ bool J_CheckpointAgent::writeAssignment( std::ostream& checkpoint_out, const All
         } else if (leaf.is_stl) {
             checkpoint_out << resize_command << " ";
             value = std::to_string(leaf.stl_size);
+        } else if (leaf.value->getValueType() == Value::ValueType::STRING) {
+            StringValue * str_val = static_cast<StringValue *> (leaf.value);
+            value = str_val->getEscapedString();
         } else {
             value = leaf.value->toString();
         }
@@ -245,8 +248,12 @@ bool J_CheckpointAgent::restoreAssignment(std::string assignment_string, const s
         // There's a better design than this
         // But we gotta handle special cases one way or another
 
-        StringValue * ptr_name_value = dynamic_cast<StringValue *> (this_value);
-        if (ptr_name_value == NULL ||  ptr_name_value->getRawString().size() < 2 ||  ptr_name_value->getRawString().at(0) != '&' ) {
+        if (this_value->getValueType() != Value::ValueType::STRING) {
+            throw std::logic_error(full_varname + " is a pointer, but the value assigned is not compatible.");
+        }
+
+        StringValue * ptr_name_value = static_cast<StringValue *> (this_value);
+        if (ptr_name_value->getRawString().size() < 2 ||  ptr_name_value->getRawString().at(0) != '&' ) {
             throw std::logic_error(full_varname + " is a pointer, but the value assigned is not compatible.");
         }
 
@@ -288,8 +295,12 @@ void J_CheckpointAgent::handleResizeCommand (std::string command_str, const std:
     std::string full_varname = assignment.getVariableName();
     Value * size_value = assignment.getValue();
 
-    // uuugh this sucks
-    IntegerValue * size_value_int = dynamic_cast<IntegerValue *> (size_value);
+    if (size_value->getValueType() != Value::ValueType::INTEGER) {
+        std::cerr << "Invalid STL resize command: " << command_str << std::endl;
+        return;
+    }
+
+    IntegerValue * size_value_int = static_cast<IntegerValue *> (size_value);
     int num_elems = size_value_int->getIntegerValue();
 
     MutableVariableName var_elems (full_varname);

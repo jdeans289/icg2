@@ -73,8 +73,8 @@ public:
      */
     bool assignValue(void * address, Value * value) const {
 
-        NumericValue * numeric_value_p = dynamic_cast<NumericValue*>(value);
-        if (numeric_value_p) {
+        if (value->getValueType() == Value::ValueType::INTEGER || value->getValueType() == Value::ValueType::FLOATING_POINT) {
+            NumericValue * numeric_value_p = static_cast<NumericValue*>(value);
             if ( isFloatingPoint() ) {
                 *(T*)address =  numeric_value_p->getFloatingPointValue();
             } else {
