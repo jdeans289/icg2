@@ -90,6 +90,9 @@ bool J_CheckpointAgent::writeAssignment( std::ostream& checkpoint_out, const All
         } else if (leaf.is_stl) {
             checkpoint_out << resize_command << " ";
             value = std::to_string(leaf.stl_size);
+        } else if (leaf.value->getValueType() == Value::ValueType::STRING) {
+            StringValue * str_val = static_cast<StringValue *> (leaf.value);
+            value = str_val->getEscapedString();
         } else {
             value = leaf.value->toString();
         }

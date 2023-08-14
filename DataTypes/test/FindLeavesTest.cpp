@@ -192,7 +192,7 @@ TEST_F(FindLeavesTest, write_checkpoint_strings) {
     EXPECT_EQ("var_to_checkpoint.str", leaf.name_stack.toString());
     StringValue * str_val = dynamic_cast <StringValue *> (leaf.value);
     ASSERT_TRUE(str_val != NULL);
-    ASSERT_EQ ("\"Hello world :)\"", str_val->toString());    
+    ASSERT_EQ ("Hello world :)", str_val->toString());    
 
 }
 }

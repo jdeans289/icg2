@@ -15,7 +15,7 @@ void StringValue::print(std::ostream &s) const {
 }
 
 std::string StringValue::toString() const {
-    return getEscapedString();
+    return getRawString();
 }
 
 std::string StringValue::getRawString() const {
