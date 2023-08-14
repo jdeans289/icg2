@@ -36,16 +36,14 @@ namespace AssignValue {
     }
 
     bool AssignValueVisitor::visitStringType(const StringDataType * node) {
-        // TODO: implement double dispatch visitors for the Value hierarchy.... maybe
-        StringValue * str_value = dynamic_cast <StringValue * > (value_to_assign);
-
-        if (str_value == NULL) {
+        if (value_to_assign->getValueType() == Value::ValueType::STRING) {
+            StringValue * str_value = static_cast <StringValue * > (value_to_assign);
+            *(std::string *) address = str_value->getRawString();
+            return true;
+        } else {
             std::cerr << "ERROR: Attempt to assign non-string value to a string type." << std::endl;
             return false;
         }
-
-        *(std::string *) address = str_value->getRawString();
-        return true;
     }
 
     bool AssignValueVisitor::visitCompositeType(const CompositeDataType * node) {
@@ -59,8 +57,8 @@ namespace AssignValue {
     }
 
     bool AssignValueVisitor::visitPointerType(const PointerDataType * node) {
-        PointerValue * pointer_value_p = dynamic_cast<PointerValue*>(value_to_assign);
-        if (pointer_value_p) {
+        if (value_to_assign->getValueType() == Value::ValueType::POINTER) {
+            PointerValue * pointer_value_p = static_cast<PointerValue*>(value_to_assign);
             *(void**)address =  pointer_value_p->getPointer();
             return true;
         } else {
@@ -70,9 +68,8 @@ namespace AssignValue {
     }
 
     bool AssignValueVisitor::visitEnumeratedType(const EnumDataType * node) {
-        IntegerValue * e_val = dynamic_cast<IntegerValue *> (value_to_assign);
-
-        if (e_val) {
+        if (value_to_assign->getValueType() == Value::ValueType::INTEGER) {
+            IntegerValue * e_val = static_cast<IntegerValue *> (value_to_assign);
             return node->assignValue(address, e_val->getIntegerValue());
         } else {
             std::cerr << "ERROR: Attempt to assign non-integral value to an enum." << std::endl;
