@@ -14,40 +14,13 @@ SequenceDataType::SequenceDataType( std::string typeSpecName, int typeSize, void
 /* ================================================================================= */
 /*                         RULE OF THREE (and a half) INTERFACE                      */
 /* ================================================================================= */
-SequenceDataType::SequenceDataType ( SequenceDataType const & original) {
-    is_valid = original.is_valid;
-    typeSpecName = original.typeSpecName;
-    elemTypeName = original.elemTypeName;
-    allocator = original.allocator;
-    deAllocator = original.deAllocator;
-
-    if (original.subType != NULL) {
-        subType = original.subType->clone();
-    } else {
-        subType = NULL;
-    }
-}
 
 // DESTRUCTOR
-SequenceDataType::~SequenceDataType () {
-    if ( subType != NULL ) {
-        delete subType;
-    }
-}
-
-// SWAP
-void swap(SequenceDataType& a, SequenceDataType& b) 
-{
-    // enable ADL
-    using std::swap;
-    swap(a.is_valid, b.is_valid);
-    swap(a.typeSpecName, b.typeSpecName);
-    swap(a.elemTypeName, b.elemTypeName);
-    swap(a.subType, b.subType);
-}
+SequenceDataType::~SequenceDataType () {}
 
 
-bool SequenceDataType::validate(const DataTypeInator * dataTypeInator) {
+
+bool SequenceDataType::validate(DataTypeInator * dataTypeInator) {
 
     if (!is_valid) {
         // Parse the typespec name to get the type of the elements
@@ -100,7 +73,7 @@ std::string SequenceDataType::getTypeSpecName() const {
     return typeSpecName;
 }
 
-const DataType * SequenceDataType::getSubType() const {
+std::shared_ptr<const DataType> SequenceDataType::getSubType() const {
     return subType;
 }
 
@@ -110,5 +83,5 @@ std::string SequenceDataType::makeDeclaration(std::string declarator) const {
 }
 
 bool SequenceDataType::accept (DataTypeVisitor * visitor) const {
-    return visitor->visitSequenceType(this);
+    return visitor->visitSequenceType(std::static_pointer_cast<const SequenceDataType>(shared_from_this()));
 }

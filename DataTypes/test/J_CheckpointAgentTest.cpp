@@ -143,7 +143,7 @@ TEST_F (J_CheckpointAgentTest, vector_assignment) {
     // var to checkpoint
     std::vector<int> var_to_checkpoint = {10, 20, 30};
 
-    DataType * type = new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>");
+    std::shared_ptr<DataType> type (new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>"));
     type->validate(&dataTypeInator);
 
     AllocInfo my_alloc_info ("var_to_checkpoint", type, &var_to_checkpoint);
@@ -535,7 +535,7 @@ TEST_F (J_CheckpointAgentTest, vector_resize_cmd) {
     // var to checkpoint
     std::vector<int> var_to_checkpoint;
 
-    DataType * type = new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>");
+    std::shared_ptr<DataType> type (new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>"));
     type->validate(&dataTypeInator);
 
     AllocInfo my_alloc_info ("var_to_checkpoint", type, &var_to_checkpoint);

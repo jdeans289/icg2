@@ -33,6 +33,8 @@ class ParsedDeclaration {
     
     bool match(Token::e expected_token);
 
+    void setName(std::string name);
+
     std::deque<std::string> qualifiedTypeNameParts;
     std::vector<ParsedDeclaration> templateParams;
     std::string typeSpec;

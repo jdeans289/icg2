@@ -28,14 +28,14 @@ namespace AssignValue {
 
     AssignValueVisitor::AssignValueVisitor(Value * value, void * address) : value_to_assign(value), address(address) {}
 
-    bool AssignValueVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
+    bool AssignValueVisitor::visitPrimitiveDataType(std::shared_ptr<const PrimitiveDataType> node) {
         // Primitives are actually an abstract base for the SpecifiedPrimitive<T>  type
         // So we use the assignValue() interface from PrimitiveType
 
         return node->assignValue(address, value_to_assign);
     }
 
-    bool AssignValueVisitor::visitStringType(const StringDataType * node) {
+    bool AssignValueVisitor::visitStringType(std::shared_ptr<const StringDataType> node) {
         if (value_to_assign->getValueType() == Value::ValueType::STRING) {
             StringValue * str_value = static_cast <StringValue * > (value_to_assign);
             *(std::string *) address = str_value->getRawString();
@@ -46,17 +46,17 @@ namespace AssignValue {
         }
     }
 
-    bool AssignValueVisitor::visitCompositeType(const CompositeDataType * node) {
+    bool AssignValueVisitor::visitCompositeType(std::shared_ptr<const CompositeDataType> node) {
         std::cerr << "Must assign to leaf type" << std::endl;
         return false;
     }
 
-    bool AssignValueVisitor::visitArrayType(const ArrayDataType * node) {
+    bool AssignValueVisitor::visitArrayType(std::shared_ptr<const ArrayDataType> node) {
         std::cerr << "Must assign to leaf type" << std::endl;
         return false;
     }
 
-    bool AssignValueVisitor::visitPointerType(const PointerDataType * node) {
+    bool AssignValueVisitor::visitPointerType(std::shared_ptr<const PointerDataType> node) {
         if (value_to_assign->getValueType() == Value::ValueType::POINTER) {
             PointerValue * pointer_value_p = static_cast<PointerValue*>(value_to_assign);
             *(void**)address =  pointer_value_p->getPointer();
@@ -67,7 +67,7 @@ namespace AssignValue {
         }
     }
 
-    bool AssignValueVisitor::visitEnumeratedType(const EnumDataType * node) {
+    bool AssignValueVisitor::visitEnumeratedType(std::shared_ptr<const EnumDataType> node) {
         if (value_to_assign->getValueType() == Value::ValueType::INTEGER) {
             IntegerValue * e_val = static_cast<IntegerValue *> (value_to_assign);
             return node->assignValue(address, e_val->getIntegerValue());
@@ -77,7 +77,7 @@ namespace AssignValue {
         }
     }
 
-    bool AssignValueVisitor::visitSequenceType (const SequenceDataType * node) {
+    bool AssignValueVisitor::visitSequenceType (std::shared_ptr<const SequenceDataType>  node) {
         std::cerr << "Must assign to leaf type" << std::endl;
         return false;
     }

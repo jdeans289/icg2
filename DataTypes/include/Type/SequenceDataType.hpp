@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Type/BaseType.hpp"
+#include "Type/DataType.hpp"
 #include "DataTypeInator.hpp"
 
 #include <stddef.h>
@@ -12,7 +12,7 @@
  * @brief Represents an STL sequence type - vector, list, deque, array
  * 
  */
-class SequenceDataType : public BaseType {
+class SequenceDataType : public DataType {
 
     public:
 
@@ -31,14 +31,12 @@ class SequenceDataType : public BaseType {
     /**
      Copy Constructor for SequenceDataType.
      */
-    SequenceDataType ( const SequenceDataType & original );
+    SequenceDataType ( const SequenceDataType & original ) = delete;
 
     /**
      Destructor for SequenceDataType.
      */
     ~SequenceDataType ();
-
-    friend void swap (SequenceDataType& a, SequenceDataType& b);
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                           */
@@ -46,7 +44,7 @@ class SequenceDataType : public BaseType {
 
     /**
      */
-     bool validate(const DataTypeInator* dataTypeInator) override;
+     bool validate(DataTypeInator* dataTypeInator) override;
 
      bool isValid() const override;
 
@@ -83,9 +81,9 @@ class SequenceDataType : public BaseType {
     /**
      * @brief Get the type of the elements of this sequence
      * 
-     * @return const DataType* 
+     * @return std::shared_ptr<const DataType> 
      */
-    const DataType * getSubType() const;
+    std::shared_ptr<const DataType> getSubType() const;
 
     /**
      * @brief Given the address of a sequence of this type, get a list of all the addresses of the elements within.
@@ -128,7 +126,7 @@ class SequenceDataType : public BaseType {
     bool is_valid;
     std::string typeSpecName;
     std::string elemTypeName;
-    const DataType * subType;
+    std::shared_ptr<const DataType> subType;
     void* (*allocator)(int);
     void (*deAllocator)(void*);
 };

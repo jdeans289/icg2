@@ -12,7 +12,7 @@ const std::string J_CheckpointAgent::error_str = "<UNDEFINED>";
 const std::string J_CheckpointAgent::resize_command = "RESIZE_STL";
 
 
-J_CheckpointAgent::J_CheckpointAgent(const DataTypeInator * inator) : dataTypeInator(inator) {}
+J_CheckpointAgent::J_CheckpointAgent(DataTypeInator * inator) : dataTypeInator(inator) {}
 
 
 /* ==================================================================== */
@@ -103,7 +103,7 @@ bool J_CheckpointAgent::writeAssignment( std::ostream& checkpoint_out, const All
 }
 
 
-std::string J_CheckpointAgent::resolvePointer(void * ptr_to_resolve, const DataType * expected_type, const std::vector<AllocInfo *>& allocs_to_search) {
+std::string J_CheckpointAgent::resolvePointer(void * ptr_to_resolve, std::shared_ptr<const DataType> expected_type, const std::vector<AllocInfo *>& allocs_to_search) {
     for (auto allocInfo : allocs_to_search) {
         if (allocInfo->contains(ptr_to_resolve)) {
 
@@ -239,7 +239,7 @@ bool J_CheckpointAgent::restoreAssignment(std::string assignment_string, const s
         throw std::logic_error("Could not find variable named " + full_varname);
     }
 
-    const DataType * this_type = result.type;
+    std::shared_ptr<const DataType> this_type = result.type;
     void * this_addr = result.address;
 
     // Special case - pointer :(

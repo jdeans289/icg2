@@ -16,24 +16,24 @@ namespace FindLeaves {
 
     // Harvest all the values from the tree
 
-    bool FindLeavesVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
+    bool FindLeavesVisitor::visitPrimitiveDataType(std::shared_ptr<const PrimitiveDataType> node) {
         // Add to the leaf stack
         leaves.emplace_back(current_name_stack, DataTypeAlgorithm::getValue(node, address_stack.top()));
         return true;
     }
 
-    bool FindLeavesVisitor::visitStringType(const StringDataType * node) {
+    bool FindLeavesVisitor::visitStringType(std::shared_ptr<const StringDataType> node) {
         // Add to the leaf stack
         leaves.emplace_back(current_name_stack, DataTypeAlgorithm::getValue(node, address_stack.top()));
 
         return true;
     }
 
-    bool FindLeavesVisitor::visitCompositeType(const CompositeDataType * node) {
+    bool FindLeavesVisitor::visitCompositeType(std::shared_ptr<const CompositeDataType> node) {
         for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
             NormalStructMember * member = *it;
             
-            const DataType * member_subtype = member->getSubType();
+            std::shared_ptr<const DataType> member_subtype = member->getSubType();
             // Push the member name on stack
             
             current_name_stack.pushName(member->getName());
@@ -53,8 +53,8 @@ namespace FindLeaves {
         return true;
     }
 
-    bool FindLeavesVisitor::visitArrayType(const ArrayDataType * node) {
-        const DataType * subtype = node->getSubType();
+    bool FindLeavesVisitor::visitArrayType(std::shared_ptr<const ArrayDataType> node) {
+        std::shared_ptr<const DataType> subtype = node->getSubType();
         for (int i = 0; i < node->getElementCount(); i++) {
             void * elemAddress = (char *) address_stack.top() + (i * subtype->getSize());
 
@@ -72,7 +72,7 @@ namespace FindLeaves {
         return true;
     }
 
-    bool FindLeavesVisitor::visitPointerType(const PointerDataType * node) {
+    bool FindLeavesVisitor::visitPointerType(std::shared_ptr<const PointerDataType> node) {
         // A pointer is a leaf type
         
         // Add this name to the leaf stack
@@ -82,7 +82,7 @@ namespace FindLeaves {
         return true;
     }
 
-    bool FindLeavesVisitor::visitEnumeratedType(const EnumDataType * node) {
+    bool FindLeavesVisitor::visitEnumeratedType(std::shared_ptr<const EnumDataType> node) {
         // An enum is a leaf type
 
         // Add this name to the leaf stack
@@ -91,7 +91,7 @@ namespace FindLeaves {
         return true;
     }
 
-    bool FindLeavesVisitor::visitSequenceType (const SequenceDataType * node) {
+    bool FindLeavesVisitor::visitSequenceType (std::shared_ptr<const SequenceDataType>  node) {
         // A sequence must register its size as a leaf!
         current_name_stack.pushName("size");
         int stl_size = node->getNumElements(address_stack.top());
@@ -104,7 +104,7 @@ namespace FindLeaves {
         leaves.push_back(size_leaf);
 
         // Continue traversal
-        const DataType * subType = node->getSubType();
+        std::shared_ptr<const DataType> subType = node->getSubType();
         auto elem_addresses = node->getElementAddresses(address_stack.top());
 
         for (int i = 0; i < elem_addresses.size(); i++) {

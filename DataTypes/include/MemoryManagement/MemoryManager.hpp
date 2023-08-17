@@ -139,9 +139,9 @@ class MemoryManager {
      * @brief Get the DataType of the given variable
      * 
      * @param name variable name to search for
-     * @return const DataType* type of variable, or NULL if not found
+     * @return std::shared_ptr<const DataType> type of variable, or NULL if not found
      */
-    const DataType* getDataTypeOf(const std::string& name);
+    std::shared_ptr<const DataType> getDataTypeOf(const std::string& name);
 
     /**
      * @brief Set the CheckPointAgent 

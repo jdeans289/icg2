@@ -36,6 +36,7 @@ int main(int argc, char ** argv) {
                                                 /* unsaved_files= */        nullptr, 
                                                 /* num_unsaved_files= */    0, 
                                                 /* options= */              CXTranslationUnit_SkipFunctionBodies);
+
     if (unit == nullptr) {
         std::cerr << "Unable to parse translation unit. Quitting." << std::endl;
         exit(-1);
@@ -60,7 +61,6 @@ int main(int argc, char ** argv) {
 
     std::string stl_key = "stls";
     top_level_objects_list[stl_key] = visitor.getSTLDeclInfo();
-
 
     // Write the io_<headerfile> file
     std::ofstream outfile;

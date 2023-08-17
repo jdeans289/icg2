@@ -10,7 +10,7 @@ class J_CheckpointAgent : public CheckpointAgentBase {
 
     public:
 
-    J_CheckpointAgent(const DataTypeInator * inator);
+    J_CheckpointAgent(DataTypeInator * inator);
 
     /**
      */
@@ -53,10 +53,10 @@ class J_CheckpointAgent : public CheckpointAgentBase {
 
     private:
 
-    const DataTypeInator * dataTypeInator;
+    DataTypeInator * dataTypeInator;
 
     static std::string getCheckpointableName(const AllocInfo * alloc);
-    static std::string resolvePointer(void * ptr_to_resolve, const DataType * expected_type, const std::vector<AllocInfo *>& allocs_to_search);
+    static std::string resolvePointer(void * ptr_to_resolve, std::shared_ptr<const DataType> expected_type, const std::vector<AllocInfo *>& allocs_to_search);
     static AllocInfo * findAllocByName(std::string name, std::vector<AllocInfo *> search_allocs);
     static void *  lookupPointer(std::string varname, const std::vector<AllocInfo *>& allocs_to_search);
     static void handleResizeCommand (std::string command_str, const std::vector<AllocInfo *>& allocs_to_search);

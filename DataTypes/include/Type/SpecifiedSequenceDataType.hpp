@@ -26,21 +26,8 @@ class SpecifiedSequenceDataType : public SequenceDataType {
 
     // Rule of 3
     ~SpecifiedSequenceDataType() = default;
-    SpecifiedSequenceDataType(const SpecifiedSequenceDataType<T>& other) = default;
-    SpecifiedSequenceDataType& operator= (SpecifiedSequenceDataType<T> rhs) {
-        swap(*this, rhs);
-        return *this;
-    }
-
-    friend void swap(SpecifiedSequenceDataType<T>& a, SpecifiedSequenceDataType<T>& b) {
-        using std::swap;
-        swap (static_cast<SequenceDataType&>(a), static_cast<SequenceDataType&>(b));
-    }
-
-
-    DataType * clone () const override {
-        return new SpecifiedSequenceDataType<T>( *this );
-    }
+    SpecifiedSequenceDataType(const SpecifiedSequenceDataType<T>& other) = delete;
+    SpecifiedSequenceDataType& operator= (SpecifiedSequenceDataType<T> rhs) = delete;
 
     std::vector<void *> getElementAddresses (void * address) const override {
         std::vector<void *> addresses;
