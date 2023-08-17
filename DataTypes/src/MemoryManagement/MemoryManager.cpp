@@ -42,7 +42,7 @@ void* MemoryManager::do_declare_var(const std::string& abstract_declarator,
     }
 
     // Look up the type
-    const DataType * type = dataTypeInator->resolve(abstract_declarator);
+    std::shared_ptr<const DataType> type = dataTypeInator->resolve(abstract_declarator);
     if (type == NULL) {
         std::cerr << "ERROR: Unable to resolve type string \"" << abstract_declarator << "\" for variable \"" << variable_name << "\", cannot declare." << std::endl;
         return ((void*)NULL);
@@ -265,7 +265,7 @@ AllocInfo* MemoryManager::getAllocInfoNamed( const std::string& name ) {
 
 
 // MEMBER FUNCTION
-const DataType* MemoryManager::getDataTypeOf( const std::string& varname ) {
+std::shared_ptr<const DataType> MemoryManager::getDataTypeOf( const std::string& varname ) {
     AllocInfo * allocInfo = getAllocInfoNamed(varname);
     if (allocInfo == NULL) {
         return NULL;

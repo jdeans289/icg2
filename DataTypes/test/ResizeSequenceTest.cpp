@@ -17,7 +17,7 @@ class ResizeSequenceTest : public ::testing::Test {
 TEST_F( ResizeSequenceTest , bare_sequence ) {
 
     // ARRANGE    
-    SequenceDataType * type = new SpecifiedSequenceDataType<std::vector<int>>(  "std::vector<int>");
+    std::shared_ptr<SequenceDataType> type = std::make_shared<SpecifiedSequenceDataType<std::vector<int>>>("std::vector<int>");
     type->validate(&dataTypeInator);
 
     std::vector<int> vec({1, 2, 3, 4, 5});
@@ -38,6 +38,7 @@ class VecClass {
 void addVecClassToDataTypeInator(DataTypeInator& dataTypeInator) {
 
     SequenceDataType * vecType = new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>");
+
     vecType->validate(&dataTypeInator);
     dataTypeInator.addToDictionary("std::vector<int>", vecType);
 
@@ -56,7 +57,7 @@ TEST_F( ResizeSequenceTest , sequence_nested_in_class ) {
     addVecClassToDataTypeInator(dataTypeInator);
 
     VecClass var[5];
-    const DataType * type = dataTypeInator.resolve("VecClass[4]");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("VecClass[4]");
     ASSERT_TRUE(type != NULL);
 
     // ACT
@@ -65,6 +66,8 @@ TEST_F( ResizeSequenceTest , sequence_nested_in_class ) {
     // ASSERT
     ASSERT_TRUE(result);
     EXPECT_EQ(10, var[3].v.size());
+
+
 }
 
 TEST_F( ResizeSequenceTest , nested_sequence ) {
@@ -75,7 +78,7 @@ TEST_F( ResizeSequenceTest , nested_sequence ) {
     dataTypeInator.validateDictionary();
 
     std::vector<std::vector<int>> var (5);
-    const DataType * type = dataTypeInator.resolve("std::vector<std::vector<int>>");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("std::vector<std::vector<int>>");
     ASSERT_TRUE(type != NULL);
 
     // ACT
@@ -113,7 +116,7 @@ TEST_F( ResizeSequenceTest , static_sequence_class ) {
     addVecClass_staticToDataTypeInator(dataTypeInator);
 
     VecClass_static var;
-    const DataType * type = dataTypeInator.resolve("VecClass_static");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("VecClass_static");
     ASSERT_TRUE(type != NULL);
 
     // ACT
@@ -126,7 +129,7 @@ TEST_F( ResizeSequenceTest , static_sequence_class ) {
 
 TEST_F(ResizeSequenceTest, primitive) {
     // ARRANGE
-    DataType * type = new DoubleDataType();
+    std::shared_ptr<DataType> type = std::make_shared<DoubleDataType>();
     int var;
 
     // ACT
@@ -135,12 +138,12 @@ TEST_F(ResizeSequenceTest, primitive) {
     // ASSERT
     ASSERT_EQ(false, result);
 
-    delete type;
+
 }
 
 TEST_F(ResizeSequenceTest, string) {
     // ARRANGE
-    DataType * type = new StringDataType();
+    std::shared_ptr<DataType> type = std::make_shared<StringDataType>();
     std::string var;
 
     // ACT
@@ -149,12 +152,12 @@ TEST_F(ResizeSequenceTest, string) {
     // ASSERT
     ASSERT_EQ(false, result);
 
-    delete type;
+
 }
 
 TEST_F(ResizeSequenceTest, array) {
     // ARRANGE
-    const DataType * type = dataTypeInator.resolve("double[5]");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("double[5]");
     double var[5];
 
 
@@ -164,12 +167,12 @@ TEST_F(ResizeSequenceTest, array) {
     // ASSERT
     ASSERT_EQ(false, result);
 
-    delete type;
+
 }
 
 TEST_F(ResizeSequenceTest, array_bad_index) {
     // ARRANGE
-    const DataType * type = dataTypeInator.resolve("double[5]");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("double[5]");
     double var[5];
 
 
@@ -179,12 +182,12 @@ TEST_F(ResizeSequenceTest, array_bad_index) {
     // ASSERT
     ASSERT_EQ(false, result);
 
-    delete type;
+
 }
 
 TEST_F(ResizeSequenceTest, array_out_of_bounds) {
     // ARRANGE
-    const DataType * type = dataTypeInator.resolve("double[5]");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("double[5]");
     double var[5];
 
 
@@ -194,13 +197,13 @@ TEST_F(ResizeSequenceTest, array_out_of_bounds) {
     // ASSERT
     ASSERT_EQ(false, result);
 
-    delete type;
+
 }
 
 
 TEST_F(ResizeSequenceTest, bare_pointer) {
     // ARRANGE
-    const DataType * type = dataTypeInator.resolve("int *");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("int *");
     int * var;
 
     // ACT
@@ -209,7 +212,7 @@ TEST_F(ResizeSequenceTest, bare_pointer) {
     // ASSERT
     ASSERT_EQ(false, result);
 
-    delete type;
+
 }
 
 TEST_F(ResizeSequenceTest, enum) {
@@ -217,7 +220,7 @@ TEST_F(ResizeSequenceTest, enum) {
     EnumDictionary enumDictionary;
     addDayOfWeekEnumToTypeDictionary(&dataTypeInator, &enumDictionary);
     DayOfWeek var = Monday;
-    const DataType * type = dataTypeInator.resolve("DayOfWeek");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("DayOfWeek");
 
     // ACT
     bool result = DataTypeAlgorithm::resizeSequence(type, &var, "", 10);
@@ -225,5 +228,5 @@ TEST_F(ResizeSequenceTest, enum) {
     // ASSERT
     ASSERT_EQ(false, result);
 
-    delete type;
+
 }

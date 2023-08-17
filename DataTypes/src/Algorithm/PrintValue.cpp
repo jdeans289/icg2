@@ -10,12 +10,12 @@ namespace PrintValue {
         address_stack.push(address);
     }
 
-    bool PrintValueVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
+    bool PrintValueVisitor::visitPrimitiveDataType(std::shared_ptr<const PrimitiveDataType> node) {
         node->printValue(s, address_stack.top());
         return true;
     }
 
-    bool PrintValueVisitor::visitCompositeType(const CompositeDataType * node) {
+    bool PrintValueVisitor::visitCompositeType(std::shared_ptr<const CompositeDataType> node) {
         s << "{";
         int counter = 0;
 
@@ -26,7 +26,7 @@ namespace PrintValue {
             }
             
             NormalStructMember * member = *it;
-            const DataType * member_subtype = member->getSubType();
+            std::shared_ptr<const DataType> member_subtype = member->getSubType();
             address_stack.push(member->getAddress(address_stack.top()));
 
             // Go into member
@@ -40,7 +40,7 @@ namespace PrintValue {
         return true;
     }
 
-    bool PrintValueVisitor::visitArrayType(const ArrayDataType * node) {
+    bool PrintValueVisitor::visitArrayType(std::shared_ptr<const ArrayDataType> node) {
         s << "[";
 
         for (unsigned int i=0; i < node->getElementCount() ; i++) {
@@ -48,7 +48,7 @@ namespace PrintValue {
                 s << ", ";
             }
 
-            const DataType * subType = node->getSubType();
+            std::shared_ptr<const DataType> subType = node->getSubType();
 
             address_stack.push( (char*) address_stack.top() + (i * subType->getSize()) );
             subType->accept( this );
@@ -59,27 +59,27 @@ namespace PrintValue {
         return true;
     }
 
-    bool PrintValueVisitor::visitPointerType(const PointerDataType * node) {
+    bool PrintValueVisitor::visitPointerType(std::shared_ptr<const PointerDataType> node) {
         s << *(void**)address_stack.top();
 
         return true;
     }
 
-    bool PrintValueVisitor::visitEnumeratedType(const EnumDataType * node) {
+    bool PrintValueVisitor::visitEnumeratedType(std::shared_ptr<const EnumDataType> node) {
         int enum_val = *(int*) address_stack.top();
         s << node->lookupEnumeratorName(enum_val);
 
         return true;
     }
 
-    bool PrintValueVisitor::visitStringType (const StringDataType * node) {
+    bool PrintValueVisitor::visitStringType (std::shared_ptr<const StringDataType> node) {
         s << "\"" <<  * (std::string * ) address_stack.top() << "\"";
 
         return true;
     }
 
-    bool PrintValueVisitor::visitSequenceType (const SequenceDataType * node) {
-        const DataType * subType = node->getSubType();
+    bool PrintValueVisitor::visitSequenceType (std::shared_ptr<const SequenceDataType>  node) {
+        std::shared_ptr<const DataType> subType = node->getSubType();
         auto elem_addresses = node->getElementAddresses(address_stack.top());
 
         s << "[";

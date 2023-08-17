@@ -28,7 +28,7 @@ public:
     /*                          VIRTUAL INTERFACE                           */
     /* ==================================================================== */
 
-    bool validate(const DataTypeInator * dataTypeInator = NULL) override { return true; }
+    bool validate(DataTypeInator * dataTypeInator = NULL) override { return true; }
 
     bool isValid() const override { return true; }
     
@@ -37,13 +37,6 @@ public:
      */
     size_t getSize() const override {
         return sizeof(T);
-    }
-
-
-    /**
-     */
-    DataType * clone () const override {
-        return new SpecifiedPrimitiveDataType<T>();
     }
 
     /**

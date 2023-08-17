@@ -15,7 +15,7 @@ namespace LookupAddressAndTypeByName {
 
     // Look for the matching address
 
-    bool LookupAddressAndTypeByNameVisitor::visitCompositeType(const CompositeDataType * node) {
+    bool LookupAddressAndTypeByNameVisitor::visitCompositeType(std::shared_ptr<const CompositeDataType> node) {
         if (name_elems.empty()) {
             // Yay we found our result!
 
@@ -37,7 +37,7 @@ namespace LookupAddressAndTypeByName {
 
 
         // Find the next step
-        const DataType * next_type = NULL;
+        std::shared_ptr<const DataType> next_type = NULL;
         for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
             NormalStructMember * member = *it;
             if (member->getName() == next_elem) {
@@ -66,7 +66,7 @@ namespace LookupAddressAndTypeByName {
         return false;
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitArrayType(const ArrayDataType * node) {
+    bool LookupAddressAndTypeByNameVisitor::visitArrayType(std::shared_ptr<const ArrayDataType> node) {
         if (name_elems.empty()) {
             // Yay we found our result!
 
@@ -93,7 +93,7 @@ namespace LookupAddressAndTypeByName {
             return false;
         }
 
-        const DataType * subType = node->getSubType();
+        std::shared_ptr<const DataType> subType = node->getSubType();
 
         // Set the next search address
         // Just pretend our current_search_address isn't void for a sec
@@ -101,7 +101,7 @@ namespace LookupAddressAndTypeByName {
         return subType->accept(this);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitPointerType(const PointerDataType * node) {
+    bool LookupAddressAndTypeByNameVisitor::visitPointerType(std::shared_ptr<const PointerDataType> node) {
         // We're at a leaf, so if there's anything left in the name queue something has gone wrong
         // what even is a pointer anyway
 
@@ -114,19 +114,19 @@ namespace LookupAddressAndTypeByName {
 
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
+    bool LookupAddressAndTypeByNameVisitor::visitPrimitiveDataType(std::shared_ptr<const PrimitiveDataType> node) {
         return visitLeaf(node);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitEnumeratedType(const EnumDataType * node) {
+    bool LookupAddressAndTypeByNameVisitor::visitEnumeratedType(std::shared_ptr<const EnumDataType> node) {
         return visitLeaf(node);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitStringType(const StringDataType * node) {
+    bool LookupAddressAndTypeByNameVisitor::visitStringType(std::shared_ptr<const StringDataType> node) {
         return visitLeaf(node);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitSequenceType (const SequenceDataType * node) {
+    bool LookupAddressAndTypeByNameVisitor::visitSequenceType (std::shared_ptr<const SequenceDataType>  node) {
         if (name_elems.empty()) {
             // Yay we found our result!
 
@@ -158,11 +158,11 @@ namespace LookupAddressAndTypeByName {
         auto elem_addresses = node->getElementAddresses(current_search_address);
         current_search_address = elem_addresses[index];
 
-        const DataType * subType = node->getSubType();
+        std::shared_ptr<const DataType> subType = node->getSubType();
         return subType->accept(this);
     }
 
-    bool LookupAddressAndTypeByNameVisitor::visitLeaf(const DataType * node) {
+    bool LookupAddressAndTypeByNameVisitor::visitLeaf(std::shared_ptr<const DataType> node) {
         // We're at a leaf, so if there's anything left in the name queue something has gone wrong
         if (!name_elems.empty()) {
             std::cerr << "At a leaf type, but there are still name elements left to find." << std::endl;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Type/ModifierType.hpp"
+#include "Type/DataType.hpp"
 #include "DataTypeInator.hpp"
 
 #include <stddef.h>
@@ -10,7 +10,7 @@
 
 /**
  */
-class ArrayDataType : public ModifierType {
+class ArrayDataType : public DataType {
 
     public:
 
@@ -29,6 +29,9 @@ class ArrayDataType : public ModifierType {
      */
     ArrayDataType ( const ArrayDataType & original, unsigned int newSize );
 
+    // no default constructor allowed
+    ArrayDataType() = delete;
+
     /* ================================================================================= */
     /*                         RULE OF THREE (and a half) INTERFACE                      */
     /* ================================================================================= */
@@ -36,7 +39,7 @@ class ArrayDataType : public ModifierType {
     /**
      Copy Constructor for ArrayDataType.
      */
-    ArrayDataType ( const ArrayDataType & original );
+    ArrayDataType ( const ArrayDataType & original ) = delete;
 
     /**
      Destructor for ArrayDataType.
@@ -47,9 +50,9 @@ class ArrayDataType : public ModifierType {
      Assignment operator for ArrayDataType.
      @param rhs right-hand-side.
      */
-    ArrayDataType& operator=( ArrayDataType rhs );
+    ArrayDataType& operator=( ArrayDataType rhs ) = delete;
 
-    friend void swap (ArrayDataType& a, ArrayDataType& b);
+    // friend void swap (ArrayDataType& a, ArrayDataType& b);
 
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                         */
@@ -57,11 +60,11 @@ class ArrayDataType : public ModifierType {
 
     /**
      */
-    DataType * clone () const;
+    // DataType * clone () const;
 
     /**
      */
-     bool validate(const DataTypeInator* dataTypeInator) override;
+     bool validate(DataTypeInator* dataTypeInator) override;
 
      bool isValid() const override;
 
@@ -94,6 +97,7 @@ class ArrayDataType : public ModifierType {
     /*                       CLASS SPECIFIC INTERFACE                       */
     /* ==================================================================== */
 
+    std::shared_ptr<const DataType> getSubType() const;
     /**
      @return The number of arrayed Type-specifier elements of the DataType.
     */
@@ -106,7 +110,8 @@ class ArrayDataType : public ModifierType {
 
     private:
     bool initArrayDataType( const DataTypeInator* dataTypeInator, std::string typeSpecName, unsigned int n_elems );
-    ArrayDataType(){}
+
+    std::shared_ptr<const DataType> subType;
 
     size_t typeSize;
     unsigned int elementCount;

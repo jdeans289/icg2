@@ -12,7 +12,7 @@ namespace ResizeSequence {
 
     // Look for the matching address
 
-    bool ResizeSequenceVisitor::visitCompositeType(const CompositeDataType * node) {
+    bool ResizeSequenceVisitor::visitCompositeType(std::shared_ptr<const CompositeDataType> node) {
         if (name_elems.empty()) {
             // Got to the end of the name, but we're at not at a sequence :/            
             std::cerr << "Tried to use ResizeSequence on something that is not a sequence." << std::endl;
@@ -29,7 +29,7 @@ namespace ResizeSequence {
 
 
         // Find the next step
-        const DataType * next_type = NULL;
+        std::shared_ptr<const DataType> next_type = NULL;
         for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
             NormalStructMember * member = *it;
             if (member->getName() == next_elem) {
@@ -64,7 +64,7 @@ namespace ResizeSequence {
         return false;
     }
 
-    bool ResizeSequenceVisitor::visitArrayType(const ArrayDataType * node) {
+    bool ResizeSequenceVisitor::visitArrayType(std::shared_ptr<const ArrayDataType> node) {
         if (name_elems.empty()) {
             // Got to the end of the name, but we're at not at a sequence :/            
             std::cerr << "Tried to use ResizeSequence on something that is not a sequence." << std::endl;
@@ -87,7 +87,7 @@ namespace ResizeSequence {
             return false;
         }
 
-        const DataType * subType = node->getSubType();
+        std::shared_ptr<const DataType> subType = node->getSubType();
 
         // Set the next search address
         // Just pretend our current_search_address isn't void for a sec
@@ -95,23 +95,23 @@ namespace ResizeSequence {
         return subType->accept(this);
     }
 
-    bool ResizeSequenceVisitor::visitPointerType(const PointerDataType * node) {
+    bool ResizeSequenceVisitor::visitPointerType(std::shared_ptr<const PointerDataType> node) {
         return visitLeaf(node);
     }
 
-    bool ResizeSequenceVisitor::visitPrimitiveDataType(const PrimitiveDataType * node) {
+    bool ResizeSequenceVisitor::visitPrimitiveDataType(std::shared_ptr<const PrimitiveDataType> node) {
         return visitLeaf(node);
     }
 
-    bool ResizeSequenceVisitor::visitEnumeratedType(const EnumDataType * node) {
+    bool ResizeSequenceVisitor::visitEnumeratedType(std::shared_ptr<const EnumDataType> node) {
         return visitLeaf(node);
     }
 
-    bool ResizeSequenceVisitor::visitStringType(const StringDataType * node) {
+    bool ResizeSequenceVisitor::visitStringType(std::shared_ptr<const StringDataType> node) {
         return visitLeaf(node);
     }
 
-    bool ResizeSequenceVisitor::visitSequenceType (const SequenceDataType * node) {
+    bool ResizeSequenceVisitor::visitSequenceType (std::shared_ptr<const SequenceDataType>  node) {
         if (name_elems.empty() || (name_elems.size() == 1 && name_elems.front() == "size")) {
             // Yay we found our result!
 
@@ -140,11 +140,11 @@ namespace ResizeSequence {
         auto elem_addresses = node->getElementAddresses(current_search_address);
         current_search_address = elem_addresses[index];
 
-        const DataType * subType = node->getSubType();
+        std::shared_ptr<const DataType> subType = node->getSubType();
         return subType->accept(this);
     }
 
-    bool ResizeSequenceVisitor::visitLeaf(const DataType * node) {
+    bool ResizeSequenceVisitor::visitLeaf(std::shared_ptr<const DataType> node) {
         // We're at a leaf. We should basically just not be here at all.
 
         if (name_elems.empty()) {

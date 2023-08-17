@@ -22,18 +22,6 @@ class SequenceDataTypeTest : public ::testing::Test {
    ================================================================================
 */
 
-TEST_F( SequenceDataTypeTest, assignment_operator) {
-    // ARRANGE
-    SpecifiedSequenceDataType<std::vector<int>> type1("fakename");
-    SpecifiedSequenceDataType<std::vector<int>> type2("fakename_to_override");
-
-    // ACT
-    type2 = type1;
-
-    // ASSERT
-    ASSERT_EQ(type1.getTypeSpecName(), type2.getTypeSpecName());
-}
-
 TEST_F( SequenceDataTypeTest, validate ) {
 
     // ARRANGE
@@ -90,7 +78,7 @@ TEST_F( SequenceDataTypeTest, allocate ) {
     ASSERT_EQ(10, v->size());
 
     type->deleteInstance(v);
-    delete type;
+
 }
 
 TEST_F( SequenceDataTypeTest, getSubType ) {
@@ -101,7 +89,7 @@ TEST_F( SequenceDataTypeTest, getSubType ) {
     bool validation_result = type->validate(dataTypeInator);
     ASSERT_EQ(true, validation_result);
 
-    const DataType * subType = type->getSubType();
+    std::shared_ptr<const DataType> subType = type->getSubType();
     ASSERT_EQ("int", subType->toString());
 }
 
@@ -130,11 +118,11 @@ TEST_F( SequenceDataTypeTest , nested ) {
     ASSERT_EQ(true, type1->validate(dataTypeInator));
     ASSERT_EQ(true, type2->validate(dataTypeInator));
 
-    const DataType * subType = type2->getSubType();
+    std::shared_ptr<const DataType> subType = type2->getSubType();
     ASSERT_EQ("std::vector<int>", subType->toString());
 
-    const SequenceDataType * subTypeCasted = dynamic_cast<const SequenceDataType *> (subType);
-    const DataType * nestedSubType = subTypeCasted->getSubType();
+    std::shared_ptr<const SequenceDataType>  subTypeCasted = std::dynamic_pointer_cast<const SequenceDataType > (subType);
+    std::shared_ptr<const DataType> nestedSubType = subTypeCasted->getSubType();
     ASSERT_TRUE(nestedSubType != NULL);
     ASSERT_EQ("int", nestedSubType->toString());
 }

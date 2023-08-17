@@ -156,31 +156,31 @@ bool ParsedDeclaration::parseTypeSpecifier(LexicalAnalyzer& lexer) {
     switch ( token ) {
         case Token::Void : {
             token = lexer.matchToken(Token::Void);
-            typeSpec = "void";
+            setName("void");
         } break;
         case Token::Boolean : {
             token = lexer.matchToken(Token::Boolean);
-            typeSpec = "bool";
+            setName("bool");
         } break;
         case Token::Char : {
             token = lexer.matchToken(Token::Char);
-            typeSpec = "char";
+            setName("char");
         } break;
         case Token::Short : {
             token = lexer.matchToken(Token::Short);
-            typeSpec = "short";
+            setName("short");
         } break;
         case Token::Int : {
             token = lexer.matchToken(Token::Int);
-            typeSpec = "int";
+            setName("int");
         } break;
         case Token::Long : {
             token = lexer.matchToken(Token::Long);
             if (token == Token::Long) {
                 token = lexer.matchToken(Token::Long);
-                typeSpec = "long long";
+                setName("long long");
             } else {
-                typeSpec = "long";
+                setName("long");
             }
         } break;
         case Token::Unsigned : {
@@ -188,27 +188,27 @@ bool ParsedDeclaration::parseTypeSpecifier(LexicalAnalyzer& lexer) {
             switch ( token ) {
                 case Token::Char : {
                     token = lexer.matchToken(Token::Char);
-                    typeSpec = "unsigned char";
+                    setName("unsigned char");
                 } break;
                 case Token::Short : {
                     token = lexer.matchToken(Token::Short);
-                    typeSpec = "unsigned short";
+                    setName("unsigned short");
                 } break;
                 case Token::Int : {
                     token = lexer.matchToken(Token::Int);
-                    typeSpec = "unsigned int";
+                    setName("unsigned int");
                 } break;
                 case Token::Long : {
                     token = lexer.matchToken(Token::Long);
                     if (token == Token::Long) {
                         token = lexer.matchToken(Token::Long);
-                        typeSpec = "unsigned long long";
+                        setName("unsigned long long");
                     } else {
-                        typeSpec = "unsigned long";
+                        setName("unsigned long");
                     }
                 } break;
                 default: {
-                    typeSpec = "unsigned int";
+                    setName("unsigned int");
                 }
             }
         } break;
@@ -217,41 +217,41 @@ bool ParsedDeclaration::parseTypeSpecifier(LexicalAnalyzer& lexer) {
             switch ( token ) {
                 case Token::Char : {
                     token = lexer.matchToken(Token::Char);
-                    typeSpec = "char";
+                    setName("char");
                 } break;
                 case Token::Short : {
                     token = lexer.matchToken(Token::Short);
-                    typeSpec = "short";
+                    setName("short");
                 } break;
                 case Token::Int : {
                     token = lexer.matchToken(Token::Int);
-                    typeSpec = "int";
+                    setName("int");
                 } break;
                 case Token::Long : {
                     token = lexer.matchToken(Token::Long);
                     if (token == Token::Long) {
                         token = lexer.matchToken(Token::Long);
-                        typeSpec = "long long";
+                        setName("long long");
                     } else {
-                        typeSpec = "long";
+                        setName("long");
                     }
                 } break;
                 default: {
-                    typeSpec = "int";
+                    setName("int");
                 }
             }
         } break;
         case Token::WideChar : {
             token = lexer.matchToken(Token::WideChar);
-            typeSpec = "wchar_t";
+            setName("wchar_t");
         } break;
         case Token::Float : {
             token = lexer.matchToken(Token::Float);
-            typeSpec = "float";
+            setName("float");
         } break;
         case Token::Double : {
             token = lexer.matchToken(Token::Double);
-            typeSpec = "double";
+            setName("double");
         } break;
         case Token::Identifier : {
             errorCondition |= parseQualifiedIdentifier(lexer);
@@ -379,4 +379,9 @@ std::vector<int> ParsedDeclaration::getDims() const {
 
 std::vector<ParsedDeclaration> ParsedDeclaration::getTemplateParams() const {
     return templateParams;
+}
+
+void ParsedDeclaration::setName(std::string name) {
+    typeSpec = name;
+    qualifiedTypeNameParts = { name };
 }

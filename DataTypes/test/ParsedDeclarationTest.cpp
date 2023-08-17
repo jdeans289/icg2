@@ -100,6 +100,21 @@ TEST(ParsedDeclaration, test5) {
     EXPECT_EQ(expected_dims, parsedDeclaration.getDims());
 }
 
+TEST(ParsedDeclaration, class_array) {
+
+    ParsedDeclaration parsedDeclaration("MyClass var[5]");
+
+    std::string typeSpecString = parsedDeclaration.getTypeSpecifier();
+    EXPECT_EQ( "MyClass", typeSpecString );
+
+    std::string varName = parsedDeclaration.getVariableName();
+    EXPECT_EQ( "var", varName );
+
+    auto qualifiedList = parsedDeclaration.getQualifiedNameParts();
+    std::deque<std::string> expected = {"MyClass"};
+    EXPECT_EQ(expected, qualifiedList);
+}
+
 TEST(ParsedDeclaration, namespace_string) {
 
     ParsedDeclaration parsedDeclaration("std::string var");
