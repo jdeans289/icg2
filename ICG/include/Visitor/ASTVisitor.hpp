@@ -15,10 +15,14 @@ class AstVisitor : public BaseVisitor {
     std::vector<const ICGTemplateEngine::recursable *> getClassInfo();
     std::vector<const ICGTemplateEngine::recursable *> getSTLDeclInfo();
 
+    std::vector<std::string> class_names;
+    std::vector<std::string> class_template_names;
+
     void go (CXCursor c) override;
     CXChildVisitResult traverse(CXCursor c, CXCursor parent) override;
 
     private:
+
     std::vector<ClassInfo> classes;
     std::unordered_set<std::string> stlDecls;
 

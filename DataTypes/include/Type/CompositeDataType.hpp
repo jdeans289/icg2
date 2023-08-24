@@ -39,8 +39,6 @@ public:
     ~CompositeDataType ();
     CompositeDataType & operator=( CompositeDataType rhs ) = delete;
 
-    // friend void swap (CompositeDataType& a, CompositeDataType& b) ;
-
     /* ==================================================================== */
     /*                          VIRTUAL INTERFACE                         */
     /* ==================================================================== */

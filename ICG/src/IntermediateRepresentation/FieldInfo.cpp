@@ -24,7 +24,11 @@ ICGTemplateEngine::ListTokenItems FieldInfo::nextLevel() const {
     return empty_list;
 }
 
-std::ostream& operator<< (std::ostream& stream, const FieldInfo& field) {
-    stream << field.name << "\n\t" << field.type << "\n\t" <<  field.access_info << std::endl;
-    return stream;
+std::string FieldInfo::toString() const {
+    return name + ": " + type;
 }
+
+// std::ostream& operator<< (std::ostream& stream, const FieldInfo& field) {
+//     stream << field.name << "\n\t" << field.type << "\n\t" <<  field.access_info << std::endl;
+//     return stream;
+// }

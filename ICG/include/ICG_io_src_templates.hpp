@@ -48,6 +48,8 @@ std::string class_decl = std::string(R"(
 void add{{ClassName_mangled}}toDictionary(DataTypeInator* dataTypeInator) {
 
     CompositeDataType* {{ClassName_mangled}}TypeSpec = new CompositeDataType("{{ClassName}}", sizeof({{ClassName}}), &construct<{{ClassName}}>, &destruct<{{ClassName}}> );
+    using type_to_add = {{ClassName}};
+
         {{list_fields_field_decl}}
 
     dataTypeInator->addToDictionary("{{ClassName}}", {{ClassName_mangled}}TypeSpec);
@@ -55,7 +57,7 @@ void add{{ClassName_mangled}}toDictionary(DataTypeInator* dataTypeInator) {
 )");
 
 std::string field_decl = std::string(R"(
-    {{ClassName_mangled}}TypeSpec->addRegularMember( "{{FieldName}}", offsetof({{ClassName}}, {{FieldName}}), "{{FieldType}}");
+    {{ClassName_mangled}}TypeSpec->addRegularMember( "{{FieldName}}", offsetof(type_to_add, {{FieldName}}), "{{FieldType}}");
 )");
 
 std::string stl_decl = std::string(R"( 

@@ -21,3 +21,7 @@ ICGTemplateEngine::ListTokenItems STLDeclInfo::nextLevel() const {
     ICGTemplateEngine::ListTokenItems empty_list;
     return empty_list;
 }
+
+std::string STLDeclInfo::toString() const {
+    return name;
+}

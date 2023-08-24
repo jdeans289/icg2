@@ -52,15 +52,23 @@ CXChildVisitResult AstVisitor::traverse(CXCursor c, CXCursor parent) {
         case CXCursor_ClassDecl:
             {
                 // Make a class visitor
-                ClassVisitor classVisitor;
-                // Traverse everything under this
-                classVisitor.go(c);
-                // Pull out the info that we need from it
-                auto result = classVisitor.getResult();
-                classes.insert(classes.end(), result.classes.begin(), result.classes.end());
-                stlDecls.insert(result.stlDecls.begin(), result.stlDecls.end());
+                // ClassVisitor classVisitor;
+                // // Traverse everything under this
+                // classVisitor.go(c);
+                // // Pull out the info that we need from it
+                // auto result = classVisitor.getResult();
+                // classes.insert(classes.end(), result.classes.begin(), result.classes.end());
+                // stlDecls.insert(result.stlDecls.begin(), result.stlDecls.end());
+
+                class_names.push_back(ICGUtils::getCursorSpelling(c));
 
                 // Go to the next sibling node of this tree
+                return CXChildVisit_Continue; 
+            }
+            break;
+        case CXCursor_ClassTemplate:
+            {
+                class_template_names.push_back(ICGUtils::getCursorSpelling(c));
                 return CXChildVisit_Continue; 
             }
             break;

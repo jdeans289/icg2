@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <unordered_set>
 #include <map>
 #include <sstream>
 
@@ -47,6 +48,13 @@ namespace ICGTemplateEngine {
          * @return ListTokenItems std::map<std::string, std::vector<const recursable *>>
          */
         virtual ListTokenItems nextLevel() const = 0;
+
+        /**
+         * @brief Get a string representation
+         * 
+         * @return std::string 
+         */
+        virtual std::string toString() const = 0;
     };
 
     /**

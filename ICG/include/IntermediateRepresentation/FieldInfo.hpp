@@ -25,5 +25,7 @@ class FieldInfo final : public ICGTemplateEngine::recursable {
     ICGTemplateEngine::Dictionary toDictionary() const override;
     ICGTemplateEngine::ListTokenItems nextLevel() const override;
 
+    std::string toString() const override;
+
     // friend std::ostream& operator<< (std::ostream& stream, const FieldInfo& str);
 };
