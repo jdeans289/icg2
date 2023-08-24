@@ -6,7 +6,6 @@
 /************************************/
 
 FieldInfo::FieldInfo () {}
-FieldInfo::FieldInfo (std::string n, std::string t, AccessLevel a) : type(t), name(n), access_info(a) {}
 
 ICGTemplateEngine::Dictionary FieldInfo::toDictionary() const {
     ICGTemplateEngine::Dictionary dictionary;

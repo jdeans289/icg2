@@ -39,8 +39,6 @@ std::string ASTInfo::toString() const {
 void ASTInfo::combine (const ASTInfo& other) {
     stl_decls.insert(other.stl_decls.begin(), other.stl_decls.end());
 
-
-
     // Combine pre-existing entries
     for (auto it : items) {
         auto key = it.first;
@@ -54,15 +52,6 @@ void ASTInfo::combine (const ASTInfo& other) {
     // This copies all entries that are not in this, and leaves entries that already exist alone
     items.insert(other.items.begin(), other.items.end());
 }
-
-// void ASTInfo::insert (std::string key, ICGTemplateEngine::recursable * new_item) {
-//     items[key].push_back(new_item);
-// }
-
-// void ASTInfo::insert (std::string key, std::vector<ICGTemplateEngine::recursable *> new_items) {
-//     items[key].insert(items[key].end(), new_items.begin(), new_items.end());
-// }
-
 
 void ASTInfo::add_class_info(ClassInfo * class_info) {
     add_stl_decl(class_info->getStlMembers());

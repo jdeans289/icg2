@@ -8,14 +8,9 @@ set(ICG_SRC
     IntermediateRepresentation/FieldInfo.cpp
     IntermediateRepresentation/STLDeclInfo.cpp
     IntermediateRepresentation/ASTInfo.cpp
-
-    # IntermediateRepresentation/ClassTemplateInfo.cpp
+    JClang/JClang.cpp
+    JClang/Traversal.cpp
     ASTFilter/ASTFilter.cpp
-    # Visitor/BaseVisitor.cpp
-    # Visitor/ASTVisitor.cpp
-    # Visitor/ClassVisitor.cpp
-    # Visitor/FieldVisitor.cpp
-    # Visitor/ClassTemplateVisitor.cpp
 )
 
 list(TRANSFORM ICG_SRC PREPEND src/)
@@ -24,4 +19,3 @@ add_executable (icg ${ICG_SRC})
 
 target_include_directories(icg PUBLIC include)
 target_include_directories(icg PUBLIC ${CMAKE_SOURCE_DIR}/extern/json)
-# target_link_libraries(icg PUBLIC clang)
