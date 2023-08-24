@@ -39,6 +39,8 @@ void TypeDictionary::addBuiltinTypes() {
     // FIXME: add the other goofy types (e.g., uint8 ) that were added via the old lexical analyzer.
 
     addTypeDefinition("std::string", new StringDataType());
+    addTypeDefinition("std::basic_string<char>", new StringDataType());
+
 }
 
 
@@ -49,7 +51,7 @@ std::shared_ptr<const DataType> TypeDictionary::lookup(std::string name ) {
 
     // Don't bother with the namespace lookup if there are no namespaces to deal with
     if (decl.getQualifiedNamePartsSize() <= 1) {
-        auto it = typeDictionary.find(name);
+        auto it = typeDictionary.find(decl.getAbstractDeclarator());
         if (it == typeDictionary.end()) {
             return NULL;
         }
@@ -91,7 +93,7 @@ void TypeDictionary::addTypeDefinition(std::string name, DataType * typeSpec)  {
 
         // If it's a built in type, we won't have to deal with qualified name stuff
         if (decl.getQualifiedNamePartsSize() <= 1) {
-            typeDictionary.emplace(name, typeSpec);
+            typeDictionary.emplace(decl.getAbstractDeclarator(), typeSpec);
         } else {
             addTypeDefinition(decl, typeSpec);
         }
@@ -135,10 +137,14 @@ void TypeDictionary::addTypeDefinition(MutableDeclaration& decl, DataType * type
 // MEMBER FUNCTION
 bool TypeDictionary::validate(DataTypeInator * dataTypeInator) {
 
-    bool valid = true;
     for (auto it : typeDictionary) {
-        valid &= it.second->validate(dataTypeInator);
+        if (!it.second->validate(dataTypeInator)) {
+            std::cerr << "Failed to validate type " << it.second->getTypeSpecName() << std::endl;
+            return false;
+        }
     }
+
+    bool valid = true;
 
     // Validate the nested TypeDictionaries in the namespace dictionary
     for (auto it : namespaceDictionary) {
