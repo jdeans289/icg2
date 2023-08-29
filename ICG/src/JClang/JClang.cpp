@@ -5,8 +5,13 @@
 namespace JClang {
 
     NodeKind getNodeKind (json& node) {
+
+        if (!node.contains("kind")) {
+            return Unknown;
+        }
+
         if (node["kind"] == "CXXRecordDecl" ) {
-            if ( node["tagUsed"] == "class") {
+            if ( node["tagUsed"] == "class" || node["tagUsed"] == "struct" ) {
                 if (node.contains("isImplicit")) {
                     if (node["isImplicit"] == true) {
                         return Unknown;
@@ -44,16 +49,46 @@ namespace JClang {
         return Unknown;
     }
 
-    std::string getQualifiedTypeOfField (json& field_node) {
-
-        if (!(getNodeKind(field_node) == FieldDecl || getNodeKind(field_node) == TemplateArgument )) {
-            std::cerr << "Attempted to get type of node that is not a field declaration or template argument." << std::endl;
+    std::string getQualifiedType (json& field_node) {
+        if (!field_node.contains("type")) {
+            std::cerr << "Attempted to get type of node that does not have a type." << std::endl;
             return "ERROR_TYPE";
         }
 
+        // We want "desugaredQualType" if it exists
         if (field_node["type"].contains("desugaredQualType")) {
             return field_node["type"]["desugaredQualType"];
         }
-        return field_node["type"]["qualType"];
+
+        // "qualType" otherwise
+        if (field_node["type"].contains("qualType")) {
+            return field_node["type"]["qualType"];
+        }        
+        
+        std::cerr << "Type could not be extracted from node: " << field_node["type"].dump(4) << std::endl;
+        return "ERROR_TYPE";
+    }
+
+    std::vector<std::string> getBaseClasses (json& class_node) {
+        if (getNodeKind(class_node) != ClassDecl) {
+            std::cerr << "Attempted to get base classes of a node that is not a class declaration." << std::endl; 
+            return std::vector<std::string>();
+        }
+
+        if (!class_node.contains("bases")) {
+            std::cout << "Class " << class_node["name"] << " does not have any base classes." << std::endl;
+            return std::vector<std::string>();
+        }
+
+        std::cout << "Bases of " << class_node["name"] << ": ";
+        std::vector<std::string> result;
+        for ( auto item : class_node["bases"] ) {
+            result.push_back(getQualifiedType(item));
+            std::cout << getQualifiedType(item) << " ";
+        }
+
+        std::cout << std::endl;
+
+        return result;
     }
 }

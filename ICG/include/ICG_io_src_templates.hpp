@@ -52,6 +52,8 @@ void add{{ClassName_mangled}}toDictionary(DataTypeInator* dataTypeInator) {
 
         {{list_fields_field_decl}}
 
+    {{list_bases_add_base_class}}
+
     dataTypeInator->addToDictionary("{{ClassName}}", {{ClassName_mangled}}TypeSpec);
 }
 )");
@@ -64,10 +66,15 @@ std::string stl_decl = std::string(R"(
     dataTypeInator->addToDictionary("{{STLName}}", new SpecifiedSequenceDataType<{{STLName}}>("{{STLName}}"));
 )");
 
+std::string add_base_class = std::string(R"(
+    {{ClassName_mangled}}TypeSpec->addBaseClass("{{BaseClassName}}");
+)");
+
 std::map<std::string, std::string> template_dictionary {
     {"top", io_src},
     {"call_class_decl", call_class_decl},
     {"class_decl", class_decl},
     {"field_decl", field_decl},
+    {"add_base_class", add_base_class},
     {"stl_decl", stl_decl}
 };

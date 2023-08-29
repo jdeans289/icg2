@@ -43,6 +43,12 @@ namespace JClang {
         ClassInfo * info = new ClassInfo;
         info->name = scope.make_scoped_name(class_node["name"]);
 
+        // Get base classes
+        for (auto base_class_name : getBaseClasses(class_node)) {
+            info->base_classes.emplace_back(base_class_name);
+        }
+
+        // Iterate through contents
         for (auto item : class_node["inner"]) {
             
             switch (getNodeKind(item)) {
@@ -100,7 +106,7 @@ namespace JClang {
         for (auto template_item : class_template_node["inner"]) {
             switch (getNodeKind(template_item)) {
                 case TemplateArgument: {
-                    info->template_args.push_back(getQualifiedTypeOfField(template_item));
+                    info->template_args.push_back(getQualifiedType(template_item));
                 }
                 break;
                 case FieldDecl: {
@@ -119,7 +125,7 @@ namespace JClang {
     FieldInfo scrape_field_decl_info (json& field_node, Scope& scope) {
         FieldInfo field;
         field.name = field_node["name"];
-        field.type = getQualifiedTypeOfField(field_node);
+        field.type = getQualifiedType(field_node);
         return field;
     }
 }
