@@ -105,12 +105,13 @@ namespace ICGTemplateEngine {
                 lookup_token = temp_token.substr(loc+1, temp_token.size()-(loc+1));
             }
 
+            std::string token_val = "";
             auto token_lookup_val = token_dictionary.find(lookup_token);
             if (token_lookup_val == token_dictionary.end()) { 
-                throw std::runtime_error("Got invalid token " + lookup_token + "\nResult string so far: " + result_string); 
+                std::cerr << "No token matching " << lookup_token << std::endl;
+            } else {
+                token_val = token_lookup_val->second;
             }
-
-            std::string token_val = token_lookup_val->second;
 
             // Recurse into the token to populate it
             if (list_token) {
@@ -118,24 +119,26 @@ namespace ICGTemplateEngine {
                 std::stringstream list_result;
 
                 // Find the right list to use
+                // If we don't find it, just replace the token with an empty string
                 auto lookup_result = recursable_lists_dictionary.find(list_token_name);
-                if (lookup_result == recursable_lists_dictionary.end()) {
-                    throw std::runtime_error("No list named " + list_token_name + ".\nResult string so far: " + result_string); 
-                }
+                if (lookup_result != recursable_lists_dictionary.end()) {
+                    auto recursable_list = lookup_result->second;
 
-                auto recursable_list = lookup_result->second;
-
-                for (const recursable * next_level_obj : recursable_list) {
-                    Dictionary next_dictionary = token_dictionary;
-                    Dictionary obj_dictionary = next_level_obj->toDictionary();
-                
-                    next_dictionary.insert(obj_dictionary.begin(), obj_dictionary.end());
-                    ListTokenItems next_recursable = next_level_obj->nextLevel();
+                    for (const recursable * next_level_obj : recursable_list) {
+                        Dictionary next_dictionary = token_dictionary;
+                        Dictionary obj_dictionary = next_level_obj->toDictionary();
                     
-                    list_result << process(token_val, next_dictionary, next_recursable);
-                }
+                        next_dictionary.insert(obj_dictionary.begin(), obj_dictionary.end());
+                        ListTokenItems next_recursable = next_level_obj->nextLevel();
+                        
+                        list_result << process(token_val, next_dictionary, next_recursable);
+                    }
 
-                token_val = list_result.str();
+                    token_val = list_result.str();
+                } else {
+                    // If the list does not exist, then we shouldn't recurse.
+                    token_val = "";
+                }
 
             } else {
                 token_val = process(token_val, token_dictionary, recursable_lists_dictionary);

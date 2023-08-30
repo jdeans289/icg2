@@ -6,34 +6,31 @@
 
 
 
-// CONSTRUCTOR
-StructMember::StructMember(std::string memberName, std::string typeSpecName) 
-                        : name(memberName), typeSpecName(typeSpecName), is_valid(false), subType(NULL) {}
+StructMember::StructMember(std::string memberName, std::string typeSpecName, int address, StorageClass storage) 
+            : name(memberName), typeSpecName(typeSpecName), storage(storage), memberAddress(address), subType(NULL) {}
 
 
 StructMember::~StructMember() {}
 
-
-bool StructMember::validate(DataTypeInator * dataTypeInator) {
-    if (!is_valid) {
-        subType = dataTypeInator->resolve(typeSpecName);
-        if (subType != NULL) {
-            is_valid = true;
-        }
+std::string StructMember::toString() const {
+    std::ostringstream oss;
+    if (storage == STATIC) {
+        oss << "static ";
     }
 
-    return is_valid;
+    if (getSubType() != NULL ) {
+        oss << getSubType()->makeDeclaration(getName());
+    } else {
+        oss << "<unvalidated type>";
+    }
+    return oss.str();
 }
 
-bool StructMember::isValid() const {
-    return is_valid;
-}
+void * StructMember::getAddressOfMember (void * struct_addr) const {
+    if (storage == STATIC) {
+        return reinterpret_cast<void *>(memberAddress);
+    }
 
-std::string StructMember::getName() const {
-    return name;
-}
-
-std::shared_ptr<const DataType> StructMember::getSubType() const {
-    return subType;
+    return (char*)struct_addr + memberAddress;
 }
 

@@ -1,5 +1,4 @@
 #include "Type/EnumDictionary.hpp"
-#include "Type/NormalStructMember.hpp"
 #include "DataTypeTestSupport.hpp"
 #include "Type/AllTypes.hpp"
 
@@ -263,29 +262,10 @@ TEST_F(PrintValueTest, VectorOfClasses) {
 
 }
 
-class VecClass {
-    public:
-    std::vector<int> v;
-};
-
-void addVecClassToDataTypeInator(DataTypeInator& dataTypeInator) {
-
-    SequenceDataType * vecType = new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>");
-    vecType->validate(&dataTypeInator);
-    dataTypeInator.addToDictionary("std::vector<int>", vecType);
-
-    CompositeDataType * vecClassSpec =
-        new CompositeDataType( "VecClass", sizeof(VecClass), &construct<VecClass>, &destruct<VecClass>);
-        vecClassSpec->addRegularMember( "v", offsetof(VecClass, v), "std::vector<int>");
-
-    dataTypeInator.addToDictionary("VecClass", vecClassSpec);
-
-    vecClassSpec->validate(&dataTypeInator);
-}
 
 TEST_F(PrintValueTest, VectorOfClassWithVector) {
     // ARRANGE
-    addVecClassToDataTypeInator(dataTypeInator);
+    addVecClassToDictionary(&dataTypeInator);
     
     dataTypeInator.addToDictionary("std::vector<VecClass>", new SpecifiedSequenceDataType<std::vector<VecClass>>("std::vector<VecClass>"));
     dataTypeInator.validateDictionary();

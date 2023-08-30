@@ -11,10 +11,6 @@ StringDataType::StringDataType() {}
 /*                           VIRTUAL INTERFACE                          */
 /* ==================================================================== */
 
-// DataType * StringDataType::clone () const {
-//     return new StringDataType( *this );
-// }
-
 bool StringDataType::validate(DataTypeInator * dataTypeInator) {
     return true;
 }

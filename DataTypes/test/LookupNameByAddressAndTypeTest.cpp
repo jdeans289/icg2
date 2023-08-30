@@ -1,6 +1,5 @@
 #include "Type/EnumDictionary.hpp"
 #include "Type/SpecifiedPrimitiveDataType.hpp"
-#include "Type/NormalStructMember.hpp"
 #include "DataTypeTestSupport.hpp"
 
 #include "gtest/gtest.h"

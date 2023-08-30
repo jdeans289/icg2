@@ -1,7 +1,6 @@
 #include "Algorithm/ContainsPointer.hpp"
 
 #include "Type/VisitableTypes.hpp"
-#include "Type/NormalStructMember.hpp"
 
 namespace ContainsPointer {
 
@@ -18,9 +17,9 @@ namespace ContainsPointer {
     bool ContainsPointerVisitor::visitCompositeType(std::shared_ptr<const CompositeDataType> node) {
         bool result = false;
 
-        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
-            NormalStructMember * member = *it;
-            std::shared_ptr<const DataType> member_subtype = member->getSubType();
+        for (auto it : node->getMemberMap()) {
+            StructMember& member = it.second;
+            std::shared_ptr<const DataType> member_subtype = member.getSubType();
             
             // Go into member
             result |= member_subtype->accept(this);

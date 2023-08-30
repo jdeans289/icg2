@@ -1,5 +1,4 @@
 #include "Type/EnumDictionary.hpp"
-#include "Type/NormalStructMember.hpp"
 #include "DataTypeTestSupport.hpp"
 #include "Type/AllTypes.hpp"
 #include "Value/PointerValue.hpp"
@@ -26,6 +25,34 @@ class ClearValueTest : public ::testing::Test {
     void SetUp() {}
     void TearDown() {}
 };
+
+
+class Foo { 
+    public:
+    int x; 
+    double y[5];
+};
+
+template <>
+class SpecifiedCompositeType<Foo> : public CompositeDataType {
+    public:
+    SpecifiedCompositeType(std::string name) : CompositeDataType(name, sizeof(Foo), &construct_composite<Foo>, &destruct_composite<Foo>) {}
+
+    MemberMap& getMemberMap () override {
+        using type_to_add = Foo;
+
+        static MemberMap member_map = {
+            {"x", StructMember("x", "int", offsetof(type_to_add, x))},
+            {"y", StructMember("y", "double[5]", offsetof(type_to_add, y))},
+        };
+        return member_map;
+    }
+
+    const MemberMap& getMemberMap () const override {
+        return (const_cast<SpecifiedCompositeType<Foo>*> (this))->getMemberMap();
+    }
+};
+
 
 namespace ClearValue {
 
@@ -117,17 +144,12 @@ TEST_F(ClearValueTest, array) {
 
 }
 
-class Foo { 
-    public:
-    int x; 
-    double y[5];
-};
+
 
 TEST_F(ClearValueTest, composite) {
     // ARRANGE
-    std::shared_ptr<CompositeDataType> type (new CompositeDataType ( "Foo", sizeof(Foo), NULL, NULL));
-    type->addRegularMember("x", offsetof(Foo, x), "int");
-    type->addRegularMember("y", offsetof(Foo, y), "double[5]");
+
+    std::shared_ptr<CompositeDataType> type (new SpecifiedCompositeType<Foo>("Foo"));
     type->validate(&dataTypeInator);
 
     Foo var_to_clear;

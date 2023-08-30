@@ -18,8 +18,7 @@ ICGTemplateEngine::Dictionary STLDeclInfo::toDictionary() const {
 
 // Nothing to recurse into
 ICGTemplateEngine::ListTokenItems STLDeclInfo::nextLevel() const {
-    ICGTemplateEngine::ListTokenItems empty_list;
-    return empty_list;
+    return ICGTemplateEngine::ListTokenItems();
 }
 
 std::string STLDeclInfo::toString() const {

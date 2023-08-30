@@ -2,21 +2,9 @@
 
 #include "Algorithm/LookupNameByAddressAndType.hpp"
 
-#include "Type/DataType.hpp"
-#include "Type/CompositeDataType.hpp"
-#include "Type/ArrayDataType.hpp"
-#include "Type/PointerDataType.hpp"
-#include "Type/EnumDataType.hpp"
-#include "Type/StringDataType.hpp"
-#include "Type/PrimitiveDataType.hpp"
-
-
-#include "Type/NormalStructMember.hpp"
+#include "Type/VisitableTypes.hpp"
 
 namespace LookupNameByAddressAndType {
-
-    // LookupNameByAddressVisitor::LookupNameByAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address) 
-    //         : LookupNameByAddressVisitor(starting_name, starting_address, lookup_address, NULL) {}
 
     LookupNameByAddressVisitor::LookupNameByAddressVisitor(std::string starting_name, void * starting_address, void * lookup_address, std::shared_ptr<const DataType> const search_type)
             : search_type(search_type) {
@@ -49,20 +37,25 @@ namespace LookupNameByAddressAndType {
         }
 
         // Look for the correct member
-        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
-            const NormalStructMember * member = *it;
+        for (auto it : node->getMemberMap()) {
+            StructMember& member = it.second;
+
+            // Not gonna deal with statics here
+            if (member.getStorageClass() == StructMember::STATIC) {
+                continue;
+            }
             
-            std::shared_ptr<const DataType> member_subtype = member->getSubType();
+            std::shared_ptr<const DataType> member_subtype = member.getSubType();
             assert(member_subtype != NULL);
 
-            int member_offset = member->getOffset();
+            long member_offset = (long) member.getAddressOfMember();
             int member_size = member_subtype->getSize();
 
             if (search_offset >= member_offset && search_offset < member_offset + member_size) {
                 // Found the correct member to go into!
 
                 // Push the member name on stack
-                name_stack.pushName(member->getName());
+                name_stack.pushName(member.getName());
                 search_offset = search_offset - member_offset;
 
                 // Go into member

@@ -32,13 +32,21 @@ ICGTemplateEngine::Dictionary ClassInfo::toDictionary() const {
 
 // Push the fields
 ICGTemplateEngine::ListTokenItems ClassInfo::nextLevel() const {
-    ICGTemplateEngine::ListTokenItems my_fields_dictionary;
+
+    ICGTemplateEngine::ListTokenItems my_info_dictionary;
     std::string field_key = "fields";
 
     for (const auto& field : fields) {
-        my_fields_dictionary[field_key].push_back(&field);
+        my_info_dictionary[field_key].push_back(&field);
     }
-    return my_fields_dictionary;
+
+    std::string bases_key = "bases";
+
+    for (const auto& base : base_classes) {
+        my_info_dictionary[bases_key].push_back(&base);
+    }
+
+    return my_info_dictionary;
 }
 
 std::string ClassInfo::toString () const {
@@ -55,13 +63,28 @@ std::string ClassInfo::toString () const {
         fullname << ">";
     }
 
-    std::string ret = "class " + fullname.str() + " {\n";
-    for (auto field : fields) {
-        ret += "\t" + field.toString() + "\n";
+
+    std::stringstream ret;
+    ret << "class" << fullname.str();
+    
+    if (base_classes.size() > 0) {
+        ret << " : ";
+        for (int i = 0; i < base_classes.size(); i++) {
+            if (i != 0) {
+                ret << ", ";
+            }
+
+            ret << base_classes[i].toString();
+        }
     }
 
-    ret += "};\n";
-    return ret;
+    ret << " {\n";
+    for (auto field : fields) {
+        ret << "\t" << field.toString() << "\n";
+    }
+
+    ret << "};\n";
+    return ret.str();
 }
 
 std::unordered_set<std::string> ClassInfo::getStlMembers() const {
@@ -76,4 +99,23 @@ std::unordered_set<std::string> ClassInfo::getStlMembers() const {
     }
 
     return ret;
+}
+
+ClassInfo::BaseInfo::BaseInfo(std::string name) : name(name) {}
+
+ICGTemplateEngine::Dictionary ClassInfo::BaseInfo::toDictionary() const  {
+    ICGTemplateEngine::Dictionary dictionary;
+
+    dictionary["BaseClassName"] = name;
+
+    return dictionary;
+}
+
+
+ICGTemplateEngine::ListTokenItems ClassInfo::BaseInfo::nextLevel() const  {
+    return ICGTemplateEngine::ListTokenItems();
+}
+
+std::string ClassInfo::BaseInfo::toString() const {
+    return "base " + name;
 }

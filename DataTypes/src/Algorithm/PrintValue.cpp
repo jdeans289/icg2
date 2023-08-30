@@ -2,7 +2,6 @@
 
 #include "Algorithm/PrintValue.hpp"
 #include "Type/VisitableTypes.hpp"
-#include "Type/NormalStructMember.hpp"
 
 namespace PrintValue {
 
@@ -19,15 +18,22 @@ namespace PrintValue {
         s << "{";
         int counter = 0;
 
-        // Normal members
-        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++, counter++) {
-            if (counter != 0) {
+        std::vector<StructMember> sorted_members;
+        for (auto it : node->getMemberMap()) {
+            sorted_members.push_back(it.second);
+        }
+
+        // Sort by offset
+        std::sort(sorted_members.begin(), sorted_members.end());
+
+        // Now actually print them
+        for (auto member : node->getSortedMemberList()) {
+            if (counter++ != 0) {
                 s << ", ";
             }
             
-            NormalStructMember * member = *it;
             std::shared_ptr<const DataType> member_subtype = member->getSubType();
-            address_stack.push(member->getAddress(address_stack.top()));
+            address_stack.push(member->getAddressOfMember(address_stack.top()));
 
             // Go into member
             member_subtype->accept(this);
@@ -35,6 +41,7 @@ namespace PrintValue {
             // Remove member name from stack
             address_stack.pop();
         }
+
         s << "}";
 
         return true;

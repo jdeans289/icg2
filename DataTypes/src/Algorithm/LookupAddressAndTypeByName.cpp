@@ -3,7 +3,6 @@
 #include "Algorithm/LookupAddressAndTypeByName.hpp"
 
 #include "Type/VisitableTypes.hpp"
-#include "Type/NormalStructMember.hpp"
 
 namespace LookupAddressAndTypeByName {
 
@@ -35,31 +34,15 @@ namespace LookupAddressAndTypeByName {
             return false;
         }
 
-
         // Find the next step
-        std::shared_ptr<const DataType> next_type = NULL;
-        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
-            NormalStructMember * member = *it;
-            if (member->getName() == next_elem) {
-                // Found the next step!
-                // Find the address of the next member
-                current_search_address = member->getAddress(current_search_address);
-                next_type = member->getSubType();
-            }
-        }
-
-        for (auto it = node->getStaticMemberListBegin(); it != node->getStaticMemberListEnd(); it++) {
-            StaticStructMember * member = *it;
-            if (member->getName() == next_elem) {
-                // Found the next step!
-                // Find the address of the next member
-                current_search_address = member->getAddress();
-                next_type = member->getSubType();
-            }
-        }
-
-        if (next_type != NULL) {
-            return next_type->accept(this);
+        auto memberMap = node->getMemberMap();
+        auto lookup = memberMap.find(next_elem);
+        if (lookup != memberMap.end()) {
+            // Found the next step!
+            // Find the address of the next member
+            const auto& member = lookup->second;
+            current_search_address = member.getAddressOfMember(current_search_address);
+            return member.getSubType()->accept(this);
         }
 
         std::cerr << "Could not find member named " << next_elem << " in type " << node->toString() << std::endl;
