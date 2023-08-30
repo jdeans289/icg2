@@ -2,7 +2,6 @@
 
 #include "Type/VisitableTypes.hpp"
 
-#include "Type/NormalStructMember.hpp"
 #include "Value/Value.hpp"
 #include "Value/IntegerValue.hpp"
 #include "Value/PointerValue.hpp"

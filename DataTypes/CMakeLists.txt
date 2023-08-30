@@ -6,8 +6,8 @@ set(DATATYPES_SRC
     Value/PointerValue.cpp
     Value/StringValue.cpp
     Type/StructMember.cpp
-    Type/NormalStructMember.cpp
-    Type/StaticStructMember.cpp
+    # Type/NormalStructMember.cpp
+    # Type/StaticStructMember.cpp
     # Type/BitfieldStructMember.cpp
     Type/CompositeDataType.cpp
     Type/EnumDataType.cpp

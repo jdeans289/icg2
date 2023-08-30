@@ -1,63 +1,52 @@
-#include "io_bar.hpp"
+#include <sstream>
+
+#include "io_foo.hpp"
 #include "MemoryManagement/AllocInfo.hpp"
 
 #include "ICGTestFixture.hpp"
 
 
-TEST_F(ICGTest, Namespace_checkpoint_restore) {
+TEST_F(ICGTest, inhertance_restore_checkpoint) {
     // ARRANGE
-    std::string checkpoint_str = std::string ("// Variable Declarations.\njackie::j_Bar j_bar ;\n\n\n// Clear all allocations to 0.\nclear_all_vars();\n\n\n// Variable Assignments.\nj_bar.j_foo.my_string = \"Hello world :)\" ;\nj_bar.j_foo.my_ptr = &my_int_to_point_to ;\nj_bar.foo.x = 50 ;\nbar.j_foo.my_string = \"Hello other world!\" ;\nbar.j_foo.my_ptr = &my_int_to_point_to ;\nbar.foo.x = 500 ;\nmy_int_to_point_to = 42 ;\nj_bar_ptr = &j_bar ;\n");
+    std::stringstream checkpoint_stream("b.a = 50 ;\nb.c = 42.42 ;\n");
 
-    int my_int_to_point_to = 0;
-    memoryManager.declare_var("int my_int_to_point_to", &my_int_to_point_to);
-    Bar bar;
-    memoryManager.declare_var("Bar bar", &bar);
-    jackie::j_Bar * j_bar = (jackie::j_Bar *) memoryManager.declare_var("jackie::j_Bar j_bar");
-    memoryManager.declare_var("jackie::j_Bar * j_bar_ptr", &j_bar);
-
-    std::stringstream ss(checkpoint_str);
+    B b;
+    memoryManager.declare_var("B b", &b);
 
     // ACT
-    memoryManager.restore_checkpoint(ss);
+    memoryManager.restore_checkpoint(checkpoint_stream);
 
     // ASSERT
-    EXPECT_EQ(std::string("Hello other world!"), bar.j_foo.my_string);
-    ASSERT_TRUE(bar.j_foo.my_ptr != NULL);
-    EXPECT_EQ(42, *bar.j_foo.my_ptr);
-    EXPECT_EQ(500, bar.foo.x);
-
-    ASSERT_TRUE(j_bar != NULL);
-    EXPECT_EQ(std::string("Hello world :)"), j_bar->j_foo.my_string);
-    ASSERT_TRUE(j_bar->j_foo.my_ptr != NULL);
-    EXPECT_EQ(42, *j_bar->j_foo.my_ptr);
-    EXPECT_EQ(50, j_bar->foo.x);
+    EXPECT_EQ(50, b.a);
+    EXPECT_EQ(42.42, b.c);
 }
 
-TEST_F(ICGTest, Namespace_checkpoint_write) {
+
+TEST_F(ICGTest, inhertance_dump_and_restore_checkpoint) {
     // ARRANGE
-    int my_int_to_point_to = 42;
-    memoryManager.declare_var("int my_int_to_point_to", &my_int_to_point_to);
+    std::stringstream checkpoint_stream;
 
-    Bar bar;
-    memoryManager.declare_var("Bar bar", &bar);
+    A a;
+    a.a = 500;
+    B b;
+    b.a = 50;
+    b.c = 42.42;
+    memoryManager.declare_var("A a", &a);
+    memoryManager.declare_var("B b", &b);
 
-    bar.j_foo.my_string = "Hello other world!";
-    bar.j_foo.my_ptr = &my_int_to_point_to;
-    bar.foo.x = 500;
-
-    jackie::j_Bar * j_bar = (jackie::j_Bar *) memoryManager.declare_var("jackie::j_Bar j_bar");
-
-    j_bar->j_foo.my_string = "Hello world :)";
-    j_bar->j_foo.my_ptr = &my_int_to_point_to;
-    j_bar->foo.x = 50;
-
-    std::stringstream ss;
+    // write a checkpoint
+    memoryManager.write_checkpoint(checkpoint_stream);
+    // make some other changes
+    a.a = 0;
+    b.a = 0;
+    b.c = 0.0;
 
     // ACT
-    memoryManager.write_checkpoint(ss);
+    memoryManager.restore_checkpoint(checkpoint_stream);
+
 
     // ASSERT
-    std::string expected = std::string ("// Variable Declarations.\njackie::j_Bar j_bar ;\n\n\n// Variable Assignments.\nj_bar.j_foo.my_string = \"Hello world :)\" ;\nj_bar.j_foo.my_ptr = &my_int_to_point_to ;\nj_bar.foo.x = 50 ;\nbar.j_foo.my_string = \"Hello other world!\" ;\nbar.j_foo.my_ptr = &my_int_to_point_to ;\nbar.foo.x = 500 ;\nmy_int_to_point_to = 42 ;\n");
-
-    EXPECT_EQ(expected, ss.str());
+    EXPECT_EQ(500, a.a);
+    EXPECT_EQ(50, b.a);
+    EXPECT_EQ(42.42, b.c);
 }

@@ -29,6 +29,10 @@ namespace JClang {
                     scope.pop_qualifier();
                 }
                 break;
+                case UsingDecl: {
+                    // ignore
+                }
+                break;
                 default:
                     std::cout << "Encountered unknown kind: " << item["kind"] << std::endl;
             }

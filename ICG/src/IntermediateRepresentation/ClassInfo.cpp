@@ -32,7 +32,6 @@ ICGTemplateEngine::Dictionary ClassInfo::toDictionary() const {
 
 // Push the fields
 ICGTemplateEngine::ListTokenItems ClassInfo::nextLevel() const {
-    std::cout << "Getting next level for class " << name << std::endl;
 
     ICGTemplateEngine::ListTokenItems my_info_dictionary;
     std::string field_key = "fields";
@@ -43,15 +42,9 @@ ICGTemplateEngine::ListTokenItems ClassInfo::nextLevel() const {
 
     std::string bases_key = "bases";
 
-    std::cout << "Num bases: " << base_classes.size() << std::endl;
     for (const auto& base : base_classes) {
-        std::cout << "Adding base " << base.toString() << std::endl;
         my_info_dictionary[bases_key].push_back(&base);
     }
-
-    std::cout << "Does this class have a bases list? " << (my_info_dictionary.find("bases") == my_info_dictionary.end() ? "No" : "Yes") << std::endl;
-
-    
 
     return my_info_dictionary;
 }

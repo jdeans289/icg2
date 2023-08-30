@@ -1,7 +1,6 @@
 #include "Algorithm/ClearValue.hpp"
 
 #include "Type/VisitableTypes.hpp"
-#include "Type/NormalStructMember.hpp"
 #include "Value/Value.hpp"
 #include "Value/IntegerValue.hpp"
 #include "Value/PointerValue.hpp"
@@ -32,13 +31,15 @@ namespace ClearValue {
     }
 
     bool ClearValueVisitor::visitCompositeType(std::shared_ptr<const CompositeDataType> node) {
-        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
-            NormalStructMember * member = *it;
+        
+        // Treat normal and static members equally
+        for (auto it : node->getMemberMap()) {
+            StructMember& member = it.second;
             
-            std::shared_ptr<const DataType> member_subtype = member->getSubType();
+            std::shared_ptr<const DataType> member_subtype = member.getSubType();
 
             // Push address of this subtype
-            address_stack.push(member->getAddress(address_stack.top()));
+            address_stack.push(member.getAddressOfMember(address_stack.top()));
 
             // Go into member
             member_subtype->accept(this);
@@ -46,9 +47,6 @@ namespace ClearValue {
             // Remove member address from stack
             address_stack.pop();
         }
-
-        // TODO: Do the same thing for statics?
-        // Should work fine, but it will repeated a lot
 
         return true;
     }

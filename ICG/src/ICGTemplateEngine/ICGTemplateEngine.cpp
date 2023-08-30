@@ -136,7 +136,7 @@ namespace ICGTemplateEngine {
 
                     token_val = list_result.str();
                 } else {
-                    std::cerr << "Could not find list named " << list_token_name << std::endl;
+                    // If the list does not exist, then we shouldn't recurse.
                     token_val = "";
                 }
 

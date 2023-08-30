@@ -1,5 +1,4 @@
 #include "Type/EnumDictionary.hpp"
-#include "Type/NormalStructMember.hpp"
 #include "DataTypeTestSupport.hpp"
 #include "Type/AllTypes.hpp"
 #include "Value/PointerValue.hpp"
@@ -140,7 +139,7 @@ class Foo {};
 
 TEST_F(GetValueTest, composite) {
     // ARRANGE
-    std::shared_ptr<DataType> type (new CompositeDataType ( "Foo", sizeof(Foo), NULL, NULL));
+    std::shared_ptr<DataType> type (new SpecifiedCompositeType<Foo>("Foo"));
     type->validate(&dataTypeInator);
 
     double var_to_get[5] = {1, 2, 3, 4, 5};

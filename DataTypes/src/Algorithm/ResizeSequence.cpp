@@ -3,7 +3,10 @@
 #include "Algorithm/ResizeSequence.hpp"
 
 #include "Type/VisitableTypes.hpp"
-#include "Type/NormalStructMember.hpp"
+
+// TODO: why did I do a traversal here?????
+// Should readjust this to be a single shot
+// Intended usage should be to do traversal with LookupAddressAndTypeByName, then call this one
 
 namespace ResizeSequence {
 
@@ -27,38 +30,17 @@ namespace ResizeSequence {
             return false;
         }
 
-
         // Find the next step
-        std::shared_ptr<const DataType> next_type = NULL;
-        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
-            NormalStructMember * member = *it;
-            if (member->getName() == next_elem) {
-                // Found the next step!
-                // Find the address of the next member
-                current_search_address = member->getAddress(current_search_address);
-                next_type = member->getSubType();
-                break;
-            }
+        auto memberMap = node->getMemberMap();
+        auto lookup = memberMap.find(next_elem);
+        if (lookup != memberMap.end()) {
+            // Found the next step!
+            // Find the address of the next member
+            const auto& member = lookup->second;
+            current_search_address = member.getAddressOfMember(current_search_address);
+            return member.getSubType()->accept(this);
         }
-
-        // Only search the statics if we haven't found matching name yet
-        if (next_type == NULL) {
-            for (auto it = node->getStaticMemberListBegin(); it != node->getStaticMemberListEnd(); it++) {
-                StaticStructMember * member = *it;
-                if (member->getName() == next_elem) {
-                    // Found the next step!
-                    // Find the address of the next member
-                    current_search_address = member->getAddress();
-                    next_type = member->getSubType();
-
-                    break;
-                }
-            }
-        }
-
-        if (next_type != NULL) {
-            return next_type->accept(this);
-        }
+    
 
         std::cerr << "Could not find member named " << next_elem << " in type " << node->toString() << std::endl;
         return false;

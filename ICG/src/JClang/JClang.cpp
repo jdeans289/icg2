@@ -46,6 +46,10 @@ namespace JClang {
             return NamespaceDecl;
         }
 
+        if (node["kind"] == "UsingDecl") {
+            return UsingDecl;
+        }
+
         return Unknown;
     }
 
@@ -76,15 +80,12 @@ namespace JClang {
         }
 
         if (!class_node.contains("bases")) {
-            std::cout << "Class " << class_node["name"] << " does not have any base classes." << std::endl;
             return std::vector<std::string>();
         }
 
-        std::cout << "Bases of " << class_node["name"] << ": ";
         std::vector<std::string> result;
         for ( auto item : class_node["bases"] ) {
             result.push_back(getQualifiedType(item));
-            std::cout << getQualifiedType(item) << " ";
         }
 
         std::cout << std::endl;

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <stddef.h>
 
-#include "Type/CompositeDataType.hpp"
+#include "Type/SpecifiedCompositeType.hpp"
 
 // Class Under Test 
 #include "MemoryManagement/MemoryManager.hpp"
@@ -278,21 +278,13 @@ class MyClass {
         ~MyClass () { destructor_called = true; }
 };
 
-void * MyClassAllocator (int n) {
-    return new MyClass;
-}
-
-void MyClassDeallocator (void * addr) {
-    MyClass * temp = (MyClass *) addr;
-    delete temp;
-}
 
 TEST_F (MemoryManagerTest, declare_calls_constructor_of_local) {
     // ARRANGE
     constructor_called = false;
     destructor_called = false;
 
-    CompositeDataType * type = new CompositeDataType("MyClass", sizeof(MyClass), MyClassAllocator, MyClassDeallocator);
+    CompositeDataType * type = new SpecifiedCompositeType<MyClass>("MyClass");
     type->validate(&dataTypeInator);
 
     dataTypeInator.addToDictionary("MyClass", type);
@@ -307,7 +299,7 @@ TEST_F (MemoryManagerTest, declare_calls_constructor_of_local) {
 
 TEST_F (MemoryManagerTest, declare_does_not_call_constructor_of_extern) {
     // ARRANGE
-    CompositeDataType * type = new CompositeDataType("MyClass", sizeof(MyClass), MyClassAllocator, MyClassDeallocator);
+    CompositeDataType * type = new SpecifiedCompositeType<MyClass>("MyClass");
     dataTypeInator.addToDictionary("MyClass", type);
 
     MyClass my_class_instance;
@@ -330,7 +322,7 @@ TEST_F (MemoryManagerTest, delete_calls_destructor_of_local) {
     constructor_called = false;
     destructor_called = false;
 
-    CompositeDataType * type = new CompositeDataType("MyClass", sizeof(MyClass), MyClassAllocator, MyClassDeallocator);
+    CompositeDataType * type = new SpecifiedCompositeType<MyClass>("MyClass");
     dataTypeInator.addToDictionary("MyClass", type);
 
     MyClass * my_class_instance = (MyClass *) memoryManager.declare_var("MyClass my_class_instance");
@@ -349,7 +341,7 @@ TEST_F (MemoryManagerTest, delete_does_not_call_destructor_of_extern) {
     constructor_called = false;
     destructor_called = false;
 
-    CompositeDataType * type = new CompositeDataType("MyClass", sizeof(MyClass), MyClassAllocator, MyClassDeallocator);
+    CompositeDataType * type = new SpecifiedCompositeType<MyClass>("MyClass");
     dataTypeInator.addToDictionary("MyClass", type);
 
     MyClass my_class_instance;

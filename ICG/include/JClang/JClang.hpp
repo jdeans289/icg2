@@ -15,6 +15,7 @@ namespace JClang {
         ClassTemplateSpecialization,
         TemplateParameterDecl,
         TemplateArgument,
+        UsingDecl,
         Unknown
     };
 

@@ -1,7 +1,6 @@
 #include "Algorithm/FindLeaves.hpp"
 
 #include "Type/VisitableTypes.hpp"
-#include "Type/NormalStructMember.hpp"
 
 #include "Algorithm/DataTypeAlgorithm.hpp"
 
@@ -30,14 +29,15 @@ namespace FindLeaves {
     }
 
     bool FindLeavesVisitor::visitCompositeType(std::shared_ptr<const CompositeDataType> node) {
-        for (auto it = node->getNormalMemberListBegin(); it != node->getNormalMemberListEnd(); it++) {
-            NormalStructMember * member = *it;
+
+        for (auto it : node->getSortedMemberList()) {
+            StructMember* member = it;
             
             std::shared_ptr<const DataType> member_subtype = member->getSubType();
             // Push the member name on stack
             
             current_name_stack.pushName(member->getName());
-            address_stack.push(member->getAddress(address_stack.top()));
+            address_stack.push(member->getAddressOfMember(address_stack.top()));
 
             // Go into member
             member_subtype->accept(this);
@@ -46,9 +46,6 @@ namespace FindLeaves {
             current_name_stack.pop_back();
             address_stack.pop();
         }
-
-        // TODO: BITFIELD AND STATICS NOT IMPLEMENTED YET
-
 
         return true;
     }

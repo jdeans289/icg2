@@ -30,31 +30,12 @@ TEST_F( ResizeSequenceTest , bare_sequence ) {
     EXPECT_EQ(10, vec.size());
 }
 
-class VecClass {
-    public:
-    std::vector<int> v;
-};
-
-void addVecClassToDataTypeInator(DataTypeInator& dataTypeInator) {
-
-    SequenceDataType * vecType = new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>");
-
-    vecType->validate(&dataTypeInator);
-    dataTypeInator.addToDictionary("std::vector<int>", vecType);
-
-    CompositeDataType * vecClassSpec =
-        new CompositeDataType( "VecClass", sizeof(VecClass), &construct<VecClass>, &destruct<VecClass>);
-        vecClassSpec->addRegularMember( "v", offsetof(VecClass, v), "std::vector<int>");
-
-    dataTypeInator.addToDictionary("VecClass", vecClassSpec);
-
-    vecClassSpec->validate(&dataTypeInator);
-}
-
 TEST_F( ResizeSequenceTest , sequence_nested_in_class ) {
 
     // ARRANGE    
-    addVecClassToDataTypeInator(dataTypeInator);
+    dataTypeInator.addToDictionary("std::vector<int>", new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>"));
+    dataTypeInator.addToDictionary("VecClass", new SpecifiedCompositeType<VecClass>("VecClass"));
+    dataTypeInator.validateDictionary();
 
     VecClass var[5];
     std::shared_ptr<const DataType> type = dataTypeInator.resolve("VecClass[4]");
@@ -98,22 +79,30 @@ class VecClass_static {
 
 std::vector<int> VecClass_static::v;
 
-void addVecClass_staticToDataTypeInator(DataTypeInator& dataTypeInator) {
+template <>
+class SpecifiedCompositeType<VecClass_static> : public CompositeDataType {
+    public:
+    SpecifiedCompositeType(std::string name) : CompositeDataType(name, sizeof(VecClass_static), &construct_composite<VecClass_static>, &destruct_composite<VecClass_static>) {}
 
-    dataTypeInator.addToDictionary("std::vector<int>", new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>"));
+    MemberMap& getMemberMap () override {
+        using type_to_add = VecClass_static;
 
-    CompositeDataType * vecClassSpec =
-        new CompositeDataType( "VecClass_static", sizeof(VecClass_static), &construct<VecClass_static>, &destruct<VecClass_static>);
-        vecClassSpec->addStaticMember( "v", &VecClass_static::v, "std::vector<int>");
+        static MemberMap member_map = {
+            {"v", StructMember("v", "std::vector<int>", (long) &VecClass_static::v, StructMember::STATIC)},
+        };
+        return member_map;
+    }
 
-    dataTypeInator.addToDictionary("VecClass_static", vecClassSpec);
-
-    vecClassSpec->validate(&dataTypeInator);
-}
+    const MemberMap& getMemberMap () const override {
+        return (const_cast<SpecifiedCompositeType<VecClass_static>*> (this))->getMemberMap();
+    }
+};
 
 TEST_F( ResizeSequenceTest , static_sequence_class ) {
     // ARRANGE    
-    addVecClass_staticToDataTypeInator(dataTypeInator);
+    dataTypeInator.addToDictionary("std::vector<int>", new SpecifiedSequenceDataType<std::vector<int>>("std::vector<int>"));
+    dataTypeInator.addToDictionary("VecClass_static", new SpecifiedCompositeType<VecClass_static>("VecClass_static"));
+    dataTypeInator.validateDictionary();
 
     VecClass_static var;
     std::shared_ptr<const DataType> type = dataTypeInator.resolve("VecClass_static");
