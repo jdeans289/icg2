@@ -4,6 +4,8 @@
 
 namespace JClang {
 
+    static json empty_node;
+
     NodeKind getNodeKind (json& node) {
 
         if (!node.contains("kind")) {
@@ -50,6 +52,10 @@ namespace JClang {
             return UsingDecl;
         }
 
+        if (node["kind"] == "TypedefDecl") {
+            return TypedefDecl;
+        }
+
         return Unknown;
     }
 
@@ -92,4 +98,22 @@ namespace JClang {
 
         return result;
     }
+
+    std::string getNodeName(json& node) {
+        if (!node.contains("name")) {
+            std::cerr << "Attempted to get name of node that does not contain a name." << std::endl;
+            return "";
+        }
+
+        return node["name"];
+    }
+
+    json& getNodeInner(json& node) {
+        if (!node.contains("inner")) {
+            return empty_node;
+        }
+
+        return node["inner"];
+    }
+
 }

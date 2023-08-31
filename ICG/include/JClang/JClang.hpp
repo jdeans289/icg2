@@ -16,6 +16,7 @@ namespace JClang {
         TemplateParameterDecl,
         TemplateArgument,
         UsingDecl,
+        TypedefDecl,
         Unknown
     };
 
@@ -42,4 +43,20 @@ namespace JClang {
      * @return std::vector<std::string> string names of parent classes
      */
     std::vector<std::string> getBaseClasses (json& class_node);
+
+    /**
+     * @brief Get the name of the given node
+     * 
+     * @param node json node that represents something that has a name
+     * @return std::string string representation of name, empty string if node has no name
+     */
+    std::string getNodeName(json& node);
+
+    /**
+     * @brief Get a reference to the json node representing a list of what's inside this node 
+     * 
+     * @param node 
+     * @return json& 
+     */
+    json& getNodeInner(json& node);
 }

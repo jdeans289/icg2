@@ -39,6 +39,7 @@ set(DATATYPES_SRC
     Algorithm/ResizeSequence.cpp
     CheckpointAgent/J_CheckpointAgent.cpp
     TypeDictionary.cpp
+    TypeDefDictionary.cpp
     DataTypeInator.cpp
 )
 

@@ -5,12 +5,13 @@
 
 #include "IntermediateRepresentation/ASTInfo.hpp"
 #include "IntermediateRepresentation/STLDeclInfo.hpp"
+#include "IntermediateRepresentation/TypedefInfo.hpp"
 
 
 // Just bundle together all the other things
 const std::string ASTInfo::classes_key = "classes";
 const std::string ASTInfo::stl_key = "stls";
-
+const std::string ASTInfo::typedef_key = "typedefs";
 
 std::string ASTInfo::toString() const {
     std::stringstream ss;
@@ -30,6 +31,13 @@ std::string ASTInfo::toString() const {
         }
     }
 
+    if (items.find(typedef_key) != items.end()) {
+        ss << "TypeDef Decls: " << std::endl;
+        for (auto typedef_n : items.at(typedef_key)) {
+            ss << typedef_n->toString() << std::endl;
+        }
+    }
+
     ss << std::endl;
 
     return ss.str();
@@ -37,6 +45,7 @@ std::string ASTInfo::toString() const {
 
 
 void ASTInfo::combine (const ASTInfo& other) {
+    // Just combine the stl sets
     stl_decls.insert(other.stl_decls.begin(), other.stl_decls.end());
 
     // Combine pre-existing entries
@@ -49,7 +58,7 @@ void ASTInfo::combine (const ASTInfo& other) {
         }
     }
 
-    // This copies all entries that are not in this, and leaves entries that already exist alone
+    // This copies all entries that are not in us already, and leaves entries that already exist alone
     items.insert(other.items.begin(), other.items.end());
 }
 
@@ -58,13 +67,16 @@ void ASTInfo::add_class_info(ClassInfo * class_info) {
     items[classes_key].push_back(class_info);
 }
 
-
 void ASTInfo::add_stl_decl(std::string stl_name) {
     stl_decls.insert(stl_name);
 }
 
 void ASTInfo::add_stl_decl(std::unordered_set<std::string> stl_names) {
     stl_decls.insert(stl_names.begin(), stl_names.end());
+}
+
+void ASTInfo::add_typedef (std::string existing_name, std::string alias_name) {
+    items[typedef_key].push_back(new TypedefInfo(existing_name, alias_name));
 }
 
 ICGTemplateEngine::ListTokenItems ASTInfo::getItems() {

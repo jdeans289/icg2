@@ -38,7 +38,7 @@ This requires runtime memory management. All allocations must be allocated throu
 
 ## Supported Types
 
-Currently, the types supported are
+Currently, supported C++ features are:
 
 - Primitives:
 ```
@@ -60,9 +60,12 @@ double
 - std::string
 - Constrained Arrays
 - Pointers
-- User Defined classes/structs with members of any of the above types
+- Classes and structs
 - Namespaces
 - Nested classes
+- `typedef` and `using` statements
+- Inheritance
+- Class templates
 - STL sequences (vector, list, deque)
 - Any mix of the above
 

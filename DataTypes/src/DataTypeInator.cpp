@@ -7,6 +7,7 @@
 DataTypeInator::DataTypeInator () : typeDictionary(new TypeDictionary) {
     // Probably shouldn't do this.
     typeDictionary->addBuiltinTypes();
+    typeDefDictionary.addDefaults();
 }
 
 DataTypeInator::DataTypeInator (TypeDictionary * dict) : typeDictionary(dict) {}
@@ -15,8 +16,23 @@ std::shared_ptr<const DataType> DataTypeInator::resolve(std::string name) {
 
     MutableDeclaration decl(name);
 
+    // Put the typename through the parser always to ensure that we aren't dealing with whitespace or variable name issues
     std::string lookup_type_name = decl.getAbstractDeclarator();
-    std::shared_ptr<const DataType> initial_lookup = typeDictionary->lookup(lookup_type_name);
+
+    // If we're dealing with a typedef, get rid of it
+    // yikes this is actually hairier than I thought it was
+    // TODO come back to this - there's some weirdness around dealing with modifiers
+    // because someone can do this -
+    // typedef MyArr int[5];
+    // MyArr[2] var;
+    // So the lookup is probably gonna have to check for every level of modifier
+    // Wait or maybe not?
+    // Maybe the recursion already does this
+    std::string canonical_type_name = typeDefDictionary.lookupCanonicalName(lookup_type_name);
+    decl = MutableDeclaration(canonical_type_name);
+
+    // Now do the lookup
+    std::shared_ptr<const DataType> initial_lookup = typeDictionary->lookup(decl.getAbstractDeclarator());
 
     // If we find anything, return it.
     // If we don't find anything, but it's an array/ptr, make it and return that.
@@ -53,6 +69,7 @@ std::shared_ptr<const DataType> DataTypeInator::resolve(std::string name) {
         // Add to dictionary
         addToDictionary(lookup_type_name, new_type);
 
+        // then actually do the 
         return typeDictionary->lookup(lookup_type_name);
     }
 }
@@ -63,6 +80,15 @@ void DataTypeInator::addToDictionary(std::string name, DataType * typeSpec) {
 
 bool DataTypeInator::validateDictionary() {
     return typeDictionary->validate(this);
+}
+
+void DataTypeInator::addTypeDef (std::string typedefedName, std::string canonicalName) {
+    // Put typenames through the parser always to ensure that we aren't dealing with whitespace or variable name issues
+
+    MutableDeclaration lhs(typedefedName);
+    MutableDeclaration rhs(canonicalName);
+
+    typeDefDictionary.registerTypedef(lhs.getAbstractDeclarator(), rhs.getAbstractDeclarator());
 }
 
 

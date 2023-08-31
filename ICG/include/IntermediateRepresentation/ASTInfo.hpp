@@ -42,6 +42,14 @@ class ASTInfo {
     void add_stl_decl(std::unordered_set<std::string> stl_names);
 
     /**
+     * @brief Register a typedef
+     * 
+     * @param existing_name FULLY QUALIFIED, DESUGARED typename
+     * @param alias_name name of the alias
+     */
+    void add_typedef (std::string existing_name, std::string alias_name);
+
+    /**
      * @brief Get the representation of this AST that is compatable with the ICGTemplateEngine
      * 
      * @return ICGTemplateEngine::ListTokenItems 
@@ -57,8 +65,11 @@ class ASTInfo {
 
     private:
     ICGTemplateEngine::ListTokenItems items;
+    
+    // In this one it's important that we don't define the same one twice, so keep it as a set until we're ready for output
     std::unordered_set<std::string> stl_decls;
 
     static const std::string classes_key;
     static const std::string stl_key;
+    static const std::string typedef_key;
 };

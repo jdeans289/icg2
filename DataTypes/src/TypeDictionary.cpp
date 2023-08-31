@@ -38,7 +38,6 @@ void TypeDictionary::addBuiltinTypes() {
     addTypeDefinition("double", new SpecifiedPrimitiveDataType<double>() );
     // FIXME: add the other goofy types (e.g., uint8 ) that were added via the old lexical analyzer.
 
-    addTypeDefinition("std::string", new StringDataType());
     addTypeDefinition("std::basic_string<char>", new StringDataType());
 
 }

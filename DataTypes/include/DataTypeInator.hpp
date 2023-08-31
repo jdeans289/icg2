@@ -3,24 +3,59 @@
 
 
 #include "TypeDictionary.hpp"
+#include "TypeDefDictionary.hpp"
 #include "Type/DataType.hpp"
 
 
 class TypeDictionary;
 
+/**
+ * @brief Register and manage datatypes at runtime
+ * 
+ */
 class DataTypeInator {
     public:
         DataTypeInator ();
         DataTypeInator (TypeDictionary * dict);
-
+        
+        /**
+         * @brief Look up the DataType given a string representation of the type
+         * This is the most important function of this entire library.
+         * 
+         * @param name fully qualified type name to look up (not necessarily canonical)
+         * @return std::shared_ptr<const DataType> 
+         */
         std::shared_ptr<const DataType> resolve(std::string name);
+
+        /**
+         * @brief Add a name-DataType pair to the manager 
+         * 
+         * @param name String representation of type. Should be the fully qualified canonical name
+         * @param typeSpec bare pointer to the (validated or unvalidated) datatype. DataTypeInator will assume ownership of it.
+         */
         void addToDictionary(std::string name, DataType * typeSpec);
 
+        /**
+         * @brief Register a typedef statement with the DataTypeInator
+         * 
+         * @param typedefedName LHS of typedef
+         * @param canonicalName RHS of typedef
+         */
+        void addTypeDef (std::string typedefedName, std::string canonicalName);
+
+        /**
+         * @brief Ensure all types in the dictionary are valid
+         * 
+         * @return true it good
+         * @return false it not good
+         */
         bool validateDictionary();
 
 
     private:
         TypeDictionary * typeDictionary;
+
+        TypeDefDictionary typeDefDictionary;
 };
 
 // ⡹⢌⠳⡘⢦⡙⢆⠳⣌⠳⡘⡜⢢⠝⣢⠓⡬⢓⡌⢳⡘⢦⡙⢆⠳⣌⠳⡘⡜⢢⠝⢢⠓⡬⢓⡌⢳⡘⢦⡙⢆⠳⣌⠳⡘⡜⢢⠝⢢⠓⡬⢓⡌⢳⡘⠦⡙⢆⠳⡌⠳⣌⠳⡘⡜⢢⢃⠳⣌⠳⡘⡜⢢⠝⡰⢃⠮⡑⢎⡜⠦⡙⢆⠳⣌⠳⣌⠳⡘⢦⡙⢆⠳⣌⠳⡘⡜⢢⠝⣢⠓⡬

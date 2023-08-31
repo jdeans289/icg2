@@ -173,3 +173,27 @@ TEST_F(DataTypeInatorTest, PointerPointerArray) {
     ASSERT_TRUE(subtype_casted_result != NULL);
 }
 
+TEST_F(DataTypeInatorTest, typedef_test) {
+    // ARRANGE
+    dataTypeInator->addTypeDef("MyGoofyInt", "int");
+
+    // ACT
+    std::shared_ptr<const DataType> result = dataTypeInator->resolve("MyGoofyInt");
+
+    // ASSERT
+    ASSERT_TRUE(result != NULL);
+    EXPECT_EQ(std::string("int"), result->toString());
+}
+
+TEST_F(DataTypeInatorTest, typedef_test_spacing) {
+    // ARRANGE
+    dataTypeInator->addTypeDef("MyGoofyArr", "int [5]");
+
+    // ACT
+    std::shared_ptr<const DataType> result = dataTypeInator->resolve("MyGoofyArr");
+
+    // ASSERT
+    ASSERT_TRUE(result != NULL);
+    EXPECT_EQ(std::string("int[5]"), result->toString());
+}
+

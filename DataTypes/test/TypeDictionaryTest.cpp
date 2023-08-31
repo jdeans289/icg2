@@ -137,7 +137,7 @@ TEST_F(TypeDictionaryTest, namespaces_lookup) {
     // std::string is in the builtins
 
     // ACT
-    std::shared_ptr<const DataType> type = typeDictionary->lookup("std::string");
+    std::shared_ptr<const DataType> type = typeDictionary->lookup("std::basic_string<char>");
 
     // ASSERT
     ASSERT_TRUE(type != NULL);
