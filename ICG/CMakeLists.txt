@@ -8,6 +8,7 @@ set(ICG_SRC
     IntermediateRepresentation/FieldInfo.cpp
     IntermediateRepresentation/STLDeclInfo.cpp
     IntermediateRepresentation/ASTInfo.cpp
+    IntermediateRepresentation/TypedefInfo.cpp
     JClang/JClang.cpp
     JClang/Traversal.cpp
     ASTFilter/ASTFilter.cpp

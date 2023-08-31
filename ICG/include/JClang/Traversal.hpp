@@ -54,6 +54,15 @@ namespace JClang {
     ASTInfo scrape_class_template_spec_info (json& class_template_node, Scope& scope);
 
     /**
+     * @brief Process this node of the AST as a class template specialization
+     * 
+     * @param class_template_node node to process
+     * @param scope current scope object
+     * @return ASTInfo info scraped from this node and child nodes
+     */
+    ASTInfo scrape_typedef_info (json& typedef_node, Scope& scope);
+
+    /**
      * @brief Process this node of the AST as a field declaration
      * 
      * @param field_node node to process

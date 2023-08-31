@@ -19,3 +19,7 @@ std::string TypeDefDictionary::lookupCanonicalName(std::string name) {
     // Just return result of lookup. No need to worry about checking anything here
     return lookup->second;
 }
+
+void TypeDefDictionary::addDefaults() {
+    registerTypedef("std::string", "std::basic_string<char>");
+}

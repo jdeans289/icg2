@@ -7,6 +7,7 @@
 DataTypeInator::DataTypeInator () : typeDictionary(new TypeDictionary) {
     // Probably shouldn't do this.
     typeDictionary->addBuiltinTypes();
+    typeDefDictionary.addDefaults();
 }
 
 DataTypeInator::DataTypeInator (TypeDictionary * dict) : typeDictionary(dict) {}
@@ -20,6 +21,13 @@ std::shared_ptr<const DataType> DataTypeInator::resolve(std::string name) {
 
     // If we're dealing with a typedef, get rid of it
     // yikes this is actually hairier than I thought it was
+    // TODO come back to this - there's some weirdness around dealing with modifiers
+    // because someone can do this -
+    // typedef MyArr int[5];
+    // MyArr[2] var;
+    // So the lookup is probably gonna have to check for every level of modifier
+    // Wait or maybe not?
+    // Maybe the recursion already does this
     std::string canonical_type_name = typeDefDictionary.lookupCanonicalName(lookup_type_name);
     decl = MutableDeclaration(canonical_type_name);
 
@@ -61,6 +69,7 @@ std::shared_ptr<const DataType> DataTypeInator::resolve(std::string name) {
         // Add to dictionary
         addToDictionary(lookup_type_name, new_type);
 
+        // then actually do the 
         return typeDictionary->lookup(lookup_type_name);
     }
 }

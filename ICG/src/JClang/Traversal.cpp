@@ -12,7 +12,7 @@ namespace JClang {
     ASTInfo scrape_ast (json& ast_node, Scope& scope) {
 
         ASTInfo total_result;
-        for (auto item : ast_node["inner"]) {
+        for (auto item : getNodeInner(ast_node)) {
 
             switch (getNodeKind(item)) {
                 case ClassTemplateDecl: {
@@ -24,13 +24,17 @@ namespace JClang {
                 }
                 break;
                 case NamespaceDecl: {
-                    scope.push_qualifier(item["name"]);
+                    scope.push_qualifier(getNodeName(item));
                     total_result.combine(scrape_ast(item, scope));
                     scope.pop_qualifier();
                 }
                 break;
                 case UsingDecl: {
                     // ignore
+                }
+                break;
+                case TypedefDecl: {
+                    total_result.combine(scrape_typedef_info(item, scope));
                 }
                 break;
                 default:
@@ -45,15 +49,17 @@ namespace JClang {
         ASTInfo result;
 
         ClassInfo * info = new ClassInfo;
-        info->name = scope.make_scoped_name(class_node["name"]);
+        info->name = scope.make_scoped_name(getNodeName(class_node));
 
         // Get base classes
         for (auto base_class_name : getBaseClasses(class_node)) {
             info->base_classes.emplace_back(base_class_name);
         }
 
+        scope.push_qualifier(getNodeName(class_node));
+
         // Iterate through contents
-        for (auto item : class_node["inner"]) {
+        for (auto item : getNodeInner(class_node)) {
             
             switch (getNodeKind(item)) {
                 case FieldDecl: {
@@ -61,14 +67,18 @@ namespace JClang {
                 }
                 break;
                 case ClassDecl: {
-                    scope.push_qualifier(class_node["name"]);
                     result.combine(scrape_class_info(item, scope));
-                    scope.pop_qualifier();
+                }
+                break;
+                case TypedefDecl: {
+                    result.combine(scrape_typedef_info(item, scope));
                 }
                 break;
                 default: ;
             }
         }
+
+        scope.pop_qualifier();
 
         result.add_class_info(info);
 
@@ -79,10 +89,10 @@ namespace JClang {
     ASTInfo scrape_class_template_decl_info (json& class_template_node, Scope& scope) {
         ASTInfo result;
 
-        std::string template_name = scope.make_scoped_name(class_template_node["name"]);
+        std::string template_name = scope.make_scoped_name(getNodeName(class_template_node));
         int num_template_args = 0;
 
-        for (auto item : class_template_node["inner"]) {
+        for (auto item : getNodeInner(class_template_node)) {
 
             switch (getNodeKind(item)) {
                 case TemplateParameterDecl: {
@@ -105,9 +115,9 @@ namespace JClang {
         ASTInfo result;
 
         ClassInfo * info = new ClassInfo;
-        info->name = class_template_node["name"];
+        info->name = scope.make_scoped_name(getNodeName(class_template_node));
 
-        for (auto template_item : class_template_node["inner"]) {
+        for (auto template_item : getNodeInner(class_template_node)) {
             switch (getNodeKind(template_item)) {
                 case TemplateArgument: {
                     info->template_args.push_back(getQualifiedType(template_item));
@@ -126,9 +136,19 @@ namespace JClang {
         return result;
     }
 
+
+    ASTInfo scrape_typedef_info (json& typedef_node, Scope& scope) {
+        ASTInfo result;
+        std::string alias_name = scope.make_scoped_name(getNodeName(typedef_node));
+        std::string existing_name = getQualifiedType(typedef_node);
+        result.add_typedef(existing_name, alias_name);
+        return result;
+    }
+
+
     FieldInfo scrape_field_decl_info (json& field_node, Scope& scope) {
         FieldInfo field;
-        field.name = field_node["name"];
+        field.name = getNodeName(field_node);
         field.type = getQualifiedType(field_node);
         return field;
     }

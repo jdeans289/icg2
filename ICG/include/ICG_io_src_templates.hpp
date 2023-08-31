@@ -20,6 +20,8 @@ void populate_type_dictionary(DataTypeInator * dataTypeInator) {
 
     {{list_stls_stl_decl}}
 
+    {{list_typedefs_typedef_decl}}
+
     dataTypeInator->validateDictionary();
 }
 )");
@@ -80,6 +82,9 @@ std::string field_decl = std::string(R"({"{{FieldName}}", StructMember("{{FieldN
 std::string stl_decl = std::string(R"(dataTypeInator->addToDictionary("{{STLName}}", new SpecifiedSequenceDataType<{{STLName}}>("{{STLName}}"));
 )");
 
+std::string typedef_decl = std::string(R"(dataTypeInator->addTypeDef("{{ExistingName}}", "{{AliasName}}");
+)");
+
 std::string add_base_members_to_self = std::string(R"(
 auto derived_members = SpecifiedCompositeType<{{BaseClassName}}>::applyMembersToDerived<{{ClassName}}>();
 member_map.insert(derived_members.begin(), derived_members.end());
@@ -98,5 +103,6 @@ std::map<std::string, std::string> template_dictionary {
     {"derived_field_decl", derived_field_decl},
     {"add_base_members_to_self", add_base_members_to_self},
     {"add_base_members_to_derived", add_base_members_to_derived},
-    {"stl_decl", stl_decl}
+    {"stl_decl", stl_decl},
+    {"typedef_decl", typedef_decl}
 };
