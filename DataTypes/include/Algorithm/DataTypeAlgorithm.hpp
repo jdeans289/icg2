@@ -103,17 +103,9 @@ namespace DataTypeAlgorithm {
     /**
      * @brief Resize a sequence to the given size.
      * 
-     * @param node Starting type
-     * @param address Starting address of allocation
-     */
-
-    /**
-     * @brief Resize a sequence to the given size.
-     * 
-     * @param node Starting type
-     * @param address Starting address of allocation
-     * @param full_name Name of the sequence variable to search for within this allocation
+     * @param node type (should be a SequenceDataType)
+     * @param address address of allocation
      * @param num_elems new size
      */
-    bool resizeSequence(std::shared_ptr<const DataType> node, void * starting_address, std::string full_name, int num_elems);
+    bool resizeSequence(std::shared_ptr<const DataType> node, void * address, int num_elems);
 }

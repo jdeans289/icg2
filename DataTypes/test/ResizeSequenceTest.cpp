@@ -23,7 +23,7 @@ TEST_F( ResizeSequenceTest , bare_sequence ) {
     std::vector<int> vec({1, 2, 3, 4, 5});
 
     // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &vec, "size", 10);
+    bool result = DataTypeAlgorithm::resizeSequence(type, &vec, 10);
 
     // ASSERT
     ASSERT_TRUE(result);
@@ -38,11 +38,11 @@ TEST_F( ResizeSequenceTest , sequence_nested_in_class ) {
     dataTypeInator.validateDictionary();
 
     VecClass var[5];
-    std::shared_ptr<const DataType> type = dataTypeInator.resolve("VecClass[4]");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("std::vector<int>");
     ASSERT_TRUE(type != NULL);
 
     // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "[3].v.size", 10);
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var[3], 10);
 
     // ASSERT
     ASSERT_TRUE(result);
@@ -59,11 +59,11 @@ TEST_F( ResizeSequenceTest , nested_sequence ) {
     dataTypeInator.validateDictionary();
 
     std::vector<std::vector<int>> var (5);
-    std::shared_ptr<const DataType> type = dataTypeInator.resolve("std::vector<std::vector<int>>");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("std::vector<int>");
     ASSERT_TRUE(type != NULL);
 
     // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "[3].size", 10);
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var[3], 10);
 
     // ASSERT
     ASSERT_TRUE(result);
@@ -105,11 +105,11 @@ TEST_F( ResizeSequenceTest , static_sequence_class ) {
     dataTypeInator.validateDictionary();
 
     VecClass_static var;
-    std::shared_ptr<const DataType> type = dataTypeInator.resolve("VecClass_static");
+    std::shared_ptr<const DataType> type = dataTypeInator.resolve("std::vector<int>");
     ASSERT_TRUE(type != NULL);
 
     // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "v.size", 10);
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var.v, 10);
 
     // ASSERT
     ASSERT_TRUE(result);
@@ -122,7 +122,7 @@ TEST_F(ResizeSequenceTest, primitive) {
     int var;
 
     // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "", 10);
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, 10);
 
     // ASSERT
     ASSERT_EQ(false, result);
@@ -136,7 +136,7 @@ TEST_F(ResizeSequenceTest, string) {
     std::string var;
 
     // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "size", 10);
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, 10);
 
     // ASSERT
     ASSERT_EQ(false, result);
@@ -151,37 +151,7 @@ TEST_F(ResizeSequenceTest, array) {
 
 
     // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "[2].size", 10);
-
-    // ASSERT
-    ASSERT_EQ(false, result);
-
-
-}
-
-TEST_F(ResizeSequenceTest, array_bad_index) {
-    // ARRANGE
-    std::shared_ptr<const DataType> type = dataTypeInator.resolve("double[5]");
-    double var[5];
-
-
-    // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "not_an_index", 10);
-
-    // ASSERT
-    ASSERT_EQ(false, result);
-
-
-}
-
-TEST_F(ResizeSequenceTest, array_out_of_bounds) {
-    // ARRANGE
-    std::shared_ptr<const DataType> type = dataTypeInator.resolve("double[5]");
-    double var[5];
-
-
-    // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "[100]", 10);
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, 10);
 
     // ASSERT
     ASSERT_EQ(false, result);
@@ -196,7 +166,7 @@ TEST_F(ResizeSequenceTest, bare_pointer) {
     int * var;
 
     // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "", 10);
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, 10);
 
     // ASSERT
     ASSERT_EQ(false, result);
@@ -212,7 +182,7 @@ TEST_F(ResizeSequenceTest, enum) {
     std::shared_ptr<const DataType> type = dataTypeInator.resolve("DayOfWeek");
 
     // ACT
-    bool result = DataTypeAlgorithm::resizeSequence(type, &var, "", 10);
+    bool result = DataTypeAlgorithm::resizeSequence(type, &var, 10);
 
     // ASSERT
     ASSERT_EQ(false, result);

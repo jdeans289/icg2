@@ -93,7 +93,7 @@ TEST_F(FindLeavesTest, vector) {
     
     EXPECT_EQ(true, results[0].is_stl);
     EXPECT_EQ(var_to_checkpoint.size(), results[0].stl_size);
-    EXPECT_EQ(std::string("var_to_checkpoint.size"), results[0].name_stack.toString());
+    EXPECT_EQ(std::string("var_to_checkpoint"), results[0].name_stack.toString());
 
     for (int i = 1; i < results.size(); i++) {
         std::string var_name = "var_to_checkpoint[" + std::to_string(i-1) + "]";

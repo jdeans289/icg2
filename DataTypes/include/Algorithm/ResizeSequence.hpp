@@ -13,7 +13,7 @@ namespace ResizeSequence {
     class ResizeSequenceVisitor : public DataTypeVisitor {
 
         public:
-            ResizeSequenceVisitor(void * address, std::string variable_name, int num_elems);
+            ResizeSequenceVisitor(void * address, int num_elems);
 
             // Visitor Interface 
 
@@ -27,11 +27,10 @@ namespace ResizeSequence {
 
         private:
 
-            bool visitLeaf(std::shared_ptr<const DataType> node);
+            bool visitIncorrectType(std::shared_ptr<const DataType> node);
 
             // Visitor Intermediate State
-            void * current_search_address;
-            MutableVariableName name_elems;
+            void * address;
             int num_elems;
     };
 }

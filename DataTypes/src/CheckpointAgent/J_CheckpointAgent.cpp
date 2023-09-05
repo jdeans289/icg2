@@ -10,6 +10,8 @@
 
 const std::string J_CheckpointAgent::error_str = "<UNDEFINED>";
 const std::string J_CheckpointAgent::resize_command = "RESIZE_STL";
+// const std::string J_CheckpointAgent::clear_vars_command = "CLEAR_ALL_VARS";
+
 
 
 J_CheckpointAgent::J_CheckpointAgent(DataTypeInator * inator) : dataTypeInator(inator) {}
@@ -313,5 +315,11 @@ void J_CheckpointAgent::handleResizeCommand (std::string command_str, const std:
         return;
     }
 
-    DataTypeAlgorithm::resizeSequence(alloc_to_assign->getDataType(), alloc_to_assign->getStart(), var_elems.toString(), num_elems);
+    // Look up the actual address
+    auto result = DataTypeAlgorithm::lookupAddressAndTypeByName(alloc_to_assign->getDataType(), alloc_to_assign->getStart(), var_elems);
+    if (result.success) {
+        DataTypeAlgorithm::resizeSequence(result.type, result.address, num_elems);
+    }
+
+    // DataTypeAlgorithm::resizeSequence(alloc_to_assign->getDataType(), alloc_to_assign->getStart(), var_elems.toString(), num_elems);
 }

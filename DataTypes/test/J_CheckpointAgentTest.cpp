@@ -157,7 +157,7 @@ TEST_F (J_CheckpointAgentTest, vector_assignment) {
     checkpoint_agent.writeAssignment(ss, &my_alloc_info, alloc_list);
 
     // ASSERT
-    std::string expected =  "RESIZE_STL var_to_checkpoint.size = 3 ;\n"
+    std::string expected =  "RESIZE_STL var_to_checkpoint = 3 ;\n"
                             "var_to_checkpoint[0] = 10 ;\n"
                             "var_to_checkpoint[1] = 20 ;\n"
                             "var_to_checkpoint[2] = 30 ;\n";
@@ -529,7 +529,7 @@ str_to_checkpoint = "Ra Ra Rasputin" ;
 
 TEST_F (J_CheckpointAgentTest, vector_resize_cmd) {
     // ARRANGE
-    std::string checkpoint_str =  "RESIZE_STL var_to_checkpoint.size = 3 ;\n";
+    std::string checkpoint_str =  "RESIZE_STL var_to_checkpoint = 3 ;\n";
     std::stringstream ss (checkpoint_str);
 
     // var to checkpoint

@@ -116,10 +116,10 @@ namespace DataTypeAlgorithm {
     }   
 
 
-    bool resizeSequence(std::shared_ptr<const DataType> node, void * starting_address, std::string full_name, int num_elems) {
+    bool resizeSequence(std::shared_ptr<const DataType> node, void * starting_address, int num_elems) {
         checkType (node, __FUNCTION__);
 
-        ResizeSequence::ResizeSequenceVisitor visitor(starting_address, full_name, num_elems);
+        ResizeSequence::ResizeSequenceVisitor visitor(starting_address, num_elems);
         return visitor.go(node);   
     }
     
