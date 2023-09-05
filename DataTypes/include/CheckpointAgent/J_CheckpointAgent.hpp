@@ -63,5 +63,5 @@ class J_CheckpointAgent : public CheckpointAgentBase {
 
     static const std::string error_str ;
     static const std::string resize_command ;
-
+    static const std::string clear_command ;
 };

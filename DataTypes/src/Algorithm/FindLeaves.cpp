@@ -90,10 +90,8 @@ namespace FindLeaves {
 
     bool FindLeavesVisitor::visitSequenceType (std::shared_ptr<const SequenceDataType>  node) {
         // A sequence must register its size as a leaf!
-        current_name_stack.pushName("size");
         int stl_size = node->getNumElements(address_stack.top());
         Leaf size_leaf (current_name_stack, new IntegerValue(stl_size));
-        current_name_stack.pop_back();
 
         size_leaf.is_stl = true;
         size_leaf.stl_size = stl_size;

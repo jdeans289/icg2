@@ -19,7 +19,7 @@
 TEST_F(ICGTest, typedef_restore_test) {
     // ARRANGE
     std::string checkpoint_str = R"(
-RESIZE_STL v.size = 4 ;
+RESIZE_STL v = 4 ;
 v[0] = "this" ;
 v[1] = "is" ;
 v[2] = "a" ;

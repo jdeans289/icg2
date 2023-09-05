@@ -7,7 +7,7 @@
 TEST_F(ICGTest, vector_restore) {
     // ARRANGE
 
-    std::string checkpoint_str = "RESIZE_STL vec_wrapper.v.size = 5 ; \n"
+    std::string checkpoint_str = "RESIZE_STL vec_wrapper.v = 5 ; \n"
                                  "vec_wrapper.v[0] = 5 ; \n"
                                  "vec_wrapper.v[1] = 6 ; \n"
                                  "vec_wrapper.v[2] = 7 ; \n"
