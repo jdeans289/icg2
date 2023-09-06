@@ -8,7 +8,7 @@ A revamped Interface Code Generator and associated type aware memory management 
 
 ## Overview
 
-This project consists of 2 parts - the Interface Code Generator and the runtime memory management library. The general idea is that we can add reflection to C++ by generating type information, and then use that information at runtime along with a memory management library to enable checkpoint and restore of arbitrary data structures, variable lookup by name, and more. Doxygen generated documentation can be found [here](https://jdeans289.github.io/icg2/Documentation-Home), but these are still in progress.
+This project consists of 2 parts - the Interface Code Generator and the runtime memory management library. The general idea is that we can add reflection to C++ by generating type information, and then use that information at runtime along with a memory management library to enable checkpoint and restore of arbitrary data structures, variable lookup by name, and more. Doxygen generated documentation can be found [here](https://jdeans289.github.io/icg2/index.html), but these are still in progress.
 
 ## Interface Code Generator
 
