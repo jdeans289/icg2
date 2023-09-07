@@ -108,15 +108,15 @@ See the `test/` directory for examples of intended usage.
 
 Here's the full "composite tree" structure of a DataType would look like:
 
-![DataType](DataType.png)
+<img src="DataType.png" alt="DataType" width="800"/>
 
 Here's a view of what the memory manager would hold:
 
-![MemoryManager](MemoryManager.png)
+<img src="MemoryManager.png" alt="MemoryManager" width="800"/>
 
 Here's how you put that information together to implement assignment from string:
 
-![Assignment](Assignment.png)
+<img src="Assignment.png" alt="Assignment" width="800"/>
 
 
 
