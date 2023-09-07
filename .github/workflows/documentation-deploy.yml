@@ -1,4 +1,4 @@
-name: Doxygen Deploy
+name: Documentation Deploy
 
 on:
   # Runs on pushes targeting the default branch

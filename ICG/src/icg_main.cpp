@@ -42,17 +42,6 @@ int main(int argc, char ** argv) {
     // The templates for what the io file should look like live in add-type-templates.hpp
     template_dictionary["filename"] = filename;
 
-    // std::cout << "Dictionary: " << std::endl;
-    // for (auto item : top_level_objects_list) {
-    //     std::cout << item.first << ": {" << std::endl;
-    //     for (auto inner : item.second) {
-    //         std::cout << "\t[" << std::endl;
-    //         std::cout << inner->toString() << std::endl;
-    //         std::cout << "\t]" << std::endl;
-    //     }
-    //     std::cout << "}" << std::endl;
-    // }
-
     // Runs the template engine to construct the io file using the templates and data gathered from the AST
     try {
         outfile << ICGTemplateEngine::process(template_dictionary, top_level_objects_list);

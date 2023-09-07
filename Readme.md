@@ -8,15 +8,16 @@ A revamped Interface Code Generator and associated type aware memory management 
 
 ## Overview
 
-This project consists of 2 parts - the Interface Code Generator and the runtime memory management library. The general idea is that we can add reflection to C++ by generating type information, and then use that information at runtime along with a memory management library to enable checkpoint and restore of arbitrary data structures, variable lookup by name, and more. Doxygen generated documentation can be found [here](https://jdeans289.github.io/icg2/index.html), but these are still in progress.
+This project consists of 2 parts - the Interface Code Generator and the runtime memory management library. The general idea is that we can add reflection to C++ by generating type information, and then use that information at runtime along with a memory management library to enable checkpoint and restore of arbitrary data structures, variable lookup by name, and more. 
+
+[Documentation and doxygen here!!!!!](https://jdeans289.github.io/icg2/index.html)
+
 
 ## Interface Code Generator
 
 The Interface Code Generator reads header files and generates data type information about the class definitions in them. This data type information is in the form of DataType object instantiations in header files named io_<header_name>.hpp 
 
-ICG uses LibClang to understand the header files it is given. It implements a recursive AST traversal algorithm, similar to what is implemented by Clang's more sophisticated LibTooling and ASTMatchers. ICG only cares about class/struct definitions, class template definitions, and typedefs (or does it?). It gathers this information into an intermediate representation, and then uses that to create a header file io_<header_name>.hpp that instantiates DataType objects based on the information that was gathered by using LibClang. This file is generated using a custom built template engine, contained in `ICGTemplateEngine/`. 
-
-The choice to use LibClang comes from the Trick project's requirement to support many versions of Clang/LLVM. The previous ICG uses a mix of LLVM internals and LibTooling. It is littered with #ifdef statements to support various API changes in libclang, requiring constant maintenance. Part of the goal of this project is to eliminate that pain point for future generations of Trick developers and users. 
+ICG uses Clang's AST generation feature to understand the header files it is given. It implements a recursive AST traversal algorithm, similar to what is implemented by Clang's more sophisticated LibTooling and ASTMatchers. ICG only cares about class/struct definitions, class template definitions, and typedefs. It gathers this information into an intermediate representation, and then uses that to create a header file io_<header_name>.hpp that instantiates DataType objects based on the information that was gathered from the AST. This file is generated using a custom built template engine, contained in `ICGTemplateEngine/`. 
 
 ## DataTypes
 

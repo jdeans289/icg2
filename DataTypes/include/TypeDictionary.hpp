@@ -31,6 +31,11 @@ class TypeDictionary {
 
 
     /**
+     * @brief Validate all types in this dictionary
+     * 
+     * @param dataTypeInator overarching manager 
+     * @return true success
+     * @return false failure
      */
     bool validate(DataTypeInator * dataTypeInator);
 
