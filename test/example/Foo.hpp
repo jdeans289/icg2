@@ -3,7 +3,7 @@
 
 class Bar {
 public:
-    std::vector<std::string> c;
+    std::vector<std::string> c; // this is a comment
     unsigned long d;
 };
 

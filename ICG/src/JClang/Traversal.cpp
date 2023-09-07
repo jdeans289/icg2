@@ -150,6 +150,9 @@ namespace JClang {
         FieldInfo field;
         field.name = getNodeName(field_node);
         field.type = getQualifiedType(field_node);
+
+        // TODO: LOOK FOR COMMENTS
+
         return field;
     }
 }

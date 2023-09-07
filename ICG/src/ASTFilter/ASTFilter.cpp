@@ -70,7 +70,7 @@ namespace ASTFilter {
         std::stringstream ss;
 
         // Open the command for reading
-        std::string clang_ast_dump_cmd = "clang -Xclang -ast-dump=json " + file;
+        std::string clang_ast_dump_cmd = "clang -fparse-all-comments -Xclang -ast-dump=json " + file;
         fp = popen(clang_ast_dump_cmd.c_str(), "r");
         if (fp == NULL) {
             std::cout << "Could not generate AST for file " << file << std::endl;

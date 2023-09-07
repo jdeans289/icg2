@@ -21,7 +21,7 @@ The DataType is the representation we use to understand type structure at runtim
 - StringDataType
 - ArrayDataType
 - PointerDataType
-- SequenceType
+- SequenceDataType
 
 The DataType interface provides some basic operations over types that can be used to implement more complex algorithms. Includes `getTypeName()`, `getSize()`, the ability to allocate and delete an instance, and the ability to get and set the value given an address (using the `Value` class hierarchy).
 
@@ -96,18 +96,29 @@ ctest
 See the `test/` directory for examples of intended usage. 
 
 ---
+
 ---
+
 ---
 
 
 # Documentation
 
-I'm struggling to split this up into pages through doxygen so it's all gonna go here 
+## How it all fits together
 
-### Contents
+Here's the full "composite tree" structure of a DataType would look like:
 
-[AST Generation]()
-[AST Traversal]()
+![DataType](DataType.png)
+
+Here's a view of what the memory manager would hold:
+
+![MemoryManager](MemoryManager.png)
+
+Here's how you put that information together to implement assignment from string:
+
+![Assignment](Assignment.png)
+
+
 
 ---
 
@@ -141,7 +152,7 @@ And then pruning the AST of branches that live in these file paths.
 
 All of the information that ICG needs is contained in the AST, hopefully. Currently, everything can be scraped with a simple traversal model. 
 
-The traversal code lives in [Traversal.cpp](). These functions work by passing json nodes around, and returning an ASTInfo object that contains all of the information scraped from within the node. Each node type of interest (top level AST, class, field, class template declaration, class template specialization, typedef statement) has an associated `scrape_<nodetype>_info` function that should be called when a node of that kind is found. 
+The traversal code lives in Traversal.cpp. These functions work by passing json nodes around, and returning an ASTInfo object that contains all of the information scraped from within the node. Each node type of interest (top level AST, class, field, class template declaration, class template specialization, typedef statement) has an associated `scrape_<nodetype>_info` function that should be called when a node of that kind is found. 
 
 ---
 
@@ -154,7 +165,7 @@ This project was started with LibClang, but I switched to parsing the JSON AST m
 
 The code that is outputted by ICG is generated using a template engine (similar in concept to [mustache](https://mustache.github.io/)).
 
-The template engine works by taking "templates", which are strings with "blanks" for tokens to be inserted, and recursively populating them with other templates or provided data. The templates used by ICG live in [ICG_io_src_templates.hpp]().
+The template engine works by taking "templates", which are strings with "blanks" for tokens to be inserted, and recursively populating them with other templates or provided data. The templates used by ICG live in ICG_io_src_templates.hpp.
 
 All blanks are denoted as `{{tokenname}}`. There are two types of blanks - normal and list. If the token's name is formmated like `list_{listname}_{tokenname}`, it is a list token.
 
@@ -164,7 +175,7 @@ Normal token example:
 #include "{{filename}}"
 ```
 
-The steps to populat this token are as follows:
+The steps to populate this token are as follows:
 1. Look up a token with the name "filename" from the token dictionary. It will be something like "foo.hpp"
 2. Recurse into this token with the same dictionary. In this case, the file name will not contain other blanks to be filled, so this will just return "foo.hpp"
 3. Use string replacement to replace `{{filename}}` with `foo.hpp`
@@ -177,14 +188,14 @@ List token example:
 
 Steps to populate this token:
 1. Parse the token name - since it starts with `list_`, interpret as a list token. The list name is `classes` and the token name is `class_type_decl`.
-1. Look up the token, `class_type_decl`, from the token dictionary.
-2. Find the new tokens to add to the dictionary by looking up the `classes` list from the `recursable_lists_dictionary`. 
+2. Look up the token, `class_type_decl`, from the token dictionary.
+3. Find the new tokens to add to the dictionary by looking up the `classes` list from the `recursable_lists_dictionary`. 
     - If the list does not exist, do not recurse and replace this token with an empty string.
-3. Iterate through the list items. For each item in the list:
+4. Iterate through the list items. For each item in the list:
     - Add this item's dictionary to the overall dictionary
     - Recurse into the template string for `class_type_decl` and populate it fully.
     - Concatenate this result on to the overall token result.
-4. Use string replacement to replace `{{list_classes_class_type_decl}}` with the overall token result.
+5. Use string replacement to replace `{{list_classes_class_type_decl}}` with the overall token result.
 
 
 
@@ -199,6 +210,7 @@ Get the token name -> token value map for this object. For a class info, this re
 "ClassName_mangled": ICGUtils::makeVarname(classname)
 ```
 
+To recurse into an object, use this function:
 
 ```
 ListTokenItems nextLevel();
@@ -246,7 +258,7 @@ The `DataTypeInator` is the central manager for DataTypes. DataTypes and TypeDef
 DataType * resolve (std::string typename);
 ```
 
-This function can only look up an existing type, not create a new one. The only exception is arrays and pointers - this function may create a new ArrayType or an new PointerType, with a subtype an existing type or another array/pointer type.
+This function can only look up an existing type, not create a new one. The only exception is arrays and pointers - this function may create a new ArrayDataType or an new PointerDataType, with a subtype an existing type or another array/pointer type.
 
 This `resolve` function handles arrays/pointers, typdefs, and qualifiers.
 
@@ -256,7 +268,7 @@ The DataTypeInator has 2 structures under the hood - a `TypeDictionary` and a `T
 
 ## Memory Manager
 
-The Memory Manager here is meant to conform to the interface of the current Trick memory manager as closely as possible.
+The `MemoryManager` here is meant to conform to the interface of the current Trick memory manager as closely as possible.
 
 The interface for declaring a variable is as follows:
 
@@ -291,9 +303,9 @@ The DataType is the base class of a hierarchy of types that can be composed to r
 - ArrayDataType has the number and DataType* of it's elements, from which it can calculate the offset of each.
 
 Some DataType subtypes need to take the type they are representing as a template parameter
-- SpecifiedPrimitiveDataType<T>
-- SpecifiedCompositeDataType<T>
-- SpecifiedSequenceDataType<T>
+- SpecifiedPrimitiveDataType <T>
+- SpecifiedCompositeDataType <T>
+- SpecifiedSequenceDataType <T>
 
 C++ does not allow for a virtual templated function, which is necessary for implementing visitor algorithms, so these must inherit from a non-templated class that introduces the specialized interface.
 - PrimitiveDataType
@@ -333,7 +345,9 @@ Using this method, a Visitor class can traverse the DataType tree without having
 
 All algorithms in the `Algorithm/` folder work by implementing a visitor class. Since a visitor class cannot change the arguments or return value of the visit methods, it must keep intermediate state as member variables in itself. The visitor classes are meant to be "one-shot", and the intended entry points are in the `DataTypeAlgorithm` namespace.
 
-Visitor algorithms can traverse an entire tree (FindLeaves, PrintValue), search the tree (FindNameByAddress, FindAddressByName), or execute one specific operation with target type(s) on a DataType* value (GetValue, AssignValue, ResizeSequence).
+Visitor algorithms can traverse an entire tree (FindLeaves, PrintValue), search the tree (LookupNameByAddressAndType, LookupAddressAndTypeByName), or execute one specific operation with target type(s) on a DataType* value (GetValue, AssignValue, ResizeSequence).
+
+This is really important - the key concept that makes the DataType concept work is that there is NEVER any special case code for a subType within a datatype, or really within any of the bigger management structures. ALL of this special case code should only ever exist in the Visitor algorithms. Within the visitor methods, the same concept applies - the visitCompositeType method should NEVER have special case code that depends on the type of a member, it should always just recurse into it or pass to another visitor algorithm.
 
 ---
 
@@ -348,10 +362,19 @@ The default checkpoint agent here is called J_CheckpointAgent (for Jackie checkp
 Local variable declarations come first, then all assignements.
 
 The difference is the addition of commands. There are 2 commands implemented - 
+
+```
 CLEAR_ALL_VARS
 RESIZE_STL
+```
 
 These are pretty loose, and could easily be changed. The RESIZE_STL command MUST be present and before any assignments in the STL to ensure that the stl that is being restored has the correct capacity.
+
+---
+
+## Checkpointing with Pointers
+
+This library handles checkpointing pointers the same way that Trick currently does. However, the visitor algorithms `LookupAddressAndTypeByName` and `LookupNameByAddressAndType` make it really easy to do this compared to the current Trick implementation.
 
 ---
 
@@ -562,6 +585,55 @@ The ICG integration tests run the whole system. They start with a "user provided
 The ICG tests will run `icg <headerfile>`, then compile the `test_main.cpp` file, and the test executable is named after the directory that the test is in. The `add_icg_integration_test` macro in the `test/CMakeLists.txt` class does all of this. Follow the pattern in this CMakeLists to add new tests.
 
 I typically add the `build/bin` directory of this project to my path so that I can easily run `icg` or individual tests. 
+
+---
+
+## Roadmap
+
+Various thoughts on where to go from here are scattered throughout the issues list, but I'll do my best to gather some up here.
+
+### Trick Comment parsing
+
+The biggest piece of Trick's capability that is missing here is the comment parsing for units and IO permissions. Comments are included in the AST if generated with the `-fparse-all-comments` flag. This will take some work, and might require some big refactorings to get the info to the right place. Need to figure out the right way to fit units and IO specification into the DataTypes structure.
+
+### REF2 analog
+
+Currently, this project has no analog for the REF2 struct in Trick. A REF2 struct is a reference to a sim variable, so basically you can use the memory manager once to get a reference and then interact with the variable through the reference. Things like the Variable server, data recording, and other parts of Trick that need continuous access to a variable use this. This also handles unit setting and conversion. please for the love of all that is good design this well.
+
+### Inheritance edge cases
+
+The inheritance design needs rigorous testing. See details [here](https://github.com/jdeans289/icg2/issues/45)
+
+### Static Variables
+
+I'm not sure what the extent of support for static variable in Trick currently is, but there's no reason not to support them here. I think static variables need to be registered with the memory manager by themselves. This might present a bit of a challenge to figure out the best way to name stuff, but I think it'll be fine. Statics are not implemented in ICG yet, but I don't forsee any blockers here. [Github issue here] (https://github.com/jdeans289/icg2/issues/1)
+
+### Bitfields
+
+Bitfields need to be supported, but they kind of break a lot of design assumptions for C++ so they'll be a little messy. Will likely need a BitfieldDataType and SpecifiedBitfieldDataType<T> structure, and will need to be added to the visitors. [Github issue here](https://github.com/jdeans289/icg2/issues/2).
+
+### Enums
+
+Enums are implemented in DataTypes, but not ICG. Shouldn't be hard, just have to do it. [Github issue here](https://github.com/jdeans289/icg2/issues/19)
+
+### Private Members
+
+Right now ICG does not do any special processing for private/public/protected members, but it will eventually need to do this, or it will generate code that fails to compile due to accessing a private member in the `offsetof` statement. ICG needs to be smart enough to skip private members. 
+
+I think that we can implement a pretty nice `friend` macro in order to allow ICG to process private members that looks something like:
+
+```
+#define ICG_PRIVATE_MEMBERS(C) friend class SpecifiedCompositeType<C>;
+```
+
+So if we wanted to process the private members of class Foo, we can add 
+```
+#ICG_PRIVATE_MEMBERS(Foo)
+```
+Inside class Foo.
+
+
+
 
 
 
