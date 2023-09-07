@@ -16,12 +16,24 @@ std::string io_src = std::string(R"(
 {{list_classes_class_type_decl}}
 
 void populate_type_dictionary(DataTypeInator * dataTypeInator) {
+    //
+    // Register class types
+    //
     {{list_classes_call_class_decl}}
 
+    //
+    // Register STL types
+    //
     {{list_stls_stl_decl}}
 
+    //
+    // Register typedef statements
+    //
     {{list_typedefs_typedef_decl}}
 
+    //
+    // Validate!
+    //
     dataTypeInator->validateDictionary();
 }
 )");
@@ -30,6 +42,9 @@ std::string call_class_decl = std::string(R"(dataTypeInator->addToDictionary("{{
 )");
 
 std::string class_type_decl = std::string(R"(
+//
+// ICG generated definition of the DataType for {{ClassName}}
+//
 template <>
 class SpecifiedCompositeType<{{ClassName}}> : public CompositeDataType {
 
